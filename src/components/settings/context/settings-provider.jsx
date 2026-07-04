@@ -12,11 +12,11 @@ import { SettingsContext } from './settings-context';
 export function SettingsProvider({ children, defaultSettings: baseSettings, storageKey = SETTINGS_STORAGE_KEY }) {
   const { tenantDetail } = useSelector((state) => state.AuthReducer);
   const mergedDefaultSettings = useMemo(() => {
-    const tenantPrimary = tenantDetail && tenantDetail.primaryColor;
-    const configPrimary = baseSettings && baseSettings.primaryColor || 'preset3';
+    const tenantPrimary = tenantDetail?.primaryColor;
+    const configPrimary = baseSettings?.primaryColor || 'preset3';
 
     return {
-      ...baseSettings,
+      ...(baseSettings || {}),
       primaryColor: tenantPrimary || configPrimary,
     };
   }, [baseSettings, tenantDetail?.primaryColor]);
@@ -24,10 +24,10 @@ export function SettingsProvider({ children, defaultSettings: baseSettings, stor
   const { state, setState, resetState, setField } = useLocalStorage(storageKey, mergedDefaultSettings);
 
   useEffect(() => {
-    if (tenantDetail && tenantDetail.primaryColor) {
+    if (tenantDetail?.primaryColor) {
       setField('primaryColor', tenantDetail.primaryColor);
     }
-  }, [tenantDetail?.primaryColor, setField]);
+  }, [tenantDetail?.primaryColor]);
 
   const [openDrawer, setOpenDrawer] = useState(false);
 

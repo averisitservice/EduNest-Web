@@ -6,15 +6,12 @@ import {
   Stack,
   TableCell,
   TableRow,
-  Tooltip,
-  Typography
+  Tooltip
 } from '@mui/material';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { formatPhoneNumberIntl } from 'react-phone-number-input';
 import { ConfirmDialog } from 'src/components/custom-dialog';
-import { Field, Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
@@ -23,14 +20,9 @@ import enums from 'src/utils/enums';
 import utils from 'src/utils/utils';
 
 
-export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {  
+export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
   const confirmDialog = useBoolean();
-  const authDialog = useBoolean();
-  const confirmWorkingHoursDialog = useBoolean();
   const [loading, setLoading] = useState(false);
-
-  console.log(row);
-  
 
   const methods = useForm({
     defaultValues: {
@@ -38,16 +30,14 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
     },
   });
 
-  const { watch } = methods;
-
   const renderConfirmDialog = () => (
     <ConfirmDialog
       open={confirmDialog.value}
       onClose={confirmDialog.onFalse}
-      title="Delete Staff Member"
+      title="Delete Teacher"
       content={
         <>
-          Are you sure want to delete {row.name}?
+          Are you sure want to delete {row.teacherName}?
         </>
       }
       action={
@@ -136,6 +126,8 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
               <Tooltip title="Edit" placement="top" arrow>
                 <IconButton
+                  component={RouterLink}
+                  href={paths.dashboard.teacher.edit(row.teacherId)}
                   color="primary">
                   <Iconify icon="solar:pen-bold" />
                 </IconButton>

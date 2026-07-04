@@ -64,8 +64,6 @@ export function TeacherListView() {
   const getTeacherList = async () => {
     setIsLoading(true);
     const { data } = await ApiService.getTeacherListAsync();
-    console.log(data);
-
     if (data) {
       setTableData(data);
     }
@@ -102,11 +100,11 @@ export function TeacherListView() {
   };
 
   const onDeleteRow = useCallback(
-    async (materialId) => {
-      const { data, errors } = await ApiService.deleteMaterialAsync(materialId);
+    async (teacherId) => {      
+      const { data, errors } = await ApiService.deleteTeacherAsync(teacherId);
       if (data) {
-        setTableData((prevData) => prevData.filter((row) => row.materialId !== materialId));
-        toast.success('Material deleted successfully.');
+        setTableData((prevData) => prevData.filter((row) => row.teacherId !== teacherId));
+        toast.success('TeacherId deleted successfully.');
         table.onUpdatePageDeleteRow(dataInPage.length);
       }
       else if (errors) {
@@ -179,10 +177,10 @@ export function TeacherListView() {
                   />
                   {dataFiltered.slice(table.page * table.rowsPerPage, table.page * table.rowsPerPage + table.rowsPerPage).map((row) => (
                     <TeacherTableRow
-                      key={row.materialId}
+                      key={row.teacherId}
                       row={row}
-                      selected={table.selected.includes(row.materialId)}
-                      onDeleteRow={() => onDeleteRow(row.materialId)}
+                      selected={table.selected.includes(row.teacherId)}
+                      onDeleteRow={() => onDeleteRow(row.teacherId)}
                       onSuccess={onRefresh}
                     />
                   ))}

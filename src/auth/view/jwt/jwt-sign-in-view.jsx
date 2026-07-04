@@ -10,9 +10,10 @@ import { useNavigate } from 'react-router';
 import { Field, Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import apiService from 'src/services/ApiService';
-import { login } from 'src/store/reducers/authReducer';
+import { login, setTenantDetail } from 'src/store/reducers/authReducer';
 import { z as zod } from 'zod';
 import { FormHead } from '../../components/form-head';
+import utils from 'src/utils/utils';
 
 export const SignInSchema = zod.object({
   email: zod.string().min(1, { message: 'Email is required.' }).email(),
@@ -26,7 +27,6 @@ export function JwtSignInView() {
   const dispatch = useDispatch();
   const showPassword = useBoolean();
   const navigate = useNavigate();
-  console.log("navigate::",navigate);
 
   const webAppVersion = import.meta.env.VITE_APP_VERSION;
   const [errorMessage, setErrorMessage] = useState('');
@@ -56,8 +56,8 @@ export function JwtSignInView() {
       let currentTokenUser = jwtDecode(token.session);
       currentTokenUser = { ...currentTokenUser, ...data.teacher };
       dispatch(login({ teacher: currentTokenUser, token: token }));
-      // dispatch(setTenantDetail(data.tenant));
-      // utils.setItemToStorage('tenantDetail', JSON.stringify(data.tenant));
+      dispatch(setTenantDetail(data.tenant));
+      utils.setItemToStorage('tenant', JSON.stringify(data.tenant));
       navigate('/dashboard/teacher');
     } else if (errors) {
       setErrorMessage(errors[0].msg);

@@ -20,7 +20,6 @@ axios.defaults.baseURL = baseUrl;
 axios.interceptors.request.use(
   async (config) => {
     const { AuthReducer } = getState();
-
     //set header if url is our api due to s3 gives error of bad request reason is token
     if (AuthReducer.sessionToken && !config.url.includes('amazonaws.com')) {
       config.headers = {
@@ -44,7 +43,7 @@ axios.interceptors.response.use(
     }
     return { data: data.data };
   },
-  async (errors) => {
+  async (errors) => {    
     const originalRequest = errors.config;
 
     if (

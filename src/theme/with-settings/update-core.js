@@ -25,8 +25,10 @@ export function updateCoreWithSettings(theme, settingsState) {
 
   const lightPalette = theme.colorSchemes?.light.palette;
 
-  const updatedPrimaryColor = createPaletteChannel(primaryColorPresets[primaryColor]);
-  // const updatedSecondaryColor = createPaletteChannel(SECONDARY_COLORS[primaryColor!]);
+  const preset =
+    primaryColorPresets[primaryColor] || primaryColorPresets.default;
+
+  const updatedPrimaryColor = createPaletteChannel(preset);
 
   const updateColorScheme = (scheme) => {
     const colorSchemes = theme.colorSchemes?.[scheme];

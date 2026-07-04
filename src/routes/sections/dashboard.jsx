@@ -8,6 +8,8 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 const IndexPage = lazy(() => import('src/pages'));
 
 const TeacherListPage = lazy(() => import('src/pages/teacher/list'));
+const TeacherCreatePage = lazy(() => import('src/pages/teacher/new'));
+const TeacherEditPage = lazy(() => import('src/pages/teacher/edit'));
 
 
 const dashboardLayout = () => (
@@ -39,6 +41,8 @@ export const dashboardRoutes = [
         children: [
           { index: true, element: <TeacherListPage /> },
           { path: 'list', element: <TeacherListPage /> },
+          { path: 'new', element: <TeacherCreatePage /> },
+          { path: 'edit/:id', element: <TeacherEditPage /> },
         ],
       },
     ],

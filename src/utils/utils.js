@@ -153,62 +153,6 @@ async function isNotificationAllowed() {
   return !['denied', 'prompt'].includes(permission.state);
 }
 
-async function getDeviceInformation() {
-  // const deviceInfo = {};
-  // if (navigator.userAgentData) {
-  //     const userAgent = await navigator.userAgentData.getHighEntropyValues(['platformVersion', 'model']);
-  //     deviceInfo.userAgent = JSON.stringify(userAgent);
-  //     deviceInfo.brands = userAgent.brands;
-  //     deviceInfo.os = {
-  //         name: userAgent.platform,
-  //         version: userAgent.platformVersion
-  //     };
-  //     deviceInfo.device = {
-  //         vendor: '-',
-  //         model: userAgent.model
-  //     };
-  // } else {
-  //     // useragent: it works on iphone-safari, old browser etc.
-  //     const userAgent = new UAParser(navigator.userAgent);
-  //     deviceInfo.userAgent = navigator.userAgent;
-  //     deviceInfo.brands = [
-  //         {
-  //             brand: userAgent.browser.name,
-  //             version: userAgent.browser.version
-  //         }
-  //     ];
-  //     deviceInfo.os = {
-  //         name: userAgent.os.name,
-  //         version: userAgent.os.version
-  //     };
-  //     deviceInfo.device = {
-  //         vendor: userAgent.device.vendor || '-',
-  //         model: userAgent.device.model
-  //     };
-  // }
-  // return deviceInfo;
-}
-
-async function userAgentString() {
-  // let ua = UAParser(navigator.userAgent);
-  // if (navigator.userAgentData) {
-  //     ua = await navigator.userAgentData.getHighEntropyValues(['platformVersion', 'model']);
-  // }
-  // return JSON.stringify(ua);
-}
-
-function getDeviceType() {
-  // let type = null;
-  // const parseUserAgent = UAParser(navigator.userAgent);
-  // if (parseUserAgent && parseUserAgent.device.type) {
-  //     // provides either mobile or tablet
-  //     type = parseUserAgent.device.type;
-  // } else {
-  //     // default for web and desktop
-  //     type = 'Mobile';
-  // }
-  // return type;
-}
 
 async function uploadPictureToS3(preSignedUrl, file) {
   return new Promise((resolve, reject) => {
@@ -379,9 +323,6 @@ export default {
   isStandalone,
   cameraPermission,
   isNotificationAllowed,
-  getDeviceInformation,
-  userAgentString,
-  getDeviceType,
   uploadPictureToS3,
   getTimezoneLabel,
   getSortParams,

@@ -7,6 +7,9 @@ const constants = {
   localStorageKey: {
     tokens: 'Tokens',
   },
+  defaultCountryCode: 'IN',
+
+  
   maxPaymentMethods: 3,
   defaultTimeZone: 'Australia/Melbourne',
   defaultTimeFormat: '24-Hour-Format',
@@ -16,7 +19,6 @@ const constants = {
   timeFormat: 'HH:mm',
   Official: 'Official',
   Billing: 'Billing',
-  defaultCountryCode: 'AU',
   defaultLang: 'en',
   DEFAULT_START_TIME: '08:00',
   DEFAULT_END_TIME: '17:00',

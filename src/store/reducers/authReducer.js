@@ -18,7 +18,7 @@ const AuthReducer = createSlice({
   initialState: initialState,
   reducers: {
     login(state, action) {
-      const { teacher, token } = action.payload;      
+      const { teacher, token } = action.payload;            
       state.loggedInTeacher = teacher;
       state.sessionToken = token.session;
       state.refreshToken = token.refresh;
@@ -50,15 +50,15 @@ const AuthReducer = createSlice({
         state.user = user;
       }
     },
-    setTenantDetail(state, action) {
-      state.tenantDetail = action.payload;
+    setTenantDetail(state, action) {      
+      state.tenantDetail = action.payload;      
     },
     logout(state) {
       state.refreshToken = null;
       state.sessionToken = null;
       state.loggedInTeacher = null;
       state.tenantDetail = {};
-      utils.removeItem('tenantDetails');
+      utils.removeItem('tenant');
       utils.removeItem('Tokens');
     },
   },

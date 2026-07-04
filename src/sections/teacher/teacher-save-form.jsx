@@ -1,4 +1,3 @@
-// Existing imports
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
@@ -11,124 +10,80 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { Field, Form, schemaHelper } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { toast } from 'src/components/snackbar';
 import { useParams } from 'src/routes/hooks';
 import apiService from 'src/services/ApiService';
-import { login, logout } from 'src/store/reducers/authReducer';
 import constants from 'src/utils/constants';
-import enums from 'src/utils/enums';
-import utils from 'src/utils/utils';
 import { z as zod } from 'zod';
 
-const BaseUserSchema = zod.object({
+const TeacherSchema = zod.object({
   firstName: zod.string().min(1, { message: 'First Name is required.' }),
-  surname: zod.string().min(1, { message: 'Surname is required.' }),
-  empCode: zod
-    .string()
-    .min(1, { message: 'Employee Code is required.' })
-    .min(6, { message: 'Employee Code must be at least 6 characters.' })
-    .regex(/^\d+$/, { message: 'Employee Code must contain only numbers.' }),
-  email: zod
-    .string()
-    .min(1, { message: 'Email is required.' })
-    .email({ message: 'Email must be a valid.' }),
-  phone: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
-  pin: zod
-    .string()
-    .min(1, { message: 'Pin is required.' })
-    .min(6, { message: 'Pin must have six characters.' }),
-  roleId: zod.coerce.number().refine(val => val > 0, {
-    message: "Role is required.",
-  }),
-  userStages: zod
-    .array(zod.object({
-      stageId: zod.number(),
-      stageName: zod.string(),
-    })).optional(),
-  profileType: zod.enum(['full', 'lite']),
-  labourRate: zod.coerce.number().positive({ message: "Labour Rate is required." }),
-  isPriceVisible: zod.boolean(),
-  isPermanentUser: zod.boolean(),
-  siteId: zod.coerce.number().refine(val => val > 0, {
-    message: "Site is required.",
-  }),
+  lastName: zod.string().min(1, { message: 'Last Name is required.' }),
+  email: zod.string().min(1, { message: 'Email is required.' }).email({ message: 'Email must be valid.' }),
+  mobileNo: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
+  roleId: zod.coerce.number().refine(val => val > 0, { message: 'Role is required.' }),
+  employmentTypeId: zod.coerce.number().refine(val => val > 0, { message: 'Employment Type is required.' }),
+  gender: zod.string().min(1, { message: 'Gender is required.' }),
+  joiningDate: zod.string().min(1, { message: 'Joining Date is required.' }),
+  qualification: zod.string().optional(),
+  dateOfBirth: zod.string().optional(),
+  addressLine1: zod.string().optional(),
+  city: zod.string().optional(),
+  state: zod.string().optional(),
+  postalCode: zod.string().optional(),
+  teacherClasses: zod.array(zod.object({
+    classId: zod.number(),
+  })).optional(),
+  teacherSubjects: zod.array(zod.object({
+    subjectId: zod.number(),
+  })).optional(),
 });
 
-// Define the required fields schema
-const FullProfileSchema = BaseUserSchema.extend({
-  profileType: zod.literal('full'),
-  password: zod
-    .string()
-    .min(1, { message: 'Password is required.' })
-    .min(8, { message: 'Password must be at least eight characters.' }),
+const TeacherAddSchema = TeacherSchema.extend({
+  password: zod.string().min(1, { message: 'Password is required.' }).min(8, { message: 'Password must be at least 8 characters.' }),
 });
 
-// Define the optional fields schema
-const LiteProfileSchema = BaseUserSchema.extend({
-  profileType: zod.literal('lite'),
-  password: zod.string().optional(),
-});
-
-// Combine them into a discriminated union
-export const UserSchema = zod.discriminatedUnion('profileType', [
-  FullProfileSchema,
-  LiteProfileSchema,
-]).superRefine((data, ctx) => {
-    if (!data.userStages || data.userStages.length === 0) {
-      ctx.addIssue({
-        code: zod.ZodIssueCode.custom,
-        message: "Please select at least one user stage.",
-        path: ["userStages"],
-      });
-    }
-});
-
-// ----------------------------------------------------------------------
-export function UserSaveForm() {
-  const dispatch = useDispatch();
+export function TeacherSaveForm() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const confirmDialog = useBoolean();
-  const [userStageOptions, setUserStageOptions] = useState([]);
-  const [sitesOptions, setSitesOptions] = useState([]);
   const [roles, setRoles] = useState([]);
-  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
+  const [employmentTypes, setEmploymentTypes] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [classMasters, setClassMasters] = useState([]);
 
-  const location = window.location.href;
-  const isProfilePage = location.includes('profile');
   const showPassword = useBoolean();
 
   const defaultValues = {
     firstName: '',
-    surname: '',
+    lastName: '',
     email: '',
     password: '',
-    phone: '',
-    pin: '',
-    empCode: '',
+    mobileNo: '',
     roleId: '',
-    labourRate: null,
-    isPriceVisible: false,
-    isPermanentUser: false,
-    userStages: [],
-    siteId: '',
+    employmentTypeId: '',
+    gender: '',
+    dateOfBirth: '',
+    joiningDate: '',
+    qualification: '',
+    addressLine1: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    teacherClasses: [],
+    teacherSubjects: [],
   };
 
   const methods = useForm({
     mode: 'onSubmit',
-    resolver: zodResolver(UserSchema),
+    resolver: zodResolver(id ? TeacherSchema : TeacherAddSchema),
     defaultValues: async () => {
-      const data = await getUserDataById();
-      return {
-        ...data,
-        profileType: !id ? 'full' : 'lite',
-      };
+      const data = await getTeacherDataById();
+      return data;
     },
   });
 
@@ -136,78 +91,65 @@ export function UserSaveForm() {
     control,
     setError,
     handleSubmit,
-    setValue,
     formState: { isSubmitting, isLoading, errors },
   } = methods;
 
   useEffect(() => {
-
     const fetchData = async () => {
-      const [userStageOptions, sitesOptions, roles] = await Promise.all([
-        apiService.getStageOptionsAsync(),
-        apiService.getSitesOptionsAsync(),
+      const [roles, employmentType, subject, classMaster] = await Promise.all([
         apiService.getRolesAsync(),
+        apiService.getEmploymentTypeAsync(),
+        apiService.getSubjectAsync(),
+        apiService.getClassMasterAsync(),
       ]);
-      setUserStageOptions(userStageOptions.data);
-      setSitesOptions(sitesOptions.data);
       setRoles(roles.data);
+      setEmploymentTypes(employmentType.data);
+      setSubjects(subject.data);
+      setClassMasters(classMaster.data);
     }
-
     fetchData();
   }, [])
 
-  const getUserDataById = async () => {
+  const getTeacherDataById = async () => {
     if (id) {
-      const { data } = await apiService.getUserDataByIdAsync(id);
-      return data;
+      const { data } = await apiService.getTeacherDataByIdAsync(id);
+      return {
+        ...data,
+        teacherSubjects: subjects.filter((s) =>
+          data.teacherSubjects.some((ts) => ts.subjectId === s.subjectId)
+        ),
+        teacherClasses: classMasters.filter((c) =>
+          data.teacherClasses.some((tc) => tc.classId === c.classId)
+        ),
+      };
     } else {
       return defaultValues;
     }
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    let response = [];
-    values.userStages = values.userStages.map((st) => st.stageId);
-    if (id) {
-      values.userId = Number(id);
-      response = await apiService.updateUserAsync(values);
-    } else {
-      response = await apiService.createUserAsync(values);
-    }
-    if (response.data && response.data.session && response.data.refresh) {
-      const token = { session: response.data.session, refresh: response.data.refresh };
-      dispatch(login({ user: response.data.user, token }));
-    }
+    const payload = {
+      ...values,
+      teacherClasses: values.teacherClasses.map((tc) => ({
+        classId: tc.classId,
+      })),
+      teacherSubjects: values.teacherSubjects.map((ts) => ({
+        subjectId: ts.subjectId,
+      })),
+      ...(id && { teacherId: Number(id) }),
+    };
+    const response = await apiService.saveTeacherAsync(payload);
     if (response.data) {
-      toast.success(id ? 'Staff Member updated successfully.' : 'Staff Member created successfully.');
+      toast.success(id ? "Teacher updated successfully." : "Teacher created successfully.");
       navigate(-1);
-    } else if (response.errors) {
-      response.errors.map((error) => {
-        setError(error.param, { message: error.msg }); // setError for userName
+      return;
+    }
+    if (response.error) {
+      setError(response.error.param, {
+        message: response.error.msg,
       });
     }
   });
-
-  const handleDeleteRow = async () => {
-    await apiService.deleteUserAsync(id);
-    dispatch(logout());
-    toast.success('Staff Member deleted successfully.');
-    navigate('/auth/sign-in', { replace: true });
-  };
-
-  const renderConfirmDialog = () => (
-    <ConfirmDialog
-      open={confirmDialog.value}
-      onClose={confirmDialog.onFalse}
-      title="Delete Staff Member"
-      content={<>Are you sure want to delete your profile?</>}
-      action={
-        <Button variant="contained" color="error" onClick={handleDeleteRow}>
-          Delete
-        </Button>
-      }
-    />
-  );
 
   return (
     <>
@@ -219,7 +161,7 @@ export function UserSaveForm() {
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 8 }}>
                 <Card sx={{ p: 3 }}>
-                  <Stack direction="column" spacing={2} >
+                  <Stack direction="column" spacing={2}>
                     <Box
                       sx={{
                         rowGap: 3,
@@ -228,21 +170,8 @@ export function UserSaveForm() {
                         gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
                       }}
                     >
-                      <Field.Text
-                        name="empCode"
-                        label="Employee Code"
-                        disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator}
-                        slotProps={{ htmlInput: { maxLength: 6 } }}
-                        onKeyDown={utils.handleNumericKey}
-                        onPaste={(e) => {
-                          e.preventDefault();
-                          const pastedData = e.clipboardData.getData('text/plain');
-                          const numericData = pastedData.replace(/\D/g, '');
-                          e.currentTarget.value = numericData;
-                        }}
-                      />
                       <Field.Text maxLength={50} name="firstName" label="First Name" />
-                      <Field.Text maxLength={50} name="surname" label="Surname" />
+                      <Field.Text maxLength={50} name="lastName" label="Last Name" />
                       <Field.Text name="email" label="Email" />
                       {!id && (
                         <Field.Text
@@ -251,21 +180,14 @@ export function UserSaveForm() {
                           placeholder="8+ characters"
                           type={showPassword.value ? 'text' : 'password'}
                           slotProps={{
-                            htmlInput: {
-                              minLength: 8,
-                              maxLength: 25,
-                            },
+                            htmlInput: { minLength: 8, maxLength: 25 },
                             inputLabel: { shrink: true },
                             input: {
                               endAdornment: (
                                 <InputAdornment position="end">
                                   <IconButton onClick={showPassword.onToggle} edge="end">
                                     <Iconify
-                                      icon={
-                                        showPassword.value
-                                          ? 'solar:eye-bold'
-                                          : 'solar:eye-closed-bold'
-                                      }
+                                      icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
                                     />
                                   </IconButton>
                                 </InputAdornment>
@@ -274,57 +196,46 @@ export function UserSaveForm() {
                           }}
                         />
                       )}
-                      <Field.Phone name="phone" label="Phone Number"
+                      <Field.Phone
+                        name="mobileNo"
+                        label="Mobile Number"
                         country={constants.defaultCountryCode}
-                        disableCountryCode={true} />
-                      <Field.Text
-                        name="pin"
-                        label="Pin"
-                        onKeyDown={utils.handleNumericKey}
-                        slotProps={{ htmlInput: { maxLength: 6 } }}
-                        onPaste={(e) => {
-                          e.preventDefault();
-                          const pastedData = e.clipboardData.getData('text/plain');
-                          const numericData = pastedData.replace(/\D/g, '');
-                          e.currentTarget.value = numericData;
-                        }}
+                        disableCountryCode={true}
                       />
-                      <Field.Select name="roleId" label="Role" disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator}>
-                        {roles && roles.map((option) => (
+                      <Field.Select name="roleId" label="Role">
+                        {roles.map((option) => (
                           <MenuItem key={option.roleId} value={option.roleId}>
                             {option.roleName}
                           </MenuItem>
                         ))}
                       </Field.Select>
-                      <Field.Select name="siteId" label="Site" disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator}>
-                        {sitesOptions && sitesOptions.map((option) => (
-                          <MenuItem key={option.siteId} value={option.siteId}>
-                            {option.siteName}
+                      <Field.Select name="employmentTypeId" label="Employment Type">
+                        {employmentTypes.map((option) => (
+                          <MenuItem key={option.employmentTypeId} value={option.employmentTypeId}>
+                            {option.employmentType}
                           </MenuItem>
                         ))}
                       </Field.Select>
-                      <Grid container spacing={2}>
-                        <Grid size={{ xs: 12, md: 4, sm: 4 }}>
-                          <Field.Text type="number" name="labourRate" label="Labour Rate" disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator} maxLength={6} />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 8, sm: 8 }}>
-                          <Stack direction={'row'}>
-                            <Field.Switch
-                              name="isPriceVisible"
-                              label="Can View Price"
-                              disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator}
-                            />
-                            <Field.Switch name="isPermanentUser" label="Permanent Staff" disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator} />
-                          </Stack>
-                        </Grid>
-                      </Grid>
+                      <Field.Select name="gender" label="Gender">
+                        <MenuItem value="M">Male</MenuItem>
+                        <MenuItem value="F">Female</MenuItem>
+                        <MenuItem value="O">Other</MenuItem>
+                      </Field.Select>
+                      <Field.DatePicker name="dateOfBirth" label="Date of Birth" allowFutureDates={true} allowPastDates={true} />
+                      <Field.DatePicker name="joiningDate" label="Joining Date" allowFutureDates={true} allowPastDates={true} />
+                      <Field.Text name="qualification" label="Qualification" />
+                      <Field.Text name="addressLine1" label="Address" />
+                      <Field.Text name="city" label="City" />
+                      <Field.Text name="state" label="State" />
+                      <Field.Text name="postalCode" label="Postal Code" />
                     </Box>
                   </Stack>
                 </Card>
               </Grid>
+
               <Grid size={{ xs: 12, md: 4 }}>
                 <Card sx={{ p: 3 }}>
-                  <Stack direction="column" spacing={2} >
+                  <Stack direction="column" spacing={2}>
                     <Box
                       sx={{
                         rowGap: 3,
@@ -334,41 +245,35 @@ export function UserSaveForm() {
                       }}
                     >
                       <Controller
-                        name="userStages"
+                        name="teacherSubjects"
                         control={control}
                         render={({ field }) => (
                           <Autocomplete
                             {...field}
                             fullWidth
                             multiple
-                            disabled={isProfilePage && loggedInTeacher && loggedInTeacher.roleId !== enums.roleType.Administrator}
                             disableCloseOnSelect
-                            options={userStageOptions}
-                            getOptionLabel={(option) => option.stageName}
+                            options={subjects}
+                            getOptionLabel={(option) => option.subjectName}
                             onChange={(event, newValue) => field.onChange(newValue)}
-                            isOptionEqualToValue={(option, value) => option.stageId === value.stageId}
-
+                            isOptionEqualToValue={(option, value) => option.subjectId === value.subjectId}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                label="Stages"
-                                placeholder="Stages"
-                                error={!!errors.userStages}
-                                helperText={errors.userStages ? errors.userStages.message : ''}
+                                label="Subjects"
+                                placeholder="Subjects"
+                                error={!!errors.teacherSubjects}
+                                helperText={errors.teacherSubjects ? errors.teacherSubjects.message : ''}
                               />
                             )}
                             renderOption={(props, option) => {
                               const isSelected = field.value.some(
-                                (selectedOption) => selectedOption.stageId === option.stageId
+                                (selected) => selected.subjectId === option.subjectId
                               );
                               return (
-                                <li {...props} key={option.stageId}>
-                                  <Checkbox
-                                    size="small"
-                                    disableRipple
-                                    checked={isSelected}
-                                  />
-                                  {option.stageName}
+                                <li {...props} key={option.subjectId}>
+                                  <Checkbox size="small" disableRipple checked={isSelected} />
+                                  {option.subjectName}
                                 </li>
                               );
                             }}
@@ -376,8 +281,56 @@ export function UserSaveForm() {
                               selected.map((option, index) => (
                                 <Chip
                                   {...getTagProps({ index })}
-                                  key={option.stageId}
-                                  label={option.stageName}
+                                  key={option.subjectId}
+                                  label={option.subjectName}
+                                  size="small"
+                                  variant="soft"
+                                />
+                              ))
+                            }
+                          />
+                        )}
+                      />
+                      <Controller
+                        name="teacherClasses"
+                        control={control}
+                        render={({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            fullWidth
+                            multiple
+                            disableCloseOnSelect
+                            value={field.value || []}
+                            options={classMasters}
+                            getOptionLabel={(option) => option.className}
+                            onChange={(event, newValue) => field.onChange(newValue)}
+                            isOptionEqualToValue={(option, value) => option.classId === value.classId}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Classes"
+                                placeholder="Classes"
+                                error={!!errors.teacherClasses}
+                                helperText={errors.teacherClasses ? errors.teacherClasses.message : ''}
+                              />
+                            )}
+                            renderOption={(props, option) => {
+                              const isSelected = (field.value || []).some(
+                                (selected) => selected.classId === option.classId
+                              );
+                              return (
+                                <li {...props} key={option.classId}>
+                                  <Checkbox size="small" disableRipple checked={isSelected} />
+                                  {option.className}
+                                </li>
+                              );
+                            }}
+                            renderTags={(selected, getTagProps) =>
+                              (selected || []).map((option, index) => (
+                                <Chip
+                                  {...getTagProps({ index })}
+                                  key={option.classId}
+                                  label={option.className}
                                   size="small"
                                   variant="soft"
                                 />
@@ -391,7 +344,7 @@ export function UserSaveForm() {
                 </Card>
               </Grid>
               <Grid item size={{ xs: 12, md: 8 }}>
-                <Stack direction="row" justifyContent={'space-between'}>
+                <Stack direction="row" justifyContent="space-between">
                   <Stack direction="row" spacing={2}>
                     <LoadingButton
                       type="submit"
@@ -405,9 +358,7 @@ export function UserSaveForm() {
                       disabled={isSubmitting}
                       variant="outlined"
                       color="error"
-                      onClick={() => {
-                        navigate(-1);
-                      }}
+                      onClick={() => navigate(-1)}
                     >
                       Cancel
                     </Button>
@@ -416,7 +367,6 @@ export function UserSaveForm() {
               </Grid>
             </Grid>
           </Form>
-          {renderConfirmDialog()}
         </>
       )}
     </>
