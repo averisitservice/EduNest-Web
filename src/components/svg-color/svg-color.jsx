@@ -1,0 +1,37 @@
+/* eslint-disable react/display-name */
+import { styled } from '@mui/material/styles';
+import { mergeClasses } from 'minimal-shared/utils';
+import { forwardRef } from 'react';
+
+import { svgColorClasses } from './classes';
+
+// ----------------------------------------------------------------------
+
+export const SvgColor = forwardRef((props, ref) => {
+  const { src, className, sx, ...other } = props;
+
+  return (
+    <SvgRoot
+      ref={ref}
+      className={mergeClasses([svgColorClasses.root, className])}
+      sx={[
+        () => ({
+          mask: `url(${src}) no-repeat center / contain`,
+          WebkitMask: `url(${src}) no-repeat center / contain`,
+        }),
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    />
+  );
+});
+
+// ----------------------------------------------------------------------
+
+const SvgRoot = styled('span')(() => ({
+  width: 24,
+  height: 24,
+  flexShrink: 0,
+  display: 'inline-flex',
+  backgroundColor: 'currentColor',
+}));

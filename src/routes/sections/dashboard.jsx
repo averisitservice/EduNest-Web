@@ -1,0 +1,46 @@
+import { lazy, Suspense } from 'react';
+import { Outlet } from 'react-router';
+import { AuthGuard } from 'src/auth/guard';
+import { LoadingScreen } from 'src/components/loading-screen';
+import { DashboardLayout } from 'src/layouts/dashboard';
+
+
+const IndexPage = lazy(() => import('src/pages'));
+
+const TeacherListPage = lazy(() => import('src/pages/teacher/list'));
+
+
+const dashboardLayout = () => (
+  <DashboardLayout>
+    <Suspense fallback={<LoadingScreen />}>
+      <Outlet />
+    </Suspense>
+  </DashboardLayout>
+);
+
+export const dashboardRoutes = [
+   {
+    path: '/',
+    element: <AuthGuard>{dashboardLayout()}</AuthGuard>,
+    children: [
+      {
+        path: '/',
+        children: [{ index: true, element: <TeacherListPage /> }],
+      },
+    ],
+  },
+  {
+    path: 'dashboard',
+    element: <AuthGuard>{dashboardLayout()}</AuthGuard>,
+    children: [
+      { index: true, element: <IndexPage /> },
+      {
+        path: 'teacher',
+        children: [
+          { index: true, element: <TeacherListPage /> },
+          { path: 'list', element: <TeacherListPage /> },
+        ],
+      },
+    ],
+  },
+];
