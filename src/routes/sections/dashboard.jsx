@@ -10,6 +10,7 @@ const IndexPage = lazy(() => import('src/pages'));
 const TeacherListPage = lazy(() => import('src/pages/teacher/list'));
 const TeacherCreatePage = lazy(() => import('src/pages/teacher/new'));
 const TeacherEditPage = lazy(() => import('src/pages/teacher/edit'));
+const ProfileEditPage = lazy(() => import('src/pages/teacher/profile'));
 
 
 const dashboardLayout = () => (
@@ -45,6 +46,10 @@ export const dashboardRoutes = [
           { path: 'edit/:id', element: <TeacherEditPage /> },
         ],
       },
+      {
+        path: 'profile',
+        children: [{ path: 'edit/:id', element: <ProfileEditPage /> }],
+      }
     ],
   },
 ];

@@ -26,8 +26,6 @@ import { NavMobile } from './nav-mobile';
 import { NavVertical } from './nav-vertical';
 
 
-// ----------------------------------------------------------------------
-
 export function DashboardLayout({ sx, cssVars, children, slotProps, layoutQuery = 'lg' }) {
   const theme = useTheme();
 

@@ -9,6 +9,15 @@ async function loginAsync(payload) {
   return await axios(config);
 }
 
+async function renewSessionAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/auth/renew-session',
+    data: payload
+  };
+  return await axios(config);
+}
+
 //Lookup
 async function getRolesAsync() {
   const config = {
@@ -79,6 +88,7 @@ async function deleteTeacherAsync(teacherId) {
 
 export default {
   loginAsync,
+  renewSessionAsync,
 
   //Lookup
   getRolesAsync,

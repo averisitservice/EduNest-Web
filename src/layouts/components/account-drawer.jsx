@@ -19,16 +19,12 @@ import { paths } from 'src/routes/paths';
 import { AccountButton } from './account-button';
 import { SignOutButton } from './sign-out-button';
 
-// ----------------------------------------------------------------------
-
 export function AccountDrawer({ data = [], sx, ...other }) {
   const pathname = usePathname();
   const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
-  const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
-
   console.log(loggedInTeacher);
   
-
+  const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
   const renderAvatar = () => (
     <AnimateBorder
       sx={{ mb: 2, p: '6px', width: 96, height: 96, borderRadius: '50%' }}
@@ -36,8 +32,8 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         primaryBorder: { size: 120, sx: { color: 'primary.main' } },
       }}
     >
-      <Avatar src={loggedInTeacher?.imagePath} alt={loggedInTeacher?.firstName} sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}>
-        {loggedInTeacher?.firstName?.charAt(0).toUpperCase()}
+      <Avatar src={loggedInTeacher?.imagePath} alt={loggedInTeacher?.teacherName} sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}>
+        {loggedInTeacher?.teacherName?.charAt(0).toUpperCase()}
       </Avatar>
     </AnimateBorder>
   );
@@ -101,7 +97,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
       <AccountButton
         onClick={onOpen}
         photoURL={loggedInTeacher?.photoURL}
-        displayName={loggedInTeacher?.firstName}
+        displayName={loggedInTeacher?.teacherName}
         sx={sx}
         {...other}
       />
@@ -137,7 +133,7 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             {renderAvatar()}
 
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {loggedInTeacher?.firstName}
+              {loggedInTeacher?.teacherName}
             </Typography>
 
           </Box>

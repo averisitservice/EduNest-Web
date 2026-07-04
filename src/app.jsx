@@ -33,7 +33,7 @@ export default function App({ children }) {
     dispatch(setTenantDetail(JSON.parse(tenantDetail)));
     let currentTokenUser = token && jwtDecode(token.session);
     if (currentTokenUser) {
-      dispatch(login({ user: currentTokenUser, token }));
+      dispatch(login({ teacher: currentTokenUser, token }));
       // const { data } = await apiService.getUserInitializeAsync();
       // if (data && data.user && data.user.isTenantActive) {
       //   const user = { ...currentTokenUser, ...data.user };
