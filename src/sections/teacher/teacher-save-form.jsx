@@ -30,7 +30,7 @@ const TeacherSchema = zod.object({
   employmentTypeId: zod.coerce.number().refine(val => val > 0, { message: 'Employment Type is required.' }),
   gender: zod.string().min(1, { message: 'Gender is required.' }),
   joiningDate: zod.string().min(1, { message: 'Joining Date is required.' }),
-  qualification: zod.string().optional(),
+  qualification: zod.array(zod.string()).optional(),
   dateOfBirth: zod.string().optional(),
   addressLine1: zod.string().optional(),
   city: zod.string().optional(),
@@ -69,7 +69,7 @@ export function TeacherSaveForm() {
     gender: '',
     dateOfBirth: '',
     joiningDate: '',
-    qualification: '',
+    qualification: [],
     addressLine1: '',
     city: '',
     state: '',
@@ -91,6 +91,8 @@ export function TeacherSaveForm() {
     control,
     setError,
     handleSubmit,
+    watch,
+    setValue,
     formState: { isSubmitting, isLoading, errors },
   } = methods;
 
@@ -115,6 +117,9 @@ export function TeacherSaveForm() {
       const { data } = await apiService.getTeacherDataByIdAsync(id);
       return {
         ...data,
+        qualification: data.qualification
+          ? data.qualification.split(',')
+          : [],
         teacherSubjects: subjects.filter((s) =>
           data.teacherSubjects.some((ts) => ts.subjectId === s.subjectId)
         ),
@@ -130,6 +135,7 @@ export function TeacherSaveForm() {
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
       ...values,
+      qualification: (values.qualification || []).join(','),
       teacherClasses: values.teacherClasses.map((tc) => ({
         classId: tc.classId,
       })),
@@ -223,7 +229,29 @@ export function TeacherSaveForm() {
                       </Field.Select>
                       <Field.DatePicker name="dateOfBirth" label="Date of Birth" allowFutureDates={true} allowPastDates={true} />
                       <Field.DatePicker name="joiningDate" label="Joining Date" allowFutureDates={true} allowPastDates={true} />
-                      <Field.Text name="qualification" label="Qualification" />
+                      <Autocomplete
+                        multiple
+                        freeSolo
+                        options={[]}
+                        value={watch('qualification') || []}
+                        onChange={(event, newValue) => {
+                          setValue('qualification', newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Qualification" />
+                        )}
+                        renderTags={(selected = [], getTagProps) =>
+                          selected.map((option, index) => (
+                            <Chip
+                              {...getTagProps({ index })}
+                              key={option}
+                              label={option}
+                              size="small"
+                              variant="soft"
+                            />
+                          ))
+                        }
+                      />
                       <Field.Text name="addressLine1" label="Address" />
                       <Field.Text name="city" label="City" />
                       <Field.Text name="state" label="State" />
