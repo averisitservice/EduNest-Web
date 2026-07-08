@@ -7,6 +7,8 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 
 const IndexPage = lazy(() => import('src/pages'));
 
+const ClassListPage = lazy(() => import('src/pages/class/list'));
+
 const TeacherListPage = lazy(() => import('src/pages/teacher/list'));
 const TeacherCreatePage = lazy(() => import('src/pages/teacher/new'));
 const TeacherEditPage = lazy(() => import('src/pages/teacher/edit'));
@@ -22,7 +24,7 @@ const dashboardLayout = () => (
 );
 
 export const dashboardRoutes = [
-   {
+  {
     path: '/',
     element: <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
@@ -37,6 +39,13 @@ export const dashboardRoutes = [
     element: <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
+      {
+        path: 'class',
+        children: [
+          { index: true, element: <ClassListPage /> },
+          { path: 'list', element: <ClassListPage /> },
+        ],
+      },
       {
         path: 'teacher',
         children: [

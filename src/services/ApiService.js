@@ -22,7 +22,7 @@ async function renewSessionAsync(payload) {
 async function getRolesAsync() {
   const config = {
     method: 'get',
-    url: `lookup/roles`,
+    url: `/lookup/roles`,
   };
   return await axios(config);
 }
@@ -30,7 +30,7 @@ async function getRolesAsync() {
 async function getEmploymentTypeAsync() {
   const config = {
     method: 'get',
-    url: `lookup/employmentTypes`,
+    url: `/lookup/employmentTypes`,
   };
   return await axios(config);
 }
@@ -38,7 +38,7 @@ async function getEmploymentTypeAsync() {
 async function getSubjectAsync() {
   const config = {
     method: 'get',
-    url: `lookup/subject`,
+    url: `/lookup/subject`,
   };
   return await axios(config);
 }
@@ -46,7 +46,41 @@ async function getSubjectAsync() {
 async function getClassMasterAsync() {
   const config = {
     method: 'get',
-    url: `lookup/classMaster`,
+    url: `/lookup/classMaster`,
+  };
+  return await axios(config);
+}
+
+//class
+async function getClassListAsync() {
+  const config = {
+    method: 'get',
+    url: `/class/list`,
+  };
+  return await axios(config);
+}
+
+async function saveClassAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/class',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function getClassDataByIdAsync(classId) {
+  const config = {
+    method: 'get',
+    url: `/class/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function deleteClassAsync(classId) {
+  const config = {
+    method: 'delete',
+    url: `/class/${classId}`,
   };
   return await axios(config);
 }
@@ -55,7 +89,7 @@ async function getClassMasterAsync() {
 async function getTeacherListAsync() {
   const config = {
     method: 'get',
-    url: `teacher/list`,
+    url: `/teacher/list`,
   };
   return await axios(config);
 }
@@ -80,7 +114,7 @@ async function getTeacherDataByIdAsync(teacherId) {
 async function deleteTeacherAsync(teacherId) {
   const config = {
     method: 'delete',
-    url: `teacher/${teacherId}`,
+    url: `/teacher/${teacherId}`,
   };
   return await axios(config);
 }
@@ -95,6 +129,12 @@ export default {
   getEmploymentTypeAsync,
   getSubjectAsync,
   getClassMasterAsync,
+
+  //class
+  getClassListAsync,
+  saveClassAsync,
+  getClassDataByIdAsync,
+  deleteClassAsync,
 
   //Teacher
   getTeacherListAsync,

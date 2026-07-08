@@ -5,8 +5,6 @@ export const ROOTS = {
   PAYMENT: '/payment'
 };
 
-// ----------------------------------------------------------------------
-
 export const paths = {
   comingSoon: '/coming-soon',
   maintenance: '/maintenance',
@@ -22,9 +20,14 @@ export const paths = {
     signUp: `${ROOTS.AUTH}/sign-up`,
     changePassword: `${ROOTS.AUTH}/change-password`,
   },
+
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
+    class: {
+      root: `${ROOTS.DASHBOARD}/class`,
+      list: `${ROOTS.DASHBOARD}/class/list`,
+    },
     teacher: {
       root: `${ROOTS.DASHBOARD}/teacher`,
       list: `${ROOTS.DASHBOARD}/teacher/list`,

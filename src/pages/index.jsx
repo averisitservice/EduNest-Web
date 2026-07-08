@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { CONFIG } from 'src/global-config';
-import { OverviewAppView } from 'src/sections/overview/app/view';
+import { TeacherListView } from 'src/sections/teacher/view';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ export default function OverviewAppPage() {
       <Helmet>
         <title> {metadata.title}</title>
       </Helmet>
-      <OverviewAppView />
+      <TeacherListView />
     </>
   );
 }

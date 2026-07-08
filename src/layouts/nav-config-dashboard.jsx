@@ -40,6 +40,11 @@ export const navData = [
     subheader: 'Management',
     items: [
       {
+        title: 'Classes',
+        path: paths.dashboard.class.root,
+        icon: ICONS.site,
+      },
+      {
         title: 'Teachers',
         path: paths.dashboard.teacher.root,
         icon: ICONS.teacher,

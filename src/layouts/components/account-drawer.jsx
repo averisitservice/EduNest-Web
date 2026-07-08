@@ -21,9 +21,7 @@ import { SignOutButton } from './sign-out-button';
 
 export function AccountDrawer({ data = [], sx, ...other }) {
   const pathname = usePathname();
-  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
-  console.log(loggedInTeacher);
-  
+  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);  
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
   const renderAvatar = () => (
     <AnimateBorder
