@@ -51,6 +51,15 @@ async function getClassMasterAsync() {
   return await axios(config);
 }
 
+async function saveSubjectAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/lookup/subject/save',
+    data: payload,
+  };
+  return await axios(config);
+}
+
 //class
 async function getClassListAsync() {
   const config = {
@@ -129,6 +138,7 @@ export default {
   getEmploymentTypeAsync,
   getSubjectAsync,
   getClassMasterAsync,
+  saveSubjectAsync,
 
   //class
   getClassListAsync,

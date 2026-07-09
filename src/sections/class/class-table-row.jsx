@@ -16,6 +16,7 @@ import { Iconify } from 'src/components/iconify';
 import dateHelper from 'src/utils/dateHelper';
 import utils from 'src/utils/utils';
 import { ClassDialog } from './class-dialog';
+import { fNumber } from 'src/utils/format-number';
 
 
 export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
@@ -92,7 +93,7 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
-                {row.annualFee || '-'}
+                {fNumber(row.annualFee) || '-'}
               </Box>
             </Stack>
           </Box>

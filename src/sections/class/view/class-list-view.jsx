@@ -8,7 +8,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
+  TableRow,
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
 import { useCallback, useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ import { TableToolbar } from 'src/sections/table-toolbar';
 import ApiService from 'src/services/ApiService';
 import { ClassDialog } from '../class-dialog';
 import { ClassTableRow } from '../class-table-row';
-
+import { SubjectDialog } from '../subject-dialog';
 
 const FILTEREDTABLEHEAD = [
   { id: 'className', label: 'Class Name' },
@@ -51,6 +51,7 @@ export function ClassListView() {
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openSubjectDialog, setOpenSubjectDialog] = useState(false);
 
   const filters = useSetState({
     search: '',
@@ -92,6 +93,10 @@ export function ClassListView() {
     setOpenDialog(true);
   };
 
+  const OpenSubjectDialog = () => {
+    setOpenSubjectDialog(true);
+  };
+
   const toggleOpenDialog = () => setOpenDialog(!openDialog);
 
   const handleRefresh = () => {
@@ -124,15 +129,27 @@ export function ClassListView() {
           { name: 'Class', href: paths.dashboard.class.list },
         ]}
         action={
-          <Button
-            component={RouterLink}
-            variant="contained"
-            color="primary"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-            onClick={OpenDialog}
-          >
-            New Class
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              type="button"
+              color="primary"
+              variant="outlined"
+              aria-haspopup="true"
+              sx={{ whiteSpace: 'nowrap' }}
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              onClick={OpenSubjectDialog}
+            >
+              Add Subject
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<Iconify icon="mingcute:add-line" />}
+              onClick={OpenDialog}
+            >
+              New Class
+            </Button>
+          </Stack>
         }
         sx={{ mb: 2 }}
       />
@@ -213,9 +230,16 @@ export function ClassListView() {
           </Box>
         </TableContainer>
       </Card>
+
       <ClassDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
+        onSuccess={handleRefresh}
+      />
+
+      <SubjectDialog
+        open={openSubjectDialog}
+        onClose={() => setOpenSubjectDialog(false)}
         onSuccess={handleRefresh}
       />
     </DashboardContent>
