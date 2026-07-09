@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
+  Chip,
   IconButton,
   Stack,
   TableCell,
@@ -17,7 +18,7 @@ import utils from 'src/utils/utils';
 import { ClassDialog } from './class-dialog';
 
 
-export function ClassTableRow({ row, selected, onDeleteRow, handleRefresh }) {
+export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
   const confirmDialog = useBoolean();
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -67,8 +68,22 @@ export function ClassTableRow({ row, selected, onDeleteRow, handleRefresh }) {
         <TableCell>
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
-              <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
-                {row.annualFee}
+              <Box component="span" sx={{
+                color: 'inherit', typography: 'body2', display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1,
+              }}>
+                {row.sections?.length > 0 ? (
+                  row.sections.map((section) => (
+                    <Chip
+                      key={section}
+                      label={section}
+                      size="small"
+                      variant="soft"
+                    />
+                  ))) : (
+                  '-'
+                )}
               </Box>
             </Stack>
           </Box>
@@ -77,10 +92,7 @@ export function ClassTableRow({ row, selected, onDeleteRow, handleRefresh }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
-                {row.updatedBy ?? ''}
-              </Box>
-              <Box component="span" sx={{ color: 'text.disabled' }}>
-                {dateHelper.formatDateTime(row.updatedDate)}
+                {row.annualFee || '-'}
               </Box>
             </Stack>
           </Box>
@@ -103,9 +115,9 @@ export function ClassTableRow({ row, selected, onDeleteRow, handleRefresh }) {
       </TableRow>
       <ClassDialog
         open={Boolean(editId)}
-        onClose={() => setEditId(null)}
         id={editId}
-        onSuccess={handleRefresh}
+        onClose={() => setEditId(null)}
+        onSuccess={onSuccess}
       />
       {renderConfirmDialog()}
     </>

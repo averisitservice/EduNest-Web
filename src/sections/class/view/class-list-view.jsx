@@ -11,7 +11,7 @@ import {
   TableRow
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { Iconify } from 'src/components/iconify';
 import { toast } from 'src/components/snackbar';
@@ -31,14 +31,14 @@ import { paths } from 'src/routes/paths';
 
 import { TableToolbar } from 'src/sections/table-toolbar';
 import ApiService from 'src/services/ApiService';
-import { ClassTableRow } from '../class-table-row';
 import { ClassDialog } from '../class-dialog';
+import { ClassTableRow } from '../class-table-row';
 
 
 const FILTEREDTABLEHEAD = [
   { id: 'className', label: 'Class Name' },
+  { id: 'sections', label: 'Sections' },
   { id: 'annualFee', label: 'Annual Fee' },
-  { id: 'updatedDate', label: 'Last Updated' },
 ];
 
 const TABLEHEAD = [
@@ -184,13 +184,7 @@ export function ClassListView() {
                     notFound={dataFiltered.length === 0}
                     label="No Class Found."
                   />
-
                   {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage +
-                      table.rowsPerPage
-                    )
                     .map((row) => (
                       <ClassTableRow
                         key={row.classId}
@@ -218,22 +212,10 @@ export function ClassListView() {
             </Table>
           </Box>
         </TableContainer>
-
-        <TablePaginationCustom
-          page={table.page}
-          dense={table.dense}
-          count={dataFiltered.length}
-          rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={
-            table.onChangeRowsPerPage
-          }
-          onChangeDense={table.onChangeDense}
-        />
       </Card>
       <ClassDialog
         open={openDialog}
-        onClose={toggleOpenDialog}
+        onClose={() => setOpenDialog(false)}
         onSuccess={handleRefresh}
       />
     </DashboardContent>
