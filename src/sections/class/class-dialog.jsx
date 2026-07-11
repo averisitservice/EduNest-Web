@@ -24,7 +24,7 @@ import ApiService from 'src/services/ApiService';
 const ClassSchema = zod.object({
   className: zod.string().trim().min(1, { message: 'Class Name is required.', }),
   annualFee: zod.coerce.number().nullable().optional(),
-  sections: zod.string().trim().min(1, { message: 'Sections are required.', }),
+  sections: zod.string().trim().optional(),
   subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.', }),
 });
 
@@ -73,7 +73,6 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
     setIsLoadingData(true);
     try {
       const { data } = await ApiService.getClassDataByIdAsync(id);
-      console.log(data);
 
       if (data) {
         reset({
@@ -103,8 +102,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
         .filter(Boolean),
       subjectIds: values.subjectIds,
       ...(id && { classId: Number(id) }),
-    };
-
+    };    
     const response = await ApiService.saveClassAsync(payload);
 
     if (response.data) {

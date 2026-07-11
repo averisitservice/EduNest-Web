@@ -50,7 +50,6 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
       subjectName: values.subjectName,
       subjectCode: values.subjectCode,
     };
-    console.log(payload);
     
     const response = await ApiService.saveSubjectAsync(payload);
 

@@ -38,6 +38,7 @@ const TeacherSchema = zod.object({
   postalCode: zod.string().optional(),
   teacherClasses: zod.array(zod.object({
     classId: zod.number(),
+    sectionId: zod.number().nullable().optional(),
   })).optional(),
   teacherSubjects: zod.array(zod.object({
     subjectId: zod.number(),
@@ -81,10 +82,7 @@ export function TeacherSaveForm() {
   const methods = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(id ? TeacherSchema : TeacherAddSchema),
-    defaultValues: async () => {
-      const data = await getTeacherDataById();
-      return data;
-    },
+    defaultValues,
   });
 
   const {
@@ -98,39 +96,42 @@ export function TeacherSaveForm() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [roles, employmentType, subject, classMaster] = await Promise.all([
+      const [rolesRes, employmentRes, subjectRes, classRes] = await Promise.all([
         apiService.getRolesAsync(),
         apiService.getEmploymentTypeAsync(),
         apiService.getSubjectAsync(),
-        apiService.getClassMasterAsync(),
+        apiService.getAllClassMasterSectionsAsync(),
       ]);
-      setRoles(roles.data);
-      setEmploymentTypes(employmentType.data);
-      setSubjects(subject.data);
-      setClassMasters(classMaster.data);
-    }
-    fetchData();
-  }, [])
 
-  const getTeacherDataById = async () => {
-    if (id) {
-      const { data } = await apiService.getTeacherDataByIdAsync(id);
-      return {
-        ...data,
-        qualification: data.qualification
-          ? data.qualification.split(',')
-          : [],
-        teacherSubjects: subjects.filter((s) =>
-          data.teacherSubjects.some((ts) => ts.subjectId === s.subjectId)
-        ),
-        teacherClasses: classMasters.filter((c) =>
-          data.teacherClasses.some((tc) => tc.classId === c.classId)
-        ),
-      };
-    } else {
-      return defaultValues;
-    }
-  };
+      setRoles(rolesRes.data);
+      setEmploymentTypes(employmentRes.data);
+      setSubjects(subjectRes.data);
+      setClassMasters(classRes.data);
+
+      if (id) {
+        const { data } = await apiService.getTeacherDataByIdAsync(id);
+
+        methods.reset({
+          ...data,
+          qualification: data.qualification
+            ? data.qualification.split(',')
+            : [],
+          teacherSubjects: subjectRes.data.filter((s) =>
+            data.teacherSubjects.some((ts) => ts.subjectId === s.subjectId)
+          ),
+          teacherClasses: classRes.data.filter((c) =>
+            data.teacherClasses.some(
+              (tc) =>
+                tc.classId === c.classId &&
+                (tc.sectionId ?? null) === (c.sectionId ?? null)
+            )
+          ),
+        });
+      }
+    };
+
+    fetchData();
+  }, [id, methods]);
 
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
@@ -138,6 +139,7 @@ export function TeacherSaveForm() {
       qualification: (values.qualification || []).join(','),
       teacherClasses: values.teacherClasses.map((tc) => ({
         classId: tc.classId,
+        sectionId: tc.sectionId ?? null,
       })),
       teacherSubjects: values.teacherSubjects.map((ts) => ({
         subjectId: ts.subjectId,
@@ -328,28 +330,47 @@ export function TeacherSaveForm() {
                             fullWidth
                             multiple
                             disableCloseOnSelect
-                            value={field.value || []}
                             options={classMasters}
-                            getOptionLabel={(option) => option.className}
+                            value={field.value || []}
                             onChange={(event, newValue) => field.onChange(newValue)}
-                            isOptionEqualToValue={(option, value) => option.classId === value.classId}
+                            getOptionLabel={(option) =>
+                              option.sectionName
+                                ? `${option.className} - ${option.sectionName}`
+                                : option.className
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option.classId === value.classId &&
+                              option.sectionId === value.sectionId
+                            }
                             renderInput={(params) => (
                               <TextField
                                 {...params}
                                 label="Classes"
                                 placeholder="Classes"
                                 error={!!errors.teacherClasses}
-                                helperText={errors.teacherClasses ? errors.teacherClasses.message : ''}
+                                helperText={errors.teacherClasses?.message}
                               />
                             )}
                             renderOption={(props, option) => {
                               const isSelected = (field.value || []).some(
-                                (selected) => selected.classId === option.classId
+                                (selected) =>
+                                  selected.classId === option.classId &&
+                                  selected.sectionId === option.sectionId
                               );
+
                               return (
-                                <li {...props} key={option.classId}>
-                                  <Checkbox size="small" disableRipple checked={isSelected} />
-                                  {option.className}
+                                <li
+                                  {...props}
+                                  key={`${option.classId}-${option.sectionId ?? "null"}`}
+                                >
+                                  <Checkbox
+                                    size="small"
+                                    disableRipple
+                                    checked={isSelected}
+                                  />
+                                  {option.sectionName
+                                    ? `${option.className} - ${option.sectionName}`
+                                    : option.className}
                                 </li>
                               );
                             }}
@@ -357,8 +378,12 @@ export function TeacherSaveForm() {
                               (selected || []).map((option, index) => (
                                 <Chip
                                   {...getTagProps({ index })}
-                                  key={option.classId}
-                                  label={option.className}
+                                  key={`${option.classId}-${option.sectionId ?? "null"}`}
+                                  label={
+                                    option.sectionName
+                                      ? `${option.className} - ${option.sectionName}`
+                                      : option.className
+                                  }
                                   size="small"
                                   variant="soft"
                                 />

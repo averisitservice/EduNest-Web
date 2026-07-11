@@ -60,6 +60,14 @@ async function saveSubjectAsync(payload) {
   return await axios(config);
 }
 
+async function getAllClassMasterSectionsAsync() {
+  const config = {
+    method: 'get',
+    url: `/lookup/classSection`,
+  };
+  return await axios(config);
+}
+
 //class
 async function getClassListAsync() {
   const config = {
@@ -139,6 +147,7 @@ export default {
   getSubjectAsync,
   getClassMasterAsync,
   saveSubjectAsync,
+  getAllClassMasterSectionsAsync,
 
   //class
   getClassListAsync,
