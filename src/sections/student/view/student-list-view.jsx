@@ -92,7 +92,9 @@ export function StudentListView() {
         return (
           fullName.toLowerCase().includes(lower) ||
           (student.email && student.email.toLowerCase().includes(lower)) ||
-          (student.rollNo && student.rollNo.toLowerCase().includes(lower))
+          (student.rollNo && student.rollNo.toLowerCase().includes(lower)) ||
+          (student.fatherName && student.fatherName.toLowerCase().includes(lower)) ||
+          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower))
         );
       });
     }
@@ -143,7 +145,7 @@ export function StudentListView() {
         <TableToolbar
           filters={filters}
           onFilterChange={handleFilterChange}
-          placeholder={'Search By Name or Roll No'}
+          placeholder={'Search By Name or Roll No or Parent'}
         />
         <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
           <Box sx={{ position: 'relative' }}>
