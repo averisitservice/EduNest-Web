@@ -1,13 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Box,
-  Chip,
-  IconButton,
-  Stack,
-  TableCell,
-  TableRow,
-  Tooltip
-} from '@mui/material';
+import { Box, Chip, IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -15,9 +7,9 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { Iconify } from 'src/components/iconify';
 import dateHelper from 'src/utils/dateHelper';
 import utils from 'src/utils/utils';
-import { ClassDialog } from './class-dialog';
 import { fNumber } from 'src/utils/format-number';
 
+import { ClassDialog } from './class-dialog';
 
 export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
   const confirmDialog = useBoolean();
@@ -35,21 +27,22 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
       open={confirmDialog.value}
       onClose={confirmDialog.onFalse}
       title="Delete Teacher"
-      content={
-        <>
-          Are you sure want to delete {row.className}?
-        </>
-      }
+      content={<>Are you sure want to delete {row.className}?</>}
       action={
-        <LoadingButton variant="contained" color="error" loading={loading}
+        <LoadingButton
+          variant="contained"
+          color="error"
+          loading={loading}
           onClick={() => {
             utils.handleConfirmDelete({
-              setLoading, onDeleteRow, confirmDialog
+              setLoading,
+              onDeleteRow,
+              confirmDialog,
             });
           }}
         >
           Delete
-        </LoadingButton >
+        </LoadingButton>
       }
     />
   );
@@ -69,22 +62,21 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
         <TableCell>
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
-              <Box component="span" sx={{
-                color: 'inherit', typography: 'body2', display: 'flex',
-                flexWrap: 'wrap',
-                gap: 1,
-              }}>
-                {row.sections?.length > 0 ? (
-                  row.sections.map((section) => (
-                    <Chip
-                      key={section}
-                      label={section}
-                      size="small"
-                      variant="soft"
-                    />
-                  ))) : (
-                  '-'
-                )}
+              <Box
+                component="span"
+                sx={{
+                  color: 'inherit',
+                  typography: 'body2',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 1,
+                }}
+              >
+                {row.sections?.length > 0
+                  ? row.sections.map((section) => (
+                      <Chip key={section} label={section} size="small" variant="soft" />
+                    ))
+                  : '-'}
               </Box>
             </Stack>
           </Box>
@@ -99,7 +91,6 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
           </Box>
         </TableCell>
         <TableCell>
-
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
             <Tooltip title="Edit" placement="top" arrow>
               <IconButton onClick={() => setEditId(row.classId)} color="primary">

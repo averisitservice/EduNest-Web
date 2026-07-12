@@ -16,16 +16,15 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-
 import { Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
 import ApiService from 'src/services/ApiService';
 
 const ClassSchema = zod.object({
-  className: zod.string().trim().min(1, { message: 'Class Name is required.', }),
+  className: zod.string().trim().min(1, { message: 'Class Name is required.' }),
   annualFee: zod.coerce.number().nullable().optional(),
   sections: zod.string().trim().optional(),
-  subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.', }),
+  subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.' }),
 });
 
 const defaultValues = {
@@ -93,16 +92,14 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
     const payload = {
       className: values.className,
       annualFee:
-        values.annualFee === '' || values.annualFee == null
-          ? null
-          : Number(values.annualFee),
+        values.annualFee === '' || values.annualFee == null ? null : Number(values.annualFee),
       sections: values.sections
         .split(',')
         .map((x) => x.trim())
         .filter(Boolean),
       subjectIds: values.subjectIds,
       ...(id && { classId: Number(id) }),
-    };    
+    };
     const response = await ApiService.saveClassAsync(payload);
 
     if (response.data) {
@@ -122,15 +119,8 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogTitle>
-        {id ? 'Edit Class' : 'New Class'}
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>{id ? 'Edit Class' : 'New Class'}</DialogTitle>
 
       {isLoadingData ? (
         <DialogContent
@@ -146,25 +136,11 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
         <FormProvider {...methods}>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>
-              <Field.Text
-                name="className"
-                label="Class Name"
-                fullWidth
-              />
+              <Field.Text name="className" label="Class Name" fullWidth />
 
-              <Field.Text
-                name="annualFee"
-                label="Annual Fee"
-                type="number"
-                fullWidth
-              />
+              <Field.Text name="annualFee" label="Annual Fee" type="number" fullWidth />
 
-              <Field.Text
-                name="sections"
-                label="Sections"
-                placeholder="A, B, C"
-                fullWidth
-              />
+              <Field.Text name="sections" label="Sections" placeholder="A, B, C" fullWidth />
 
               <Controller
                 name="subjectIds"
@@ -176,15 +152,11 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
                     multiple
                     disableCloseOnSelect
                     options={subjects}
-                    value={
-                      subjects.filter((subject) =>
-                        (field.value || []).includes(subject.subjectId)
-                      )
-                    }
+                    value={subjects.filter((subject) =>
+                      (field.value || []).includes(subject.subjectId)
+                    )}
                     getOptionLabel={(option) => option.subjectName}
-                    isOptionEqualToValue={(option, value) =>
-                      option.subjectId === value.subjectId
-                    }
+                    isOptionEqualToValue={(option, value) => option.subjectId === value.subjectId}
                     onChange={(event, newValue) => {
                       field.onChange(newValue.map((item) => item.subjectId));
                     }}
@@ -202,11 +174,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
 
                       return (
                         <li {...props} key={option.subjectId}>
-                          <Checkbox
-                            size="small"
-                            disableRipple
-                            checked={isSelected}
-                          />
+                          <Checkbox size="small" disableRipple checked={isSelected} />
                           {option.subjectName}
                         </li>
                       );
@@ -237,11 +205,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
             >
               Save
             </LoadingButton>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={onClose}
-            >
+            <Button variant="outlined" color="error" onClick={onClose}>
               Cancel
             </Button>
           </DialogActions>

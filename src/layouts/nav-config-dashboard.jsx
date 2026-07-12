@@ -31,6 +31,7 @@ const ICONS = {
   stage: icon('ic-calender'),
   analytics: icon('ic-analytics'),
   supplier: icon('ic-supplier'),
+  student: icon('ic-course'),
 };
 
 // ----------------------------------------------------------------------
@@ -48,7 +49,12 @@ export const navData = [
         title: 'Teachers',
         path: paths.dashboard.teacher.root,
         icon: ICONS.teacher,
-      }
+      },
+      {
+        title: 'Students',
+        path: paths.dashboard.student.root,
+        icon: ICONS.student,
+      },
     ],
   },
 ];

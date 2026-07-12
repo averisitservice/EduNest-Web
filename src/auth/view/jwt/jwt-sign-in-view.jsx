@@ -12,15 +12,16 @@ import { Iconify } from 'src/components/iconify';
 import apiService from 'src/services/ApiService';
 import { login, setTenantDetail } from 'src/store/reducers/authReducer';
 import { z as zod } from 'zod';
-import { FormHead } from '../../components/form-head';
 import utils from 'src/utils/utils';
+
+import { FormHead } from '../../components/form-head';
 
 export const SignInSchema = zod.object({
   email: zod.string().min(1, { message: 'Email is required.' }).email(),
   password: zod
     .string()
     .min(1, { message: 'Password is required.' })
-    .min(8, { message: 'Password must be at least 8 characters.' })
+    .min(8, { message: 'Password must be at least 8 characters.' }),
 });
 
 export function JwtSignInView() {
@@ -66,7 +67,7 @@ export function JwtSignInView() {
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-      <Field.Text name="email" label="Email" maxLength={100} type='email' />
+      <Field.Text name="email" label="Email" maxLength={100} type="email" />
       <Field.Text
         name="password"
         label="Password"
@@ -99,15 +100,12 @@ export function JwtSignInView() {
       <Typography variant="subtitle2" sx={{ color: 'text.secondary' }} align="center">
         Version {webAppVersion}
       </Typography>
-    </Box >
+    </Box>
   );
 
   return (
     <>
-      <FormHead
-        title="Sign in to your account"
-        sx={{ textAlign: { xs: 'center', md: 'left' } }}
-      />
+      <FormHead title="Sign in to your account" sx={{ textAlign: { xs: 'center', md: 'left' } }} />
 
       {!!errorMessage && (
         <Alert severity="error" sx={{ mb: 3 }}>

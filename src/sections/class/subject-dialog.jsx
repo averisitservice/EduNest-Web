@@ -12,7 +12,6 @@ import {
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-
 import { Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
 import ApiService from 'src/services/ApiService';
@@ -50,7 +49,7 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
       subjectName: values.subjectName,
       subjectCode: values.subjectCode,
     };
-    
+
     const response = await ApiService.saveSubjectAsync(payload);
 
     if (response.data) {
@@ -70,15 +69,8 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
   });
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogTitle>
-        {id ? 'Edit Subject' : 'Add Subject'}
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>{id ? 'Edit Subject' : 'Add Subject'}</DialogTitle>
 
       {isLoadingData ? (
         <DialogContent
@@ -94,17 +86,9 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
         <FormProvider {...methods}>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>
-              <Field.Text
-                name="subjectName"
-                label="Subject Name"
-                fullWidth
-              />
+              <Field.Text name="subjectName" label="Subject Name" fullWidth />
 
-              <Field.Text
-                name="subjectCode"
-                label="Subject Code"
-                fullWidth
-              />
+              <Field.Text name="subjectCode" label="Subject Code" fullWidth />
             </Stack>
           </DialogContent>
 
@@ -117,11 +101,7 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
             >
               Save
             </LoadingButton>
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={onClose}
-            >
+            <Button variant="outlined" color="error" onClick={onClose}>
               Cancel
             </Button>
           </DialogActions>

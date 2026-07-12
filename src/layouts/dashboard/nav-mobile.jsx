@@ -43,7 +43,12 @@ export function NavMobile({ data, currentRole, open, onClose, slots, sx, classNa
       )}
 
       <Scrollbar fillContent>
-        <NavSectionVertical data={data} currentRole={currentRole} sx={{ px: 2, flex: '1 1 auto' }} {...other} />
+        <NavSectionVertical
+          data={data}
+          currentRole={currentRole}
+          sx={{ px: 2, flex: '1 1 auto' }}
+          {...other}
+        />
       </Scrollbar>
 
       {slots?.bottomArea}

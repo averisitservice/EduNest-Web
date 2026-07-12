@@ -1,11 +1,9 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import SvgIcon from '@mui/material/SvgIcon';
 import { paths } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 
 export const _account = (loggedInTeacher) => {
-
   return [
     {
       label: 'Profile',

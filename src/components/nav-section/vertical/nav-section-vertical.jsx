@@ -2,13 +2,13 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { mergeClasses } from 'minimal-shared/utils';
 import Collapse from '@mui/material/Collapse';
 import { useTheme } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import enums from 'src/utils/enums';
 
 import { Nav, NavUl, NavLi, NavSubheader } from '../components';
 import { navSectionClasses, navSectionCssVars } from '../styles';
 
 import { NavList } from './nav-list';
-import { useSelector } from 'react-redux';
-import enums from 'src/utils/enums';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +53,15 @@ export function NavSectionVertical({
 
 // ----------------------------------------------------------------------
 
-function Group({ items, render, subheader, slotProps, currentRole, enabledRootRedirect, loggedInTeacher }) {
+function Group({
+  items,
+  render,
+  subheader,
+  slotProps,
+  currentRole,
+  enabledRootRedirect,
+  loggedInTeacher,
+}) {
   const groupOpen = useBoolean(true);
 
   const renderContent = () => (

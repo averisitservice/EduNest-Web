@@ -6,6 +6,7 @@ import { merge } from 'es-toolkit';
 import { useBoolean } from 'minimal-shared/hooks';
 import { Logo } from 'src/components/logo';
 import { useSettingsContext } from 'src/components/settings';
+import { useSelector } from 'react-redux';
 
 import { AccountDrawer } from '../components/account-drawer';
 import { MenuButton } from '../components/menu-button';
@@ -18,13 +19,11 @@ import { MainSection } from '../core/main-section';
 import { _account } from '../nav-config-account';
 import { navData as dashboardNavData } from '../nav-config-dashboard';
 
-import { useSelector } from 'react-redux';
 import { VerticalDivider } from './content';
 import { dashboardLayoutVars, dashboardNavColorVars } from './css-vars';
 import { NavHorizontal } from './nav-horizontal';
 import { NavMobile } from './nav-mobile';
 import { NavVertical } from './nav-vertical';
-
 
 export function DashboardLayout({ sx, cssVars, children, slotProps, layoutQuery = 'lg' }) {
   const theme = useTheme();
@@ -67,32 +66,35 @@ export function DashboardLayout({ sx, cssVars, children, slotProps, layoutQuery 
         <NavHorizontal data={navData} layoutQuery={layoutQuery} cssVars={navVars.section} />
       ) : null,
       leftArea: (
+        <>
+          {/** @slot Nav mobile */}
+          <MenuButton
+            onClick={onOpen}
+            sx={{ mr: 1, ml: -1, [theme.breakpoints.up(layoutQuery)]: { display: 'none' } }}
+          />
+          <NavMobile
+            data={navData}
+            open={open}
+            currentRole={loggedInTeacher?.roleId}
+            onClose={onClose}
+            cssVars={navVars.section}
+          />
 
-
-       
-          <>
-            {/** @slot Nav mobile */}
-            <MenuButton
-              onClick={onOpen}
-              sx={{ mr: 1, ml: -1, [theme.breakpoints.up(layoutQuery)]: { display: 'none' } }}
+          {/** @slot Logo */}
+          {isNavHorizontal && (
+            <Logo
+              sx={{
+                display: 'none',
+                [theme.breakpoints.up(layoutQuery)]: { display: 'inline-flex' },
+              }}
             />
-            <NavMobile data={navData} open={open} currentRole={loggedInTeacher?.roleId} onClose={onClose} cssVars={navVars.section} />
+          )}
 
-            {/** @slot Logo */}
-            {isNavHorizontal && (
-              <Logo
-                sx={{
-                  display: 'none',
-                  [theme.breakpoints.up(layoutQuery)]: { display: 'inline-flex' },
-                }}
-              />
-            )}
-
-            {/** @slot Divider */}
-            {isNavHorizontal && (
-              <VerticalDivider sx={{ [theme.breakpoints.up(layoutQuery)]: { display: 'flex' } }} />
-            )}
-          </>
+          {/** @slot Divider */}
+          {isNavHorizontal && (
+            <VerticalDivider sx={{ [theme.breakpoints.up(layoutQuery)]: { display: 'flex' } }} />
+          )}
+        </>
       ),
       rightArea: (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 0.75 } }}>

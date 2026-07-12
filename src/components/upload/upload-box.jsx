@@ -3,13 +3,22 @@ import { mergeClasses, varAlpha } from 'minimal-shared/utils';
 import { useDropzone } from 'react-dropzone';
 
 import { Iconify } from '../iconify';
-
 import { HelperText } from '../hook-form/help-text';
+
 import { uploadClasses } from './classes';
 
 // ----------------------------------------------------------------------
 
-export function UploadBox({ placeholder, helperText, error, disabled, className, isLoading, sx, ...other }) {
+export function UploadBox({
+  placeholder,
+  helperText,
+  error,
+  disabled,
+  className,
+  isLoading,
+  sx,
+  ...other
+}) {
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     disabled,
     accept: {
@@ -56,13 +65,15 @@ export function UploadBox({ placeholder, helperText, error, disabled, className,
       >
         <input {...getInputProps()} />
 
-        {placeholder || <Iconify icon={isLoading ? "codex:loader" : "eva:cloud-upload-fill"} width={28} />}
+        {placeholder || (
+          <Iconify icon={isLoading ? 'codex:loader' : 'eva:cloud-upload-fill'} width={28} />
+        )}
       </Box>
       {helperText ? helperText : null}
 
-      {hasError
-        ? <HelperText errorMessage="This File can not be uploaded." color={"warning"} mt={-8} />
-        : null}
+      {hasError ? (
+        <HelperText errorMessage="This File can not be uploaded." color={'warning'} mt={-8} />
+      ) : null}
     </>
   );
 }

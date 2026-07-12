@@ -1,8 +1,8 @@
 import { mergeClasses, varAlpha } from 'minimal-shared/utils';
-
 import { styled } from '@mui/material/styles';
 
 import { carouselClasses } from '../classes';
+
 import { ArrowButton } from './arrow-button';
 
 // ----------------------------------------------------------------------

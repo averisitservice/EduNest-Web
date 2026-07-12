@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 // ----------------------------------------------------------------------
 export function MainLayout({ children, isGuestRoute }) {
-
   const theme = useTheme();
   return (
     <Box

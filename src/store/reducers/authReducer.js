@@ -24,7 +24,7 @@ const AuthReducer = createSlice({
       state.refreshToken = token.refresh;
       state.isLoggedIn = true;
       utils.setTokensToStorage(token);
-      localStorage.setItem("Teacher", JSON.stringify(teacher));
+      localStorage.setItem('Teacher', JSON.stringify(teacher));
     },
 
     setTokens(state, action) {
@@ -59,10 +59,10 @@ const AuthReducer = createSlice({
       state.sessionToken = null;
       state.loggedInTeacher = null;
       state.tenantDetail = {};
-      utils.removeItem("tenant");
-      utils.removeItem("Tokens");
-      localStorage.removeItem("Teacher");
-    }
+      utils.removeItem('tenant');
+      utils.removeItem('Tokens');
+      localStorage.removeItem('Teacher');
+    },
   },
 });
 

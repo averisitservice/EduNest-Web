@@ -2,7 +2,7 @@ export const ROOTS = {
   AUTH: '/auth',
   DASHBOARD: '/dashboard',
   USER: '/user',
-  PAYMENT: '/payment'
+  PAYMENT: '/payment',
 };
 
 export const paths = {
@@ -32,7 +32,13 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/teacher`,
       list: `${ROOTS.DASHBOARD}/teacher/list`,
       new: `${ROOTS.DASHBOARD}/teacher/new`,
-      edit: (id) => `${ROOTS.DASHBOARD}/teacher/edit/${id}`
+      edit: (id) => `${ROOTS.DASHBOARD}/teacher/edit/${id}`,
+    },
+    student: {
+      root: `${ROOTS.DASHBOARD}/student`,
+      list: `${ROOTS.DASHBOARD}/student/list`,
+      new: `${ROOTS.DASHBOARD}/student/new`,
+      edit: (id) => `${ROOTS.DASHBOARD}/student/edit/${id}`,
     },
     profile: {
       edit: (id) => `${ROOTS.DASHBOARD}/profile/edit/${id}`,

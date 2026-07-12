@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { usePathname, useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+
 import { RoleBasedGuard } from '.';
 
 const signInPaths = { jwt: paths.auth.signIn };

@@ -1,16 +1,14 @@
 import _, { isNil, last, replace, trim } from 'lodash';
 import { timezones } from 'src/assets/data/timezones.js';
 import { z as zod } from 'zod';
+
 import constants from './constants.js';
 import enums from './enums.js';
 
 const formatAddress = (a) => {
-  return [
-    a.addressLine1,
-    a.addressLine2,
-    a.city,
-    `${a.state} - ${a.postcode}`
-  ].filter(Boolean).join(", ");
+  return [a.addressLine1, a.addressLine2, a.city, `${a.state} - ${a.postcode}`]
+    .filter(Boolean)
+    .join(', ');
 };
 
 const removeItemsFromArray = (array, valuesToRemove) => {
@@ -153,7 +151,6 @@ async function isNotificationAllowed() {
   return !['denied', 'prompt'].includes(permission.state);
 }
 
-
 async function uploadPictureToS3(preSignedUrl, file) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -179,7 +176,7 @@ const getTimezoneLabel = (value) => {
 };
 
 function formatNumber(number) {
-  let formattedNumber = 0.00;
+  let formattedNumber = 0.0;
   if (number) {
     formattedNumber = new Intl.NumberFormat('en-AU').format(number);
   }
@@ -235,9 +232,7 @@ const getDurationName = (durationValue) => {
 const getApiModeConfig = () => {
   const apiUrl = import.meta.env.VITE_SERVER_URL;
   if (typeof apiUrl === 'undefined' || apiUrl === '') {
-    console.error(
-      'VITE_SERVER_URL is not defined. Using default configuration.'
-    );
+    console.error('VITE_SERVER_URL is not defined. Using default configuration.');
     return {
       apiMode: 'Unknown',
       liveMode: false,
@@ -272,26 +267,26 @@ const createPdfUrlFromBase64 = (base64Data) => {
   const byteArray = new Uint8Array(byteNumbers);
 
   // Create a Blob object with the specified PDF MIME type
-  const pdfBlob = new Blob([byteArray], { type: "application/pdf" });
+  const pdfBlob = new Blob([byteArray], { type: 'application/pdf' });
 
   // Generate an object URL for the Blob
   const url = URL.createObjectURL(pdfBlob);
 
   return url;
-}
+};
 
 const calculatePercentageValue = (price = 0, percent = 0) => {
-  const total = (price * percent / 100);
+  const total = (price * percent) / 100;
   return Number(total.toFixed(2));
-}
+};
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(amount);
 };
 
 function getFileExtension(filename) {
-  return filename.split('.').pop()
-};
+  return filename.split('.').pop();
+}
 
 const handleConfirmDelete = async ({ setLoading, onDeleteRow, confirmDialog }) => {
   setLoading(true);
@@ -303,10 +298,8 @@ const handleConfirmDelete = async ({ setLoading, onDeleteRow, confirmDialog }) =
 const numericSchema = (requiredMessage) =>
   zod.preprocess(
     (val) => (_.isNil(val) || val === '' ? undefined : Number(val)),
-    zod.number({ required_error: requiredMessage })
-      .min(1, { message: requiredMessage })
+    zod.number({ required_error: requiredMessage }).min(1, { message: requiredMessage })
   );
-
 
 export default {
   removeItemsFromArray,

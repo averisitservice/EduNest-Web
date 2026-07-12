@@ -28,9 +28,9 @@ import {
 import { DashboardContent } from 'src/layouts/dashboard';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-
 import { TableToolbar } from 'src/sections/table-toolbar';
 import ApiService from 'src/services/ApiService';
+
 import { ClassDialog } from '../class-dialog';
 import { ClassTableRow } from '../class-table-row';
 import { SubjectDialog } from '../subject-dialog';
@@ -59,11 +59,7 @@ export function ClassListView() {
 
   const { state: currentFilters, setState: updateFilters } = filters;
 
-  const dataInPage = rowInPage(
-    tableData,
-    table.page,
-    table.rowsPerPage
-  );
+  const dataInPage = rowInPage(tableData, table.page, table.rowsPerPage);
 
   useEffect(() => {
     getClassList();
@@ -107,9 +103,7 @@ export function ClassListView() {
     async (classId) => {
       const { data, errors } = await ApiService.deleteClassAsync(classId);
       if (data) {
-        setTableData((prev) =>
-          prev.filter((row) => row.classId !== classId)
-        );
+        setTableData((prev) => prev.filter((row) => row.classId !== classId));
         toast.success('Class deleted successfully.');
         table.onUpdatePageDeleteRow(dataInPage.length);
       } else if (errors) {
@@ -163,10 +157,7 @@ export function ClassListView() {
 
         <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
           <Box sx={{ position: 'relative' }}>
-            <Table
-              stickyHeader
-              size={table.dense ? 'small' : 'medium'}
-            >
+            <Table stickyHeader size={table.dense ? 'small' : 'medium'}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -180,11 +171,7 @@ export function ClassListView() {
                 <TableBody>
                   <TableRow>
                     <TableCell colSpan={TABLEHEAD.length}>
-                      <Stack
-                        alignItems="center"
-                        justifyContent="center"
-                        sx={{ py: 5 }}
-                      >
+                      <Stack alignItems="center" justifyContent="center" sx={{ py: 5 }}>
                         <LinearProgress
                           sx={{
                             width: '50%',
@@ -197,32 +184,20 @@ export function ClassListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData
-                    notFound={dataFiltered.length === 0}
-                    label="No Class Found."
-                  />
-                  {dataFiltered
-                    .map((row) => (
-                      <ClassTableRow
-                        key={row.classId}
-                        row={row}
-                        selected={table.selected.includes(
-                          row.classId
-                        )}
-                        onDeleteRow={() =>
-                          onDeleteRow(row.classId)
-                        }
-                        onSuccess={handleRefresh}
-                      />
-                    ))}
+                  <TableNoData notFound={dataFiltered.length === 0} label="No Class Found." />
+                  {dataFiltered.map((row) => (
+                    <ClassTableRow
+                      key={row.classId}
+                      row={row}
+                      selected={table.selected.includes(row.classId)}
+                      onDeleteRow={() => onDeleteRow(row.classId)}
+                      onSuccess={handleRefresh}
+                    />
+                  ))}
 
                   <TableEmptyRows
                     height={table.dense ? 56 : 76}
-                    emptyRows={emptyRows(
-                      table.page,
-                      table.rowsPerPage,
-                      dataFiltered.length
-                    )}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
                 </TableBody>
               )}
@@ -260,11 +235,7 @@ function applyFilter({ inputData, comparator, filters }) {
   if (search) {
     const lower = search.toLowerCase();
     filteredData = filteredData.filter((item) =>
-      [item.className]
-        .filter(Boolean)
-        .some((value) =>
-          value.toLowerCase().includes(lower)
-        )
+      [item.className].filter(Boolean).some((value) => value.toLowerCase().includes(lower))
     );
   }
   return filteredData;

@@ -4,7 +4,6 @@ import { AuthGuard } from 'src/auth/guard';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
-
 const IndexPage = lazy(() => import('src/pages'));
 
 const ClassListPage = lazy(() => import('src/pages/class/list'));
@@ -14,6 +13,9 @@ const TeacherCreatePage = lazy(() => import('src/pages/teacher/new'));
 const TeacherEditPage = lazy(() => import('src/pages/teacher/edit'));
 const ProfileEditPage = lazy(() => import('src/pages/teacher/profile'));
 
+const StudentListPage = lazy(() => import('src/pages/student/list'));
+const StudentCreatePage = lazy(() => import('src/pages/student/new'));
+const StudentEditPage = lazy(() => import('src/pages/student/edit'));
 
 const dashboardLayout = () => (
   <DashboardLayout>
@@ -56,9 +58,18 @@ export const dashboardRoutes = [
         ],
       },
       {
+        path: 'student',
+        children: [
+          { index: true, element: <StudentListPage /> },
+          { path: 'list', element: <StudentListPage /> },
+          { path: 'new', element: <StudentCreatePage /> },
+          { path: 'edit/:id', element: <StudentEditPage /> },
+        ],
+      },
+      {
         path: 'profile',
         children: [{ path: 'edit/:id', element: <ProfileEditPage /> }],
-      }
+      },
     ],
   },
 ];

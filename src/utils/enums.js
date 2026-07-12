@@ -1,4 +1,3 @@
-
 const enums = {
   snackbar: {
     type: {

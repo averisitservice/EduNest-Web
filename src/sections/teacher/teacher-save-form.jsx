@@ -1,9 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
-  Autocomplete, Box, Button, Card,
-  Checkbox, Chip, IconButton, InputAdornment, MenuItem,
-  Stack, TextField
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Chip,
+  IconButton,
+  InputAdornment,
+  MenuItem,
+  Stack,
+  TextField,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useBoolean } from 'minimal-shared/hooks';
@@ -24,10 +32,15 @@ import { z as zod } from 'zod';
 const TeacherSchema = zod.object({
   firstName: zod.string().min(1, { message: 'First Name is required.' }),
   lastName: zod.string().min(1, { message: 'Last Name is required.' }),
-  email: zod.string().min(1, { message: 'Email is required.' }).email({ message: 'Email must be valid.' }),
+  email: zod
+    .string()
+    .min(1, { message: 'Email is required.' })
+    .email({ message: 'Email must be valid.' }),
   mobileNo: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
-  roleId: zod.coerce.number().refine(val => val > 0, { message: 'Role is required.' }),
-  employmentTypeId: zod.coerce.number().refine(val => val > 0, { message: 'Employment Type is required.' }),
+  roleId: zod.coerce.number().refine((val) => val > 0, { message: 'Role is required.' }),
+  employmentTypeId: zod.coerce
+    .number()
+    .refine((val) => val > 0, { message: 'Employment Type is required.' }),
   gender: zod.string().min(1, { message: 'Gender is required.' }),
   joiningDate: zod.string().min(1, { message: 'Joining Date is required.' }),
   qualification: zod.array(zod.string()).optional(),
@@ -36,17 +49,28 @@ const TeacherSchema = zod.object({
   city: zod.string().optional(),
   state: zod.string().optional(),
   postalCode: zod.string().optional(),
-  teacherClasses: zod.array(zod.object({
-    classId: zod.number(),
-    sectionId: zod.number().nullable().optional(),
-  })).optional(),
-  teacherSubjects: zod.array(zod.object({
-    subjectId: zod.number(),
-  })).optional(),
+  teacherClasses: zod
+    .array(
+      zod.object({
+        classId: zod.number(),
+        sectionId: zod.number().nullable().optional(),
+      })
+    )
+    .optional(),
+  teacherSubjects: zod
+    .array(
+      zod.object({
+        subjectId: zod.number(),
+      })
+    )
+    .optional(),
 });
 
 const TeacherAddSchema = TeacherSchema.extend({
-  password: zod.string().min(1, { message: 'Password is required.' }).min(8, { message: 'Password must be at least 8 characters.' }),
+  password: zod
+    .string()
+    .min(1, { message: 'Password is required.' })
+    .min(8, { message: 'Password must be at least 8 characters.' }),
 });
 
 export function TeacherSaveForm() {
@@ -113,17 +137,13 @@ export function TeacherSaveForm() {
 
         methods.reset({
           ...data,
-          qualification: data.qualification
-            ? data.qualification.split(',')
-            : [],
+          qualification: data.qualification ? data.qualification.split(',') : [],
           teacherSubjects: subjectRes.data.filter((s) =>
             data.teacherSubjects.some((ts) => ts.subjectId === s.subjectId)
           ),
           teacherClasses: classRes.data.filter((c) =>
             data.teacherClasses.some(
-              (tc) =>
-                tc.classId === c.classId &&
-                (tc.sectionId ?? null) === (c.sectionId ?? null)
+              (tc) => tc.classId === c.classId && (tc.sectionId ?? null) === (c.sectionId ?? null)
             )
           ),
         });
@@ -148,7 +168,7 @@ export function TeacherSaveForm() {
     };
     const response = await apiService.saveTeacherAsync(payload);
     if (response.data) {
-      toast.success(id ? "Teacher updated successfully." : "Teacher created successfully.");
+      toast.success(id ? 'Teacher updated successfully.' : 'Teacher created successfully.');
       navigate(-1);
       return;
     }
@@ -195,7 +215,11 @@ export function TeacherSaveForm() {
                                 <InputAdornment position="end">
                                   <IconButton onClick={showPassword.onToggle} edge="end">
                                     <Iconify
-                                      icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
+                                      icon={
+                                        showPassword.value
+                                          ? 'solar:eye-bold'
+                                          : 'solar:eye-closed-bold'
+                                      }
                                     />
                                   </IconButton>
                                 </InputAdornment>
@@ -229,8 +253,18 @@ export function TeacherSaveForm() {
                         <MenuItem value="F">Female</MenuItem>
                         <MenuItem value="O">Other</MenuItem>
                       </Field.Select>
-                      <Field.DatePicker name="dateOfBirth" label="Date of Birth" allowFutureDates={true} allowPastDates={true} />
-                      <Field.DatePicker name="joiningDate" label="Joining Date" allowFutureDates={true} allowPastDates={true} />
+                      <Field.DatePicker
+                        name="dateOfBirth"
+                        label="Date of Birth"
+                        allowFutureDates={true}
+                        allowPastDates={true}
+                      />
+                      <Field.DatePicker
+                        name="joiningDate"
+                        label="Joining Date"
+                        allowFutureDates={true}
+                        allowPastDates={true}
+                      />
                       <Autocomplete
                         multiple
                         freeSolo
@@ -239,9 +273,7 @@ export function TeacherSaveForm() {
                         onChange={(event, newValue) => {
                           setValue('qualification', newValue);
                         }}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Qualification" />
-                        )}
+                        renderInput={(params) => <TextField {...params} label="Qualification" />}
                         renderTags={(selected = [], getTagProps) =>
                           selected.map((option, index) => (
                             <Chip
@@ -286,14 +318,18 @@ export function TeacherSaveForm() {
                             options={subjects}
                             getOptionLabel={(option) => option.subjectName}
                             onChange={(event, newValue) => field.onChange(newValue)}
-                            isOptionEqualToValue={(option, value) => option.subjectId === value.subjectId}
+                            isOptionEqualToValue={(option, value) =>
+                              option.subjectId === value.subjectId
+                            }
                             renderInput={(params) => (
                               <TextField
                                 {...params}
                                 label="Subjects"
                                 placeholder="Subjects"
                                 error={!!errors.teacherSubjects}
-                                helperText={errors.teacherSubjects ? errors.teacherSubjects.message : ''}
+                                helperText={
+                                  errors.teacherSubjects ? errors.teacherSubjects.message : ''
+                                }
                               />
                             )}
                             renderOption={(props, option) => {
@@ -361,13 +397,9 @@ export function TeacherSaveForm() {
                               return (
                                 <li
                                   {...props}
-                                  key={`${option.classId}-${option.sectionId ?? "null"}`}
+                                  key={`${option.classId}-${option.sectionId ?? 'null'}`}
                                 >
-                                  <Checkbox
-                                    size="small"
-                                    disableRipple
-                                    checked={isSelected}
-                                  />
+                                  <Checkbox size="small" disableRipple checked={isSelected} />
                                   {option.sectionName
                                     ? `${option.className} - ${option.sectionName}`
                                     : option.className}
@@ -378,7 +410,7 @@ export function TeacherSaveForm() {
                               (selected || []).map((option, index) => (
                                 <Chip
                                   {...getTagProps({ index })}
-                                  key={`${option.classId}-${option.sectionId ?? "null"}`}
+                                  key={`${option.classId}-${option.sectionId ?? 'null'}`}
                                   label={
                                     option.sectionName
                                       ? `${option.className} - ${option.sectionName}`

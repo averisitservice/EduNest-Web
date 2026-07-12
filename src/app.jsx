@@ -12,8 +12,8 @@ import { LocalizationProvider } from 'src/locales';
 import { I18nProvider } from 'src/locales/i18n-provider';
 import { themeConfig, ThemeProvider } from 'src/theme';
 import utils from 'src/utils/utils';
-
 import { useNavigate } from 'react-router';
+
 import apiService from './services/ApiService';
 import './services/AxiosService';
 import { login, logout, setTenantDetail } from './store/reducers/authReducer';
@@ -39,8 +39,7 @@ export default function App({ children }) {
       //   const user = { ...currentTokenUser, ...data.user };
       //   dispatch(login({ user, token }));
       // }
-    }
-    else {
+    } else {
       dispatch(logout());
     }
   };
@@ -64,7 +63,6 @@ export default function App({ children }) {
       }
     }
   };
-
 
   return (
     <BrowserRouter>

@@ -23,7 +23,7 @@ export function CountryListPopover({
   searchCountry,
   onClickCountry,
   onSearchCountry,
-  disabled = false
+  disabled = false,
 }) {
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
@@ -76,11 +76,12 @@ export function CountryListPopover({
         }}
       />
 
-      {disabled ? null :
+      {disabled ? null : (
         <Iconify
           icon="eva:chevron-down-fill"
           sx={{ ml: 0.25, flexShrink: 0, color: 'text.disabled' }}
-        />}
+        />
+      )}
 
       <Box
         component="span"

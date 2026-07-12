@@ -2,22 +2,22 @@ import { paths } from 'src/routes/paths';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { TeacherSaveForm } from '../teacher-save-form';
+import { StudentSaveForm } from '../student-save-form';
 
-export function TeacherCreateView() {
+export function StudentEditView() {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Create Teacher"
+        heading="Edit Student"
         links={[
-          { name: 'Dashboard', href: paths.dashboard.teacher.root },
-          { name: 'Teacher', href: paths.dashboard.teacher.root },
-          { name: 'New Teacher' },
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'Student', href: paths.dashboard.student.root },
+          { name: 'Edit Student' },
         ]}
         sx={{ mb: { xs: 2, md: 2 } }}
       />
 
-      <TeacherSaveForm />
+      <StudentSaveForm />
     </DashboardContent>
   );
 }

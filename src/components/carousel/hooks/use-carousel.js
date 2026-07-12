@@ -1,6 +1,5 @@
 import useEmblaCarousel from 'embla-carousel-react';
 import { useMemo } from 'react';
-
 import { useTheme } from '@mui/material/styles';
 
 import { useCarouselArrows } from './use-carousel-arrows';

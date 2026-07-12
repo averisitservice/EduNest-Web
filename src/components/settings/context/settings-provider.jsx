@@ -1,15 +1,19 @@
 import { isEqual } from 'es-toolkit';
 import { useLocalStorage } from 'minimal-shared/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { SETTINGS_STORAGE_KEY } from '../settings-config';
 
-import { useSelector } from 'react-redux';
 import { SettingsContext } from './settings-context';
 
 // ----------------------------------------------------------------------
 
-export function SettingsProvider({ children, defaultSettings: baseSettings, storageKey = SETTINGS_STORAGE_KEY }) {
+export function SettingsProvider({
+  children,
+  defaultSettings: baseSettings,
+  storageKey = SETTINGS_STORAGE_KEY,
+}) {
   const { tenantDetail } = useSelector((state) => state.AuthReducer);
   const mergedDefaultSettings = useMemo(() => {
     const tenantPrimary = tenantDetail?.primaryColor;
@@ -21,7 +25,10 @@ export function SettingsProvider({ children, defaultSettings: baseSettings, stor
     };
   }, [baseSettings, tenantDetail?.primaryColor]);
 
-  const { state, setState, resetState, setField } = useLocalStorage(storageKey, mergedDefaultSettings);
+  const { state, setState, resetState, setField } = useLocalStorage(
+    storageKey,
+    mergedDefaultSettings
+  );
 
   useEffect(() => {
     if (tenantDetail?.primaryColor) {

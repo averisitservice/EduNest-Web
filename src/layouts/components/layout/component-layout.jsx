@@ -33,9 +33,7 @@ export function ComponentLayout({
     [queryClassName, scrollToHash]
   );
 
-  const renderPrimaryNav = () => (
-    <PrimaryNav />
-  );
+  const renderPrimaryNav = () => <PrimaryNav />;
 
   const renderSecondaryNav = () =>
     !!sectionData?.length && (

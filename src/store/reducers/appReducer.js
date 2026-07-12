@@ -33,9 +33,5 @@ const AppReducer = createSlice({
 });
 export default AppReducer;
 
-export const {
-  setDefaultPaymentMethod,
-  setPaymentMethod,
-  setLookupData,
-  setIsAppDataInitialized,
-} = AppReducer.actions;
+export const { setDefaultPaymentMethod, setPaymentMethod, setLookupData, setIsAppDataInitialized } =
+  AppReducer.actions;

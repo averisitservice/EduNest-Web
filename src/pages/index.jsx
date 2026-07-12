@@ -6,7 +6,7 @@ import { TeacherListView } from 'src/sections/teacher/view';
 
 const metadata = { title: `Dashboard - ${CONFIG.appName}` };
 
-export default function OverviewAppPage() {  
+export default function OverviewAppPage() {
   return (
     <>
       <Helmet>

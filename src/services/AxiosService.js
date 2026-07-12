@@ -1,13 +1,14 @@
 import axios from 'axios';
 import _, { isNull } from 'lodash';
 import { toast } from 'sonner';
-
 import { jwtDecode } from 'jwt-decode';
+
 import { store } from '../store';
 import { logout, setTokens } from '../store/reducers/authReducer';
 import constants from '../utils/constants.js';
 import enums from '../utils/enums';
 import utils from '../utils/utils';
+
 import apiService from './ApiService';
 
 const { getState, dispatch } = store;
@@ -43,7 +44,7 @@ axios.interceptors.response.use(
     }
     return { data: data.data };
   },
-  async (errors) => {    
+  async (errors) => {
     const originalRequest = errors.config;
 
     if (
@@ -52,7 +53,10 @@ axios.interceptors.response.use(
       errors.status === enums.ApiResult.NotFound
     ) {
       const validationErrors = errors.response.data.errors;
-      return { data: errors.response.data.data ? errors.response.data.data : null, errors: validationErrors };
+      return {
+        data: errors.response.data.data ? errors.response.data.data : null,
+        errors: validationErrors,
+      };
     }
     if (errors.status === enums.ApiResult.Forbidden) {
       const errorMessage = errors.response.data.errors[0];

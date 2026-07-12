@@ -21,7 +21,7 @@ import { SignOutButton } from './sign-out-button';
 
 export function AccountDrawer({ data = [], sx, ...other }) {
   const pathname = usePathname();
-  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);  
+  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
   const renderAvatar = () => (
     <AnimateBorder
@@ -30,7 +30,11 @@ export function AccountDrawer({ data = [], sx, ...other }) {
         primaryBorder: { size: 120, sx: { color: 'primary.main' } },
       }}
     >
-      <Avatar src={loggedInTeacher?.imagePath} alt={loggedInTeacher?.teacherName} sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}>
+      <Avatar
+        src={loggedInTeacher?.imagePath}
+        alt={loggedInTeacher?.teacherName}
+        sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}
+      >
         {loggedInTeacher?.teacherName?.charAt(0).toUpperCase()}
       </Avatar>
     </AnimateBorder>
@@ -133,7 +137,6 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
               {loggedInTeacher?.teacherName}
             </Typography>
-
           </Box>
           {renderList()}
         </Scrollbar>

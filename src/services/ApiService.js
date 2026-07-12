@@ -13,7 +13,7 @@ async function renewSessionAsync(payload) {
   const config = {
     method: 'post',
     url: '/auth/renew-session',
-    data: payload
+    data: payload,
   };
   return await axios(config);
 }
@@ -136,6 +136,39 @@ async function deleteTeacherAsync(teacherId) {
   return await axios(config);
 }
 
+//Student
+async function getStudentListAsync() {
+  const config = {
+    method: 'get',
+    url: `/student/list`,
+  };
+  return await axios(config);
+}
+
+async function saveStudentAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/student',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function getStudentDataByIdAsync(studentId) {
+  const config = {
+    method: 'get',
+    url: `/student/${studentId}`,
+  };
+  return await axios(config);
+}
+
+async function deleteStudentAsync(studentId) {
+  const config = {
+    method: 'delete',
+    url: `/student/${studentId}`,
+  };
+  return await axios(config);
+}
 
 export default {
   loginAsync,
@@ -160,4 +193,10 @@ export default {
   saveTeacherAsync,
   getTeacherDataByIdAsync,
   deleteTeacherAsync,
+
+  //Student
+  getStudentListAsync,
+  saveStudentAsync,
+  getStudentDataByIdAsync,
+  deleteStudentAsync,
 };

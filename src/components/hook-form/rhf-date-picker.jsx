@@ -8,7 +8,15 @@ import { MobileTimePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
-export function RHFDatePicker({ name, slotProps, allowPastDates = false, allowFutureDates = false, disabled = false, minDateValue, ...other }) {
+export function RHFDatePicker({
+  name,
+  slotProps,
+  allowPastDates = false,
+  allowFutureDates = false,
+  disabled = false,
+  minDateValue,
+  ...other
+}) {
   const { control } = useFormContext();
   return (
     <Controller
@@ -20,14 +28,11 @@ export function RHFDatePicker({ name, slotProps, allowPastDates = false, allowFu
           value={field.value ? dayjs(field.value) : null}
           onChange={(newValue) => {
             if (disabled) return;
-            const formatted = newValue && newValue.isValid()
-              ? newValue.format('YYYY-MM-DD')
-              : null;
+            const formatted = newValue && newValue.isValid() ? newValue.format('YYYY-MM-DD') : null;
             field.onChange(formatted);
           }}
-
           format={constants.dateFormat}
-          minDate={minDateValue ? dayjs(minDateValue) : (allowPastDates ? undefined : dayjs())}
+          minDate={minDateValue ? dayjs(minDateValue) : allowPastDates ? undefined : dayjs()}
           maxDate={allowFutureDates ? undefined : dayjs().subtract(0, 'day')}
           slotProps={{
             ...slotProps,
@@ -97,9 +102,10 @@ export function RHFMobileTimePicker({ name, slotProps, disabled = false, ...othe
             value={displayValue}
             onChange={(newValue) => {
               // Convert the picker's dayjs object back to HH:mm string for the form
-              const formatted = newValue && dayjs(newValue).isValid()
-                ? dayjs(newValue).format(constants.timeFormat)
-                : null;
+              const formatted =
+                newValue && dayjs(newValue).isValid()
+                  ? dayjs(newValue).format(constants.timeFormat)
+                  : null;
               field.onChange(formatted);
             }}
             slotProps={{

@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { CONFIG } from 'src/global-config';
-import { TeacherListView } from 'src/sections/teacher/view';
+import { StudentCreateView } from 'src/sections/student/view';
 
-const metadata = { title: `Manage Teacher | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Create a New Student | Dashboard - ${CONFIG.appName}` };
 
 export default function Page() {
   return (
@@ -10,7 +10,7 @@ export default function Page() {
       <Helmet>
         <title> {metadata.title}</title>
       </Helmet>
-      <TeacherListView />
+      <StudentCreateView />
     </>
   );
 }

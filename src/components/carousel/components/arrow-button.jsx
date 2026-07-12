@@ -1,5 +1,4 @@
 import { mergeClasses } from 'minimal-shared/utils';
-
 import SvgIcon from '@mui/material/SvgIcon';
 import { styled } from '@mui/material/styles';
 import ButtonBase from '@mui/material/ButtonBase';

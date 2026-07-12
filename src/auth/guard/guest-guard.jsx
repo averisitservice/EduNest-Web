@@ -17,8 +17,8 @@ export function GuestGuard({ children }) {
   const [isChecking, setIsChecking] = useState(true);
   const checkPermissions = async () => {
     if (loggedInUser) {
-      if ((returnTo === '/' || returnTo === '/dashboard') ) {
-        router.replace('/dashboard/tenant')
+      if (returnTo === '/' || returnTo === '/dashboard') {
+        router.replace('/dashboard/tenant');
       } else {
         router.replace(returnTo);
       }

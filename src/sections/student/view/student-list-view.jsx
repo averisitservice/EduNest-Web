@@ -31,14 +31,14 @@ import { paths } from 'src/routes/paths';
 import { TableToolbar } from 'src/sections/table-toolbar';
 import ApiService from 'src/services/ApiService';
 
-import { TeacherTableRow } from '../teacher-table-row';
+import { StudentTableRow } from '../student-table-row';
 
 const FILTEREDTABLEHEAD = [
-  { id: 'teacherName', label: 'Name', width: '20%' },
+  { id: 'studentName', label: 'Name', width: '20%' },
   { id: 'email', label: 'Email', width: '20%' },
   { id: 'mobileNo', label: 'Phone', width: '15%' },
-  { id: 'roleId', label: 'Role', width: '15%' },
-  { id: 'lastLogin', label: 'Last Login', width: '15%', sortBy: false },
+  { id: 'classId', label: 'Class', width: '15%' },
+  { id: 'rollNo', label: 'Roll No', width: '10%' },
   { id: 'updatedDate', label: 'Last Update', width: '15%' },
 ];
 
@@ -47,7 +47,7 @@ const TABLEHEAD = [
   { id: '', label: 'Action', width: '10%', sortBy: false, sx: { textAlign: 'center' } },
 ];
 
-export function TeacherListView() {
+export function StudentListView() {
   const table = useTable({ defaultOrderBy: 'updatedDate', defaultOrder: 'desc' });
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -57,16 +57,21 @@ export function TeacherListView() {
   const { state: currentFilters, setState: updateFilters } = filters;
 
   useEffect(() => {
-    getTeacherList();
+    getStudentList();
   }, []);
 
-  const getTeacherList = async () => {
+  const getStudentList = async () => {
     setIsLoading(true);
-    const { data } = await ApiService.getTeacherListAsync();
-    if (data) {
-      setTableData(data);
+    try {
+      const { data } = await ApiService.getStudentListAsync();
+      if (data) {
+        setTableData(data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const dataFiltered = useMemo(() => {
@@ -80,10 +85,12 @@ export function TeacherListView() {
     let filteredData = stabilizedThis.map((el) => el[0]);
     if (search) {
       const lower = search.toLowerCase();
-      filteredData = filteredData.filter((teacher) => {
+      filteredData = filteredData.filter((student) => {
+        const fullName = student.studentName || `${student.firstName} ${student.lastName}`;
         return (
-          teacher.teacherName.toLowerCase().includes(lower) ||
-          teacher.email.toLowerCase().includes(lower)
+          fullName.toLowerCase().includes(lower) ||
+          (student.email && student.email.toLowerCase().includes(lower)) ||
+          (student.rollNo && student.rollNo.toLowerCase().includes(lower))
         );
       });
     }
@@ -94,16 +101,12 @@ export function TeacherListView() {
     updateFilters({ search: newFilters });
   };
 
-  const onRefresh = () => {
-    getTeacherList();
-  };
-
   const onDeleteRow = useCallback(
-    async (teacherId) => {
-      const { data, errors } = await ApiService.deleteTeacherAsync(teacherId);
+    async (studentId) => {
+      const { data, errors } = await ApiService.deleteStudentAsync(studentId);
       if (data) {
-        setTableData((prevData) => prevData.filter((row) => row.teacherId !== teacherId));
-        toast.success('TeacherId deleted successfully.');
+        setTableData((prevData) => prevData.filter((row) => row.studentId !== studentId));
+        toast.success('Student deleted successfully.');
         table.onUpdatePageDeleteRow(dataInPage.length);
       } else if (errors) {
         toast.error(errors[0].msg);
@@ -116,20 +119,20 @@ export function TeacherListView() {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Manage Teacher"
+        heading="Manage Students"
         links={[
           { name: 'Dashboard', href: '' },
-          { name: 'Teacher', href: paths.dashboard.teacher.list },
+          { name: 'Student', href: paths.dashboard.student.list },
         ]}
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.teacher.new}
+            href={paths.dashboard.student.new}
             variant="contained"
             color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
-            New Teacher
+            New Student
           </Button>
         }
         sx={{ mb: { xs: 2, md: 2 } }}
@@ -138,7 +141,7 @@ export function TeacherListView() {
         <TableToolbar
           filters={filters}
           onFilterChange={handleFilterChange}
-          placeholder={'Search By Name or Category '}
+          placeholder={'Search By Name or Roll No'}
         />
         <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
           <Box sx={{ position: 'relative' }}>
@@ -173,19 +176,18 @@ export function TeacherListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No teacher found." notFound={dataFiltered.length <= 0} />
+                  <TableNoData label="No student found." notFound={dataFiltered.length <= 0} />
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
-                      <TeacherTableRow
-                        key={row.teacherId}
+                      <StudentTableRow
+                        key={row.studentId}
                         row={row}
-                        selected={table.selected.includes(row.teacherId)}
-                        onDeleteRow={() => onDeleteRow(row.teacherId)}
-                        onSuccess={onRefresh}
+                        selected={table.selected.includes(row.studentId)}
+                        onDeleteRow={() => onDeleteRow(row.studentId)}
                       />
                     ))}
                   <TableEmptyRows

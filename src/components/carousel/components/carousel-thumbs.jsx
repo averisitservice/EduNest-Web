@@ -1,9 +1,9 @@
 import { mergeClasses } from 'minimal-shared/utils';
 import { Children, forwardRef, isValidElement } from 'react';
-
 import { styled } from '@mui/material/styles';
 
 import { carouselClasses } from '../classes';
+
 import { CarouselSlide } from './carousel-slide';
 
 // ----------------------------------------------------------------------

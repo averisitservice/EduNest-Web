@@ -9,7 +9,6 @@ const constants = {
   },
   defaultCountryCode: 'IN',
 
-  
   maxPaymentMethods: 3,
   defaultTimeZone: 'Australia/Melbourne',
   defaultTimeFormat: '24-Hour-Format',
@@ -60,17 +59,17 @@ const constants = {
     1: 'Draft',
     2: 'Sent',
     3: 'OverDue',
-    4: 'Paid'
+    4: 'Paid',
   },
 
   transactionType: {
     IN: 'IN',
     OUT: 'OUT',
-    ADJUSTMENT: 'ADJUSTMENT'
+    ADJUSTMENT: 'ADJUSTMENT',
   },
 
   TaxPercent: {
-    AUS: 10
+    AUS: 10,
   },
 
   statsPeriods: [
@@ -121,25 +120,25 @@ const constants = {
     // { label: 'Doordash', value: 5 },
   ],
   PackagingTypes: [
-    { label: "Bag (BAG)", value: "BAG" },
-    { label: "Carton (CTN)", value: "CTN" },
-    { label: "Envelope (ENV)", value: "ENV" },
-    { label: "Item (ITM)", value: "ITM" },
-    { label: "Jiffy (JIF)", value: "JIF" },
-    { label: "Pallet (PAL)", value: "PAL" },
-    { label: "Satchel (SAT)", value: "SAT" },
-    { label: "Skid (SKI)", value: "SKI" },
+    { label: 'Bag (BAG)', value: 'BAG' },
+    { label: 'Carton (CTN)', value: 'CTN' },
+    { label: 'Envelope (ENV)', value: 'ENV' },
+    { label: 'Item (ITM)', value: 'ITM' },
+    { label: 'Jiffy (JIF)', value: 'JIF' },
+    { label: 'Pallet (PAL)', value: 'PAL' },
+    { label: 'Satchel (SAT)', value: 'SAT' },
+    { label: 'Skid (SKI)', value: 'SKI' },
   ],
   teethNotations: {
     UR: [11, 12, 13, 14, 15, 16, 17, 18],
     UL: [21, 22, 23, 24, 25, 26, 27, 28],
     LR: [41, 42, 43, 44, 45, 46, 47, 48],
-    LL: [31, 32, 33, 34, 35, 36, 37, 38]
+    LL: [31, 32, 33, 34, 35, 36, 37, 38],
   },
   TAX_CODES: [
-    { label: 'Output', value: 'OUTPUT', },
-    { label: 'Exempt Output', value: 'EXEMPTOUTPUT', },
-  ]
+    { label: 'Output', value: 'OUTPUT' },
+    { label: 'Exempt Output', value: 'EXEMPTOUTPUT' },
+  ],
 };
 
 export default constants;

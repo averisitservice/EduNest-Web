@@ -2,10 +2,10 @@
 import { Button, FormControlLabel, Menu, MenuItem, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import enums from 'src/utils/enums.js';
+import utils from 'src/utils/utils';
 
 import { Iconify } from '../iconify';
 
-import utils from 'src/utils/utils';
 import DateRangePicker from './DateRangePicker';
 
 export default function StyledDurationFilter({

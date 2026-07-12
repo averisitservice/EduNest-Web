@@ -25,7 +25,11 @@ export function AccountButton({ displayName, sx, ...other }) {
           secondaryBorder: { sx: { color: 'warning.main' } },
         }}
       >
-        <Avatar src={loggedInTeacher?.imagePath} alt={loggedInTeacher.name} sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}>
+        <Avatar
+          src={loggedInTeacher?.imagePath}
+          alt={loggedInTeacher.name}
+          sx={{ width: 1, height: 1, bgcolor: 'primary.main', color: 'white' }}
+        >
           {loggedInTeacher?.name?.charAt(0).toUpperCase()}
         </Avatar>
       </AnimateBorder>

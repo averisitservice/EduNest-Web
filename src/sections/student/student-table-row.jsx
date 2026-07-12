@@ -2,31 +2,25 @@ import { LoadingButton } from '@mui/lab';
 import { Avatar, Box, IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { Iconify } from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import dateHelper from 'src/utils/dateHelper';
-import enums from 'src/utils/enums';
 import utils from 'src/utils/utils';
 
-export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
+export function StudentTableRow({ row, selected, onDeleteRow }) {
   const confirmDialog = useBoolean();
   const [loading, setLoading] = useState(false);
 
-  const methods = useForm({
-    defaultValues: {
-      authChoice: 'backup',
-    },
-  });
+  const studentName = row.studentName || `${row.firstName} ${row.lastName}`;
 
   const renderConfirmDialog = () => (
     <ConfirmDialog
       open={confirmDialog.value}
       onClose={confirmDialog.onFalse}
-      title="Delete Teacher"
-      content={<>Are you sure want to delete {row.teacherName}?</>}
+      title="Delete Student"
+      content={<>Are you sure want to delete {studentName}?</>}
       action={
         <LoadingButton
           variant="contained"
@@ -52,15 +46,15 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
         <TableCell>
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Avatar
-              alt={row.teacherName}
+              alt={studentName}
               src={row.imagePath}
               sx={{ bgcolor: 'primary.main', color: 'white' }}
             >
-              {row.teacherName.charAt(0).toUpperCase()}
+              {studentName.charAt(0).toUpperCase()}
             </Avatar>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
-                {`${row.teacherName}`}
+                {studentName}
               </Box>
             </Stack>
           </Box>
@@ -69,7 +63,7 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
           <Box sx={{ gap: 2, display: 'flex' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {row.email}
+                {row.email || '-'}
               </Box>
             </Stack>
           </Box>
@@ -78,7 +72,7 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {row.mobileNo}
+                {row.mobileNo || '-'}
               </Box>
             </Stack>
           </Box>
@@ -87,16 +81,20 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {enums.displayRole[row.roleId]}
+                {row.className
+                  ? row.sectionName
+                    ? `${row.className} - ${row.sectionName}`
+                    : row.className
+                  : '-'}
               </Box>
             </Stack>
           </Box>
         </TableCell>
         <TableCell>
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-            <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
-              <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
-                {row.lastLoginOn ? `${dateHelper.formatDateTime(row.lastLoginOn)}` : '-'}
+            <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
+              <Box component="span" sx={{ color: 'inherit' }}>
+                {row.rollNo || '-'}
               </Box>
             </Stack>
           </Box>
@@ -108,30 +106,28 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
                 {row.updatedBy ?? ''}
               </Box>
               <Box component="span" sx={{ color: 'text.disabled' }}>
-                {dateHelper.formatDateTime(row.updatedDate)}
+                {row.updatedDate ? dateHelper.formatDateTime(row.updatedDate) : '-'}
               </Box>
             </Stack>
           </Box>
         </TableCell>
         <TableCell>
-          {!isProfile && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-              <Tooltip title="Edit" placement="top" arrow>
-                <IconButton
-                  component={RouterLink}
-                  href={paths.dashboard.teacher.edit(row.teacherId)}
-                  color="primary"
-                >
-                  <Iconify icon="solar:pen-bold" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete" placement="top" arrow>
-                <IconButton color="error" onClick={() => confirmDialog.onTrue()}>
-                  <Iconify icon="solar:trash-bin-trash-bold" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+            <Tooltip title="Edit" placement="top" arrow>
+              <IconButton
+                component={RouterLink}
+                href={paths.dashboard.student.edit(row.studentId)}
+                color="primary"
+              >
+                <Iconify icon="solar:pen-bold" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete" placement="top" arrow>
+              <IconButton color="error" onClick={() => confirmDialog.onTrue()}>
+                <Iconify icon="solar:trash-bin-trash-bold" />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </TableCell>
       </TableRow>
       {renderConfirmDialog()}

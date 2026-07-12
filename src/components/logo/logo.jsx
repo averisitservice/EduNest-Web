@@ -4,15 +4,15 @@ import { styled } from '@mui/material/styles';
 import { mergeClasses } from 'minimal-shared/utils';
 import { forwardRef } from 'react';
 import { RouterLink } from 'src/routes/components';
+import { useSelector } from 'react-redux';
+
 import fullIcon from '../../assets/icons/full-logo-labSync.png';
 import singleIcon from '../../assets/icons/singleIcon.png';
 
-import { useSelector } from 'react-redux';
 import { logoClasses } from './classes';
 // ----------------------------------------------------------------------
 
 export const Logo = forwardRef((props, ref) => {
-
   const { tenantDetail } = useSelector((state) => state.AuthReducer);
 
   const {

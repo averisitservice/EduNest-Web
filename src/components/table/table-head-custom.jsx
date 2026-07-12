@@ -33,7 +33,7 @@ export function TableHeadCustom({
   return (
     <TableHead sx={sx}>
       <TableRow key={headCells}>
-        {showCheckbox  && onSelectAllRows && (
+        {showCheckbox && onSelectAllRows && (
           <TableCell padding="checkbox">
             <Checkbox
               indeterminate={!!numSelected && numSelected < rowCount}
