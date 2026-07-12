@@ -56,6 +56,9 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
                 {studentName}
               </Box>
+              <Box component="span" sx={{ color: 'text.disabled' }}>
+                {row.email}
+              </Box>
             </Stack>
           </Box>
         </TableCell>
@@ -63,7 +66,7 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
           <Box sx={{ gap: 2, display: 'flex' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {row.email || '-'}
+                {row.mobileNo || '-'}
               </Box>
             </Stack>
           </Box>
@@ -72,7 +75,10 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {row.mobileNo || '-'}
+                {row.fatherName || '-'}
+              </Box>
+              <Box component="span" sx={{ color: 'text.disabled' }}>
+                {row.parentMobile || '-'}
               </Box>
             </Stack>
           </Box>

@@ -35,8 +35,8 @@ import { StudentTableRow } from '../student-table-row';
 
 const FILTEREDTABLEHEAD = [
   { id: 'studentName', label: 'Name', width: '20%' },
-  { id: 'email', label: 'Email', width: '20%' },
   { id: 'mobileNo', label: 'Phone', width: '15%' },
+  { id: 'parent', label: 'Parent', width: '20%' },
   { id: 'classId', label: 'Class', width: '15%' },
   { id: 'rollNo', label: 'Roll No', width: '10%' },
   { id: 'updatedDate', label: 'Last Update', width: '15%' },
@@ -64,6 +64,8 @@ export function StudentListView() {
     setIsLoading(true);
     try {
       const { data } = await ApiService.getStudentListAsync();
+      console.log(data);
+
       if (data) {
         setTableData(data);
       }

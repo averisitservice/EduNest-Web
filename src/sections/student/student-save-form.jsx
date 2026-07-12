@@ -1,6 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Autocomplete, Box, Button, Card, MenuItem, Stack, TextField } from '@mui/material';
+import {
+  Autocomplete, Box, Button, Card,
+  MenuItem, Stack, TextField
+} from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -14,35 +17,28 @@ import { z as zod } from 'zod';
 
 const StudentSchema = zod.object({
   firstName: zod.string().min(1, { message: 'First Name is required.' }),
+  middleName: zod.string().nullable().optional().or(zod.literal('')),
   lastName: zod.string().min(1, { message: 'Last Name is required.' }),
-  email: zod
-    .string()
-    .min(1, { message: 'Email is required.' })
-    .email({ message: 'Email must be valid.' }),
-  mobileNo: zod.string().optional().or(zod.literal('')),
   gender: zod.string().min(1, { message: 'Gender is required.' }),
+  dateOfBirth: zod.string({ required_error: 'Date of Birth is required.' }).min(1, { message: 'Date of Birth is required.' }),
+  bloodGroup: zod.string().nullable().optional().or(zod.literal('')),
+  aadharNo: zod.string().nullable().optional().or(zod.literal('')),
+  email: zod.string().min(1, { message: 'Email is required.' }).email({ message: 'Email must be valid.' }),
+  mobileNo: zod.string().min(1, { message: 'Mobile Number is required.' }),
+  addressLine1: zod.string().nullable().optional(),
+  city: zod.string().nullable().optional(),
+  state: zod.string().nullable().optional(),
+  postalCode: zod.string().nullable().optional(),
+  fatherName: zod.string().min(1, { message: 'Father Name is required.' }),
+  motherName: zod.string().min(1, { message: 'Mother Name is required.' }),
+  parentMobile: zod.string().min(1, { message: 'Parent Mobile Number is required.' }),
+  parentEmail: zod.string().nullable().optional().or(zod.literal('').refine(val => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), { message: 'Parent Email must be valid.' })),
+  parentAadhar: zod.string().nullable().optional().or(zod.literal('')),
+  studentClass: zod.any().nullable().refine(val => val !== null, { message: 'Class & Section is required.' }),
   rollNo: zod.string().min(1, { message: 'Roll Number is required.' }),
-  dateOfBirth: zod.string().optional().nullable(),
-  joiningDate: zod.string().min(1, { message: 'Admission Date is required.' }),
-  addressLine1: zod.string().optional().nullable(),
-  city: zod.string().optional().nullable(),
-  state: zod.string().optional().nullable(),
-  postalCode: zod.string().optional().nullable(),
-  studentClass: zod
-    .object(
-      {
-        classId: zod.number(),
-        sectionId: zod.number().nullable().optional(),
-        className: zod.string().optional(),
-        sectionName: zod.string().optional(),
-      },
-      { required_error: 'Class & Section is required.' }
-    )
-    .nullable()
-    .refine((val) => val !== null, { message: 'Class & Section is required.' }),
-  guardianName: zod.string().min(1, { message: 'Guardian Name is required.' }),
-  guardianPhone: zod.string().optional().or(zod.literal('')),
 });
+
+const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 export function StudentSaveForm() {
   const navigate = useNavigate();
@@ -52,20 +48,25 @@ export function StudentSaveForm() {
 
   const defaultValues = {
     firstName: '',
+    middleName: '',
     lastName: '',
+    gender: '',
+    dateOfBirth: '',
+    bloodGroup: '',
+    aadharNo: '',
     email: '',
     mobileNo: '',
-    gender: '',
-    rollNo: '',
-    dateOfBirth: '',
-    joiningDate: '',
     addressLine1: '',
     city: '',
     state: '',
     postalCode: '',
+    fatherName: '',
+    motherName: '',
+    parentMobile: '',
+    parentEmail: '',
+    parentAadhar: '',
     studentClass: null,
-    guardianName: '',
-    guardianPhone: '',
+    rollNo: '',
   };
 
   const methods = useForm({
@@ -81,6 +82,7 @@ export function StudentSaveForm() {
     formState: { isSubmitting, isLoading, errors },
   } = methods;
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -92,17 +94,29 @@ export function StudentSaveForm() {
           const { data } = await apiService.getStudentDataByIdAsync(id);
           if (data) {
             const studentClassVal = classRes.data?.find(
-              (c) =>
-                c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
+              (c) => c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
             ) || {
               classId: data.classId,
               sectionId: data.sectionId,
               className: data.className || `Class ${data.classId}`,
-              sectionName: data.sectionName || '',
+              sectionName: data.sectionName || ''
             };
 
             methods.reset({
               ...data,
+              middleName: data.middleName ?? '',
+              bloodGroup: data.bloodGroup ?? '',
+              aadharNo: data.aadharNo ?? '',
+              mobileNo: data.mobileNo ?? '',
+              addressLine1: data.addressLine1 ?? '',
+              city: data.city ?? '',
+              state: data.state ?? '',
+              postalCode: data.postalCode ?? '',
+              fatherName: data.fatherName ?? '',
+              motherName: data.motherName ?? '',
+              parentMobile: data.parentMobile ?? '',
+              parentEmail: data.parentEmail ?? '',
+              parentAadhar: data.parentAadhar ?? '',
               studentClass: studentClassVal,
             });
           }
@@ -113,14 +127,12 @@ export function StudentSaveForm() {
         setFetchingData(false);
       }
     };
-
     fetchData();
   }, [id, methods]);
 
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
       ...values,
-      classId: values.studentClass.classId,
       sectionId: values.studentClass.sectionId ?? null,
       ...(id && { studentId: Number(id) }),
     };
@@ -128,13 +140,13 @@ export function StudentSaveForm() {
 
     const response = await apiService.saveStudentAsync(payload);
     if (response.data) {
-      toast.success(id ? 'Student updated successfully.' : 'Student created successfully.');
+      toast.success(id ? "Student updated successfully." : "Student created successfully.");
       navigate(-1);
       return;
     }
-    if (response.error) {
-      setError(response.error.param, {
-        message: response.error.msg,
+    if (response.errors && response.errors.length > 0) {
+      setError(response.errors[0].param || 'email', {
+        message: response.errors[0].msg,
       });
     }
   });
@@ -147,79 +159,96 @@ export function StudentSaveForm() {
     <Form methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 8 }}>
-          <Card sx={{ p: 3 }}>
-            <Stack direction="column" spacing={2}>
-              <Box
-                sx={{
-                  rowGap: 3,
-                  columnGap: 2,
-                  display: 'grid',
-                  gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                }}
-              >
-                <Field.Text maxLength={50} name="firstName" label="First Name" />
-                <Field.Text maxLength={50} name="lastName" label="Last Name" />
-                <Field.Text name="email" label="Email" />
-                <Field.Text name="mobileNo" label="Mobile Number" placeholder="e.g. 9876543210" />
-                <Field.Text name="rollNo" label="Roll Number" />
+          <Stack spacing={2}>
+            <Card sx={{ p: 3 }}>
+              <Stack direction="column" spacing={2}>
+                <Box
+                  sx={{
+                    rowGap: 3,
+                    columnGap: 2,
+                    display: 'grid',
+                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                  }}
+                >
+                  <Field.Text maxLength={50} name="firstName" label="First Name" />
+                  <Field.Text maxLength={50} name="middleName" label="Middle Name" />
+                  <Field.Text maxLength={50} name="lastName" label="Last Name" />
 
-                <Field.Select name="gender" label="Gender">
-                  <MenuItem value="M">Male</MenuItem>
-                  <MenuItem value="F">Female</MenuItem>
-                  <MenuItem value="O">Other</MenuItem>
-                </Field.Select>
+                  <Field.Select name="gender" label="Gender">
+                    <MenuItem value="M">Male</MenuItem>
+                    <MenuItem value="F">Female</MenuItem>
+                    <MenuItem value="O">Other</MenuItem>
+                  </Field.Select>
 
-                <Controller
-                  name="studentClass"
-                  control={control}
-                  render={({ field }) => (
-                    <Autocomplete
-                      {...field}
-                      fullWidth
-                      options={classMasters}
-                      value={field.value || null}
-                      onChange={(event, newValue) => field.onChange(newValue)}
-                      getOptionLabel={(option) =>
-                        option.sectionName
-                          ? `${option.className} - ${option.sectionName}`
-                          : option.className
-                      }
-                      isOptionEqualToValue={(option, value) =>
-                        option.classId === value.classId && option.sectionId === value.sectionId
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Class & Section"
-                          placeholder="Select Class & Section"
-                          error={!!errors.studentClass}
-                          helperText={errors.studentClass?.message}
-                        />
-                      )}
-                    />
-                  )}
-                />
+                  <Field.DatePicker name="dateOfBirth" label="Date of Birth" allowFutureDates={false} allowPastDates={true} />
 
-                <Field.DatePicker
-                  name="dateOfBirth"
-                  label="Date of Birth"
-                  allowFutureDates={true}
-                  allowPastDates={true}
-                />
-                <Field.DatePicker
-                  name="joiningDate"
-                  label="Admission Date"
-                  allowFutureDates={true}
-                  allowPastDates={true}
-                />
+                  <Field.Select name="bloodGroup" label="Blood Group">
+                    {BLOOD_GROUPS.map((group) => (
+                      <MenuItem key={group} value={group}>
+                        {group}
+                      </MenuItem>
+                    ))}
+                  </Field.Select>
 
-                <Field.Text name="addressLine1" label="Address" />
-                <Field.Text name="city" label="City" />
-                <Field.Text name="state" label="State" />
-                <Field.Text name="postalCode" label="Postal Code" />
-              </Box>
-            </Stack>
-          </Card>
+                  <Field.Text name="rollNo" label="Roll Number" />
+                  <Field.Text name="aadharNo" label="Aadhar Number" />
+                  <Field.Text name="email" label="Email" />
+                  <Field.Text name="mobileNo" label="Mobile Number" placeholder="e.g. 9876543210" />
+
+                  <Controller
+                    name="studentClass"
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        fullWidth
+                        options={classMasters}
+                        value={field.value || null}
+                        onChange={(event, newValue) => field.onChange(newValue)}
+                        getOptionLabel={(option) => {
+                          if (!option) return '';
+                          return option.sectionName
+                            ? `${option.className} - ${option.sectionName}`
+                            : option.className || '';
+                        }}
+                        isOptionEqualToValue={(option, value) => {
+                          if (!option || !value) return false;
+                          return option.classId === value.classId && option.sectionId === value.sectionId;
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Class & Section"
+                            placeholder="Select Class & Section"
+                            error={!!errors.studentClass}
+                            helperText={errors.studentClass?.message}
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                </Box>
+              </Stack>
+            </Card>
+
+            <Card sx={{ p: 3 }}>
+              <Stack direction="column" spacing={2}>
+                <Box
+                  sx={{
+                    rowGap: 3,
+                    columnGap: 2,
+                    display: 'grid',
+                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                  }}
+                >
+                  <Field.Text name="addressLine1" label="Address" />
+                  <Field.Text name="city" label="City" />
+                  <Field.Text name="state" label="State" />
+                  <Field.Text name="postalCode" label="Postal Code" />
+                </Box>
+              </Stack>
+            </Card>
+          </Stack>
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
@@ -233,8 +262,11 @@ export function StudentSaveForm() {
                   gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(1, 1fr)' },
                 }}
               >
-                <Field.Text name="guardianName" label="Guardian Name" />
-                <Field.Text name="guardianPhone" label="Guardian Phone Number" />
+                <Field.Text name="fatherName" label="Father Name" />
+                <Field.Text name="motherName" label="Mother Name" />
+                <Field.Text name="parentMobile" label="Parent Mobile Number" />
+                <Field.Text name="parentEmail" label="Parent Email" />
+                <Field.Text name="parentAadhar" label="Parent Aadhar Number" />
               </Box>
             </Stack>
           </Card>
