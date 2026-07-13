@@ -7,12 +7,14 @@ import {
 import Grid from '@mui/material/Grid2';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { useNavigate } from 'react-router';
-import { Field, Form } from 'src/components/hook-form';
+import { Field, Form, schemaHelper } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { toast } from 'src/components/snackbar';
 import { useParams } from 'src/routes/hooks';
 import apiService from 'src/services/ApiService';
+import constants from 'src/utils/constants';
 import { z as zod } from 'zod';
 
 const StudentSchema = zod.object({
@@ -24,14 +26,14 @@ const StudentSchema = zod.object({
   bloodGroup: zod.string().nullable().optional().or(zod.literal('')),
   aadharNo: zod.string().nullable().optional().or(zod.literal('')),
   email: zod.string().min(1, { message: 'Email is required.' }).email({ message: 'Email must be valid.' }),
-  mobileNo: zod.string().min(1, { message: 'Mobile Number is required.' }),
+  mobileNo: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
   addressLine1: zod.string().nullable().optional(),
   city: zod.string().nullable().optional(),
   state: zod.string().nullable().optional(),
   postalCode: zod.string().nullable().optional(),
   fatherName: zod.string().min(1, { message: 'Father Name is required.' }),
-  motherName: zod.string().min(1, { message: 'Mother Name is required.' }),
-  parentMobile: zod.string().min(1, { message: 'Parent Mobile Number is required.' }),
+  motherName: zod.string().nullable().optional(),
+  parentMobile: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
   parentEmail: zod.string().nullable().optional().or(zod.literal('').refine(val => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), { message: 'Parent Email must be valid.' })),
   parentAadhar: zod.string().nullable().optional().or(zod.literal('')),
   studentClass: zod.any().nullable().refine(val => val !== null, { message: 'Class & Section is required.' }),
@@ -86,40 +88,18 @@ export function StudentSaveForm() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setFetchingData(true);
         const classRes = await apiService.getAllClassMasterSectionsAsync();
         setClassMasters(classRes.data || []);
 
         if (id) {
           const { data } = await apiService.getStudentDataByIdAsync(id);
-          if (data) {
-            const studentClassVal = classRes.data?.find(
-              (c) => c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
-            ) || {
-              classId: data.classId,
-              sectionId: data.sectionId,
-              className: data.className || `Class ${data.classId}`,
-              sectionName: data.sectionName || ''
-            };
 
-            methods.reset({
-              ...data,
-              middleName: data.middleName ?? '',
-              bloodGroup: data.bloodGroup ?? '',
-              aadharNo: data.aadharNo ?? '',
-              mobileNo: data.mobileNo ?? '',
-              addressLine1: data.addressLine1 ?? '',
-              city: data.city ?? '',
-              state: data.state ?? '',
-              postalCode: data.postalCode ?? '',
-              fatherName: data.fatherName ?? '',
-              motherName: data.motherName ?? '',
-              parentMobile: data.parentMobile ?? '',
-              parentEmail: data.parentEmail ?? '',
-              parentAadhar: data.parentAadhar ?? '',
-              studentClass: studentClassVal,
-            });
-          }
+          methods.reset({
+            ...data,
+            studentClass: classRes.data?.find(
+              (c) => c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
+            ) || null,
+          });
         }
       } catch (err) {
         console.error(err);
@@ -127,12 +107,14 @@ export function StudentSaveForm() {
         setFetchingData(false);
       }
     };
+
     fetchData();
   }, [id, methods]);
 
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
       ...values,
+      classId: values.studentClass.classId,
       sectionId: values.studentClass.sectionId ?? null,
       ...(id && { studentId: Number(id) }),
     };
@@ -173,6 +155,13 @@ export function StudentSaveForm() {
                   <Field.Text maxLength={50} name="firstName" label="First Name" />
                   <Field.Text maxLength={50} name="middleName" label="Middle Name" />
                   <Field.Text maxLength={50} name="lastName" label="Last Name" />
+                  <Field.Text name="email" label="Email" />
+                  <Field.Phone
+                    name="mobileNo"
+                    label="Mobile Number"
+                    country={constants.defaultCountryCode}
+                    disableCountryCode={true}
+                  />
 
                   <Field.Select name="gender" label="Gender">
                     <MenuItem value="M">Male</MenuItem>
@@ -191,10 +180,6 @@ export function StudentSaveForm() {
                   </Field.Select>
 
                   <Field.Text name="rollNo" label="Roll Number" />
-                  <Field.Text name="aadharNo" label="Aadhar Number" />
-                  <Field.Text name="email" label="Email" />
-                  <Field.Text name="mobileNo" label="Mobile Number" placeholder="e.g. 9876543210" />
-
                   <Controller
                     name="studentClass"
                     control={control}
@@ -227,6 +212,7 @@ export function StudentSaveForm() {
                       />
                     )}
                   />
+                  <Field.Text name="aadharNo" label="Aadhar Number" />
                 </Box>
               </Stack>
             </Card>
@@ -264,7 +250,12 @@ export function StudentSaveForm() {
               >
                 <Field.Text name="fatherName" label="Father Name" />
                 <Field.Text name="motherName" label="Mother Name" />
-                <Field.Text name="parentMobile" label="Parent Mobile Number" />
+                <Field.Phone
+                  name="parentMobile"
+                  label="Parent Mobile Number"
+                  country={constants.defaultCountryCode}
+                  disableCountryCode={true}
+                />
                 <Field.Text name="parentEmail" label="Parent Email" />
                 <Field.Text name="parentAadhar" label="Parent Aadhar Number" />
               </Box>

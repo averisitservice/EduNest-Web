@@ -3,12 +3,14 @@ import {
   Button,
   Card,
   LinearProgress,
+  MenuItem,
+  Select,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableRow,
+  TableRow
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -36,8 +38,8 @@ import { StudentTableRow } from '../student-table-row';
 const FILTEREDTABLEHEAD = [
   { id: 'studentName', label: 'Name', width: '20%' },
   { id: 'mobileNo', label: 'Phone', width: '15%' },
-  { id: 'parent', label: 'Parent', width: '20%' },
-  { id: 'classId', label: 'Class', width: '15%' },
+  { id: 'parent', label: 'Parent', width: '20%', sortBy: false },
+  { id: 'classId', label: 'Class', width: '15%', sortBy: false },
   { id: 'rollNo', label: 'Roll No', width: '10%' },
   { id: 'updatedDate', label: 'Last Update', width: '15%' },
 ];
@@ -51,21 +53,21 @@ export function StudentListView() {
   const table = useTable({ defaultOrderBy: 'updatedDate', defaultOrder: 'desc' });
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const filters = useSetState({ search: '' });
+  const [classMasters, setClassMasters] = useState([]);
+  const filters = useSetState({ search: '', classSection: '' });
   const dataInPage = rowInPage(tableData, table.page, table.rowsPerPage);
 
   const { state: currentFilters, setState: updateFilters } = filters;
 
   useEffect(() => {
     getStudentList();
+    getClassMasters();
   }, []);
 
   const getStudentList = async () => {
     setIsLoading(true);
     try {
       const { data } = await ApiService.getStudentListAsync();
-      console.log(data);
-
       if (data) {
         setTableData(data);
       }
@@ -76,8 +78,20 @@ export function StudentListView() {
     }
   };
 
+  const getClassMasters = async () => {
+    try {
+      const { data } = await ApiService.getAllClassMasterSectionsAsync();
+      if (data) {
+        setClassMasters(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const dataFiltered = useMemo(() => {
-    const { search } = currentFilters;
+    const { search, classSection } = currentFilters;
     const stabilizedThis = tableData.map((el, idx) => [el, idx]);
     stabilizedThis.sort((a, b) => {
       const order = getComparator(table.order, table.orderBy)(a[0], b[0]);
@@ -94,15 +108,43 @@ export function StudentListView() {
           (student.email && student.email.toLowerCase().includes(lower)) ||
           (student.rollNo && student.rollNo.toLowerCase().includes(lower)) ||
           (student.fatherName && student.fatherName.toLowerCase().includes(lower)) ||
-          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower))
+          (student.motherName && student.motherName.toLowerCase().includes(lower)) ||
+          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower)) ||
+          (student.parentEmail && student.parentEmail.toLowerCase().includes(lower))
         );
+      });
+    }
+    if (classSection) {
+      const [classId, sectionId] = classSection.split('-');
+      const selectedOption = classMasters.find(
+        (c) => c.classId == classId && (c.sectionId ?? 'null') == sectionId
+      );
+
+      filteredData = filteredData.filter((student) => {
+        if (student.classId !== undefined && student.classId !== null) {
+          const matchesClass = student.classId == classId;
+          const matchesSection = (sectionId === 'null' || !sectionId)
+            ? (!student.sectionId || student.sectionId == 'null')
+            : student.sectionId == sectionId;
+          return matchesClass && matchesSection;
+        }
+
+        if (selectedOption) {
+          const matchesClass = student.className === selectedOption.className;
+          const matchesSection = (sectionId === 'null' || !sectionId)
+            ? !student.sectionName
+            : student.sectionName === selectedOption.sectionName;
+          return matchesClass && matchesSection;
+        }
+
+        return false;
       });
     }
     return filteredData;
   }, [tableData, table.order, table.orderBy, currentFilters]);
 
-  const handleFilterChange = (newFilters) => {
-    updateFilters({ search: newFilters });
+  const handleFilterChange = (newValue, key = 'search') => {
+    updateFilters({ [key]: newValue });
   };
 
   const onDeleteRow = useCallback(
@@ -146,7 +188,28 @@ export function StudentListView() {
           filters={filters}
           onFilterChange={handleFilterChange}
           placeholder={'Search By Name or Roll No or Parent'}
-        />
+        >
+          <Select
+            name="classSection"
+            size="small"
+            sx={{ mr: 2, minWidth: 160, textAlign: 'left' }}
+            value={filters.state.classSection ?? ''}
+            onChange={(e) => handleFilterChange(e.target.value, 'classSection')}
+            displayEmpty
+          >
+            <MenuItem value="">
+              <em>All Classes</em>
+            </MenuItem>
+            {classMasters.map((option) => (
+              <MenuItem
+                key={`${option.classId}-${option.sectionId ?? 'null'}`}
+                value={`${option.classId}-${option.sectionId ?? 'null'}`}
+              >
+                {option.sectionName ? `${option.className} - ${option.sectionName}` : option.className}
+              </MenuItem>
+            ))}
+          </Select>
+        </TableToolbar>
         <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
           <Box sx={{ position: 'relative' }}>
             <Table stickyHeader aria-label="sticky table" size={table.dense ? 'small' : 'medium'}>
