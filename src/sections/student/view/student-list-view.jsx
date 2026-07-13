@@ -107,9 +107,7 @@ export function StudentListView() {
           (student.email && student.email.toLowerCase().includes(lower)) ||
           (student.rollNo && student.rollNo.toLowerCase().includes(lower)) ||
           (student.fatherName && student.fatherName.toLowerCase().includes(lower)) ||
-          (student.motherName && student.motherName.toLowerCase().includes(lower)) ||
-          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower)) ||
-          (student.parentEmail && student.parentEmail.toLowerCase().includes(lower))
+          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower))
         );
       });
     }
@@ -127,7 +125,6 @@ export function StudentListView() {
             : student.sectionId == sectionId;
           return matchesClass && matchesSection;
         }
-
         if (selectedOption) {
           const matchesClass = student.className === selectedOption.className;
           const matchesSection = (sectionId === 'null' || !sectionId)
@@ -135,7 +132,6 @@ export function StudentListView() {
             : student.sectionName === selectedOption.sectionName;
           return matchesClass && matchesSection;
         }
-
         return false;
       });
     }
