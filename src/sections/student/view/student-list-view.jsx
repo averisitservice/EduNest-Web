@@ -89,7 +89,6 @@ export function StudentListView() {
     }
   };
 
-
   const dataFiltered = useMemo(() => {
     const { search, classSection } = currentFilters;
     const stabilizedThis = tableData.map((el, idx) => [el, idx]);
