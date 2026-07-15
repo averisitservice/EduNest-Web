@@ -43,5 +43,8 @@ export const paths = {
     profile: {
       edit: (id) => `${ROOTS.DASHBOARD}/profile/edit/${id}`,
     },
+    timetable: {
+      root: `${ROOTS.DASHBOARD}/timetable`,
+    },
   },
 };

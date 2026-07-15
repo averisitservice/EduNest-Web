@@ -16,6 +16,7 @@ const ProfileEditPage = lazy(() => import('src/pages/teacher/profile'));
 const StudentListPage = lazy(() => import('src/pages/student/list'));
 const StudentCreatePage = lazy(() => import('src/pages/student/new'));
 const StudentEditPage = lazy(() => import('src/pages/student/edit'));
+const TimetableListPage = lazy(() => import('src/pages/timetable/list'));
 
 const dashboardLayout = () => (
   <DashboardLayout>
@@ -69,6 +70,10 @@ export const dashboardRoutes = [
       {
         path: 'profile',
         children: [{ path: 'edit/:id', element: <ProfileEditPage /> }],
+      },
+      {
+        path: 'timetable',
+        children: [{ index: true, element: <TimetableListPage /> }],
       },
     ],
   },

@@ -55,6 +55,11 @@ export const navData = [
         path: paths.dashboard.student.root,
         icon: ICONS.student,
       },
+      {
+        title: 'Timetable',
+        path: paths.dashboard.timetable.root,
+        icon: ICONS.stage,
+      },
     ],
   },
 ];
