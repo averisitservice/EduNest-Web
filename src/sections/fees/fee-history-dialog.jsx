@@ -17,6 +17,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import ApiService from 'src/services/ApiService';
+import { fNumber } from 'src/utils/format-number';
 
 export function FeeHistoryDialog({ open, onClose, student }) {
   const [history, setHistory] = useState([]);
@@ -70,7 +71,7 @@ export function FeeHistoryDialog({ open, onClose, student }) {
                     <TableCell>{p.receiptNo}</TableCell>
                     <TableCell>{p.paymentDate}</TableCell>
                     <TableCell>{p.paymentMode}</TableCell>
-                    <TableCell align="right">{Number(p.amount).toLocaleString('en-IN')}</TableCell>
+                    <TableCell align="right">{fNumber(p.amount)}</TableCell>
                     <TableCell>{p.collectedBy || '-'}</TableCell>
                   </TableRow>
                 ))}
