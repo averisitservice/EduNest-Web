@@ -15,6 +15,8 @@ import {
   FormHelperText,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
+import ApiService from 'src/services/ApiService';
+import { toast } from 'src/components/snackbar';
 
 // Helper to format time slot label
 function formatTime(value) {
@@ -49,13 +51,15 @@ export function TimetableEditDialog({
   day,
   subjects,
   teachers,
-  saving,
-  onSave,
+  selectedClass,
+  workingDayId,
+  onSuccess,
 }) {
   const [subjectId, setSubjectId] = useState('');
   const [teacherId, setTeacherId] = useState('');
   const [subjectError, setSubjectError] = useState('');
   const [teacherError, setTeacherError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   // Update form fields when the row or day changes (e.g. when opening the dialog)
   useEffect(() => {
@@ -68,7 +72,7 @@ export function TimetableEditDialog({
     }
   }, [open, row, day]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let isValid = true;
     if (!subjectId) {
       setSubjectError('Subject is required.');
@@ -84,11 +88,31 @@ export function TimetableEditDialog({
       setTeacherError('');
     }
 
-    if (isValid) {
-      onSave({
+    if (!isValid || !selectedClass || !row) return;
+
+    setSaving(true);
+    try {
+      const payload = {
+        classId: selectedClass.classId,
+        sectionId: selectedClass.sectionId,
+        workingDayId,
+        timeSlotId: row.timeSlotId,
         subjectId,
         teacherId,
-      });
+      };
+      const res = await ApiService.saveTimetableCellAsync(payload);
+      if (res?.data) {
+        toast.success('Slot saved successfully!');
+        onSuccess();
+        onClose();
+      } else if (res?.errors?.length) {
+        toast.error(res.errors[0].msg);
+      }
+    } catch (err) {
+      console.error('Failed to save cell:', err);
+      toast.error('Failed to save cell.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -172,6 +196,7 @@ TimetableEditDialog.propTypes = {
   day: PropTypes.string,
   subjects: PropTypes.array.isRequired,
   teachers: PropTypes.array.isRequired,
-  saving: PropTypes.bool.isRequired,
-  onSave: PropTypes.func.isRequired,
+  selectedClass: PropTypes.object,
+  workingDayId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onSuccess: PropTypes.func.isRequired,
 };

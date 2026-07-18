@@ -82,7 +82,6 @@ export function TimetableView() {
   const [editOpen, setEditOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [editDay, setEditDay] = useState('');
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function loadLookups() {
@@ -143,43 +142,14 @@ export function TimetableView() {
   }, [loadTimetable]);
 
   const handleOpenCell = (row, day) => {
+    const workingDayId = workingDayMap[day];
+    if (!workingDayId) {
+      toast.error(`Working day "${day}" is not configured.`);
+      return;
+    }
     setEditRow(row);
     setEditDay(day);
     setEditOpen(true);
-  };
-
-  const handleSaveCell = async ({ subjectId, teacherId }) => {
-    if (!selectedClass || !editRow) return;
-
-    const workingDayId = workingDayMap[editDay];
-    if (!workingDayId) {
-      toast.error(`Working day "${editDay}" is not configured.`);
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const payload = {
-        classId: selectedClass.classId,
-        sectionId: selectedClass.sectionId,
-        workingDayId,
-        timeSlotId: editRow.timeSlotId,
-        subjectId,
-        teacherId,
-      };
-      const res = await ApiService.saveTimetableCellAsync(payload);
-      if (res?.data) {
-        toast.success('Slot saved successfully!');
-        setEditOpen(false);
-        await loadTimetable();
-      } else if (res?.errors?.length) {
-        toast.error(res.errors[0].msg);
-      }
-    } catch (err) {
-      console.error('Failed to save cell:', err);
-    } finally {
-      setSaving(false);
-    }
   };
 
   const handleExport = () => {
@@ -312,16 +282,29 @@ export function TimetableView() {
           </Box>
         ) : (
           <>
-            <TableContainer>
+            <TableContainer sx={{ overflowX: 'auto', pb: 1.5 }}>
               <Table
                 sx={{
                   minWidth: 800,
-                  borderCollapse: 'collapse',
+                  tableLayout: 'fixed',
+                  borderCollapse: 'separate',
+                  borderSpacing: 0,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  overflow: 'hidden',
                   '& th, & td': {
-                    border: '1px solid',
+                    borderRight: '1px solid',
+                    borderBottom: '1px solid',
                     borderColor: 'divider',
                     textAlign: 'center',
                     p: '6px !important',
+                  },
+                  '& tr:last-of-type td': {
+                    borderBottom: 0,
+                  },
+                  '& th:last-of-type, & td:last-of-type': {
+                    borderRight: 0,
                   },
                 }}
               >
@@ -330,8 +313,8 @@ export function TimetableView() {
                     <TableCell
                       sx={{
                         fontWeight: 800,
-                        width: '130px',
-                        fontSize: '0.7rem',
+                        width: '180px',
+                        fontSize: '0.95rem',
                         color: 'text.secondary',
                         textTransform: 'uppercase',
                         letterSpacing: 0.5,
@@ -348,6 +331,7 @@ export function TimetableView() {
                           color: 'text.secondary',
                           textTransform: 'uppercase',
                           letterSpacing: 0.5,
+                          width: '150px',
                         }}
                       >
                         {day}
@@ -365,7 +349,7 @@ export function TimetableView() {
                           fontWeight: 700,
                           color: 'text.secondary',
                           bgcolor: (theme) => alpha(theme.palette.grey[500], 0.02),
-                          fontSize: '0.7rem',
+                          fontSize: '1rem',
                           lineHeight: 1.2,
                           py: '8px !important',
                         }}
@@ -496,8 +480,6 @@ export function TimetableView() {
                   <Switch
                     checked={showTeacherName}
                     onChange={(e) => setShowTeacherName(e.target.checked)}
-                    color="success"
-                    size="small"
                   />
                 }
                 label="Show Teacher Name"
@@ -515,8 +497,9 @@ export function TimetableView() {
         day={editDay}
         subjects={subjects}
         teachers={teachers}
-        saving={saving}
-        onSave={handleSaveCell}
+        selectedClass={selectedClass}
+        workingDayId={workingDayMap[editDay]}
+        onSuccess={loadTimetable}
       />
     </DashboardContent>
   );
