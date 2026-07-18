@@ -282,17 +282,12 @@ export function TimetableView() {
           </Box>
         ) : (
           <>
-            <TableContainer sx={{ overflowX: 'auto', pb: 1.5 }}>
+            <TableContainer sx={{ overflowX: 'auto' }}>
               <Table
                 sx={{
                   minWidth: 800,
                   tableLayout: 'fixed',
-                  borderCollapse: 'separate',
-                  borderSpacing: 0,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  borderRadius: 1,
-                  overflow: 'hidden',
+                  borderCollapse: 'collapse',
                   '& th, & td': {
                     borderRight: '1px solid',
                     borderBottom: '1px solid',
@@ -301,7 +296,7 @@ export function TimetableView() {
                     p: '6px !important',
                   },
                   '& tr:last-of-type td': {
-                    borderBottom: 0,
+                    borderBottom: '0 !important',
                   },
                   '& th:last-of-type, & td:last-of-type': {
                     borderRight: 0,
