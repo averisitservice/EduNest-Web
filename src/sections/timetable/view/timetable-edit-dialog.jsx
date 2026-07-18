@@ -1,22 +1,24 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z as zod } from 'zod';
+
 import {
   Stack,
   Button,
-  Select,
   Dialog,
   MenuItem,
   Typography,
-  InputLabel,
-  FormControl,
   DialogTitle,
   DialogContent,
   DialogActions,
-  FormHelperText,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
+
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
+import { Form, Field } from 'src/components/hook-form';
 
 // Helper to format time slot label
 function formatTime(value) {
@@ -44,6 +46,15 @@ function getRowTimeLabel(row) {
   return range || row.slotName || '';
 }
 
+const TimetablePeriodSchema = zod.object({
+  subjectId: zod.any().refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
+    message: 'Subject is required.',
+  }),
+  teacherId: zod.any().refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
+    message: 'Teacher is required.',
+  }),
+});
+
 export function TimetableEditDialog({
   open,
   onClose,
@@ -54,27 +65,46 @@ export function TimetableEditDialog({
   workingDayId,
   onSuccess,
 }) {
-  const [subjectId, setSubjectId] = useState('');
-  const [teacherId, setTeacherId] = useState('');
   const [teacherOptions, setTeacherOptions] = useState([]);
   const [loadingTeachers, setLoadingTeachers] = useState(false);
-  const [subjectError, setSubjectError] = useState('');
-  const [teacherError, setTeacherError] = useState('');
-  const [saving, setSaving] = useState(false);
 
+  const defaultValues = {
+    subjectId: '',
+    teacherId: '',
+  };
+
+  const methods = useForm({
+    mode: 'onSubmit',
+    resolver: zodResolver(TimetablePeriodSchema),
+    defaultValues,
+  });
+
+  const {
+    watch,
+    reset,
+    setValue,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const subjectId = watch('subjectId');
+
+  // Update form fields when the row or day changes (e.g. when opening the dialog)
   useEffect(() => {
     if (open && row && day) {
       const cell = row.cells?.[day] || {};
-      setSubjectId(cell.subjectId ?? '');
-      setTeacherId(cell.teacherId ?? '');
-      setSubjectError('');
-      setTeacherError('');
+      reset({
+        subjectId: cell.subjectId ?? '',
+        teacherId: cell.teacherId ?? '',
+      });
     }
-  }, [open, row, day]);
+  }, [open, row, day, reset]);
 
+  // Load teachers who teach the selected subject (teacher_subject mapping)
   useEffect(() => {
     if (!subjectId) {
       setTeacherOptions([]);
+      setValue('teacherId', '');
       return undefined;
     }
     let active = true;
@@ -93,35 +123,19 @@ export function TimetableEditDialog({
     return () => {
       active = false;
     };
-  }, [subjectId]);
+  }, [subjectId, setValue]);
 
-  const handleSave = async () => {
-    let isValid = true;
-    if (!subjectId) {
-      setSubjectError('Subject is required.');
-      isValid = false;
-    } else {
-      setSubjectError('');
-    }
+  const onSubmit = handleSubmit(async (data) => {
+    if (!selectedClass || !row) return;
 
-    if (!teacherId) {
-      setTeacherError('Teacher is required.');
-      isValid = false;
-    } else {
-      setTeacherError('');
-    }
-
-    if (!isValid || !selectedClass || !row) return;
-
-    setSaving(true);
     try {
       const payload = {
         classId: selectedClass.classId,
         sectionId: selectedClass.sectionId,
         workingDayId,
         timeSlotId: row.timeSlotId,
-        subjectId,
-        teacherId,
+        subjectId: data.subjectId,
+        teacherId: data.teacherId,
       };
       const res = await ApiService.saveTimetableCellAsync(payload);
       if (res?.data) {
@@ -134,32 +148,20 @@ export function TimetableEditDialog({
     } catch (err) {
       console.error('Failed to save cell:', err);
       toast.error('Failed to save cell.');
-    } finally {
-      setSaving(false);
     }
-  };
+  });
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ fontWeight: 'bold' }}>Assign Period</DialogTitle>
-      <DialogContent dividers>
-        <Stack spacing={2.5} sx={{ mt: 0.5 }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {day} &nbsp;•&nbsp; {getRowTimeLabel(row)}
-          </Typography>
+      <Form methods={methods} onSubmit={onSubmit}>
+        <DialogContent dividers>
+          <Stack spacing={2.5} sx={{ mt: 0.5 }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              {day} &nbsp;•&nbsp; {getRowTimeLabel(row)}
+            </Typography>
 
-          <FormControl fullWidth error={Boolean(subjectError)}>
-            <InputLabel id="edit-subject-label">Subject</InputLabel>
-            <Select
-              labelId="edit-subject-label"
-              value={subjectId}
-              label="Subject"
-              onChange={(e) => {
-                setSubjectId(e.target.value);
-                setTeacherId('');
-                if (e.target.value) setSubjectError('');
-              }}
-            >
+            <Field.Select name="subjectId" label="Subject">
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
@@ -168,24 +170,21 @@ export function TimetableEditDialog({
                   {sub.subjectName}
                 </MenuItem>
               ))}
-            </Select>
-            {subjectError && <FormHelperText>{subjectError}</FormHelperText>}
-          </FormControl>
+            </Field.Select>
 
-          <FormControl
-            fullWidth
-            error={Boolean(teacherError)}
-            disabled={!subjectId || loadingTeachers}
-          >
-            <InputLabel id="edit-teacher-label">Teacher</InputLabel>
-            <Select
-              labelId="edit-teacher-label"
-              value={teacherId}
+            <Field.Select
+              name="teacherId"
               label="Teacher"
-              onChange={(e) => {
-                setTeacherId(e.target.value);
-                if (e.target.value) setTeacherError('');
-              }}
+              disabled={!subjectId || loadingTeachers}
+              helperText={
+                !subjectId
+                  ? 'Select a subject first'
+                  : loadingTeachers
+                    ? 'Loading teachers…'
+                    : teacherOptions.length === 0
+                      ? 'No teachers assigned to this subject'
+                      : ''
+              }
             >
               <MenuItem value="">
                 <em>None</em>
@@ -195,28 +194,18 @@ export function TimetableEditDialog({
                   {teacher.teacherName}
                 </MenuItem>
               ))}
-            </Select>
-            <FormHelperText>
-              {teacherError ||
-                (!subjectId
-                  ? 'Select a subject first'
-                  : loadingTeachers
-                    ? 'Loading teachers…'
-                    : teacherOptions.length === 0
-                      ? 'No teachers assigned to this subject'
-                      : '')}
-            </FormHelperText>
-          </FormControl>
-        </Stack>
-      </DialogContent>
-      <DialogActions sx={{ justifyContent: 'flex-start' }}>
-        <LoadingButton onClick={handleSave} variant="contained" color="primary" loading={saving}>
-          Save
-        </LoadingButton>
-        <Button variant="outlined" color="error" onClick={onClose} disabled={saving}>
-          Cancel
-        </Button>
-      </DialogActions>
+            </Field.Select>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'flex-start' }}>
+          <LoadingButton type="submit" variant="contained" color="primary" loading={isSubmitting}>
+            Save
+          </LoadingButton>
+          <Button variant="outlined" color="error" onClick={onClose} disabled={isSubmitting}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Form>
     </Dialog>
   );
 }
