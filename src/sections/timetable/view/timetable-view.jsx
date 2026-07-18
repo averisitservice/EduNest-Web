@@ -288,6 +288,7 @@ export function TimetableView() {
           <>
             <TableContainer sx={{ overflowX: 'auto' }}>
               <Table
+                size="small"
                 sx={{
                   minWidth: 800,
                   tableLayout: 'fixed',
@@ -297,10 +298,6 @@ export function TimetableView() {
                     borderBottom: '1px solid',
                     borderColor: 'divider',
                     textAlign: 'center',
-                    p: '6px !important',
-                  },
-                  '& tr:last-of-type td': {
-                    borderBottom: '0 !important',
                   },
                   '& th:last-of-type, & td:last-of-type': {
                     borderRight: 0,
@@ -308,7 +305,7 @@ export function TimetableView() {
                 }}
               >
                 <TableHead>
-                  <TableRow sx={{ bgcolor: (theme) => alpha(theme.palette.grey[500], 0.06) }}>
+                  <TableRow>
                     <TableCell
                       sx={{
                         fontWeight: 800,
@@ -344,48 +341,24 @@ export function TimetableView() {
                         sx={{
                           fontWeight: 700,
                           color: 'text.secondary',
-                          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.02),
                           lineHeight: 1.2,
-                          py: '8px !important',
                         }}
                       >
                         {getRowTimeLabel(row)}
                       </TableCell>
 
                       {row.isBreak ? (
-                        <TableCell
-                          colSpan={workingDays.length}
-                          sx={{
-                            p: '4px !important',
-                            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.01),
-                          }}
-                        >
-                          <Box
+                        <TableCell colSpan={workingDays.length}>
+                          <Typography
+                            variant="subtitle2"
                             sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
-                              border: '1px dashed',
-                              borderColor: 'primary.main',
-                              borderRadius: 1,
-                              py: 0.5,
-                              mx: 'auto',
-                              width: '98%',
-                              gap: 1,
+                              fontWeight: 800,
+                              letterSpacing: 1.5,
+                              textAlign: 'center',
                             }}
                           >
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                color: 'primary.main',
-                                fontWeight: 800,
-                                letterSpacing: 1.5,
-                              }}
-                            >
-                              BREAK
-                            </Typography>
-                          </Box>
+                            BREAK
+                          </Typography>
                         </TableCell>
                       ) : (
                         workingDays.map((day) => {
@@ -398,25 +371,11 @@ export function TimetableView() {
                               onClick={() => handleOpenCell(row, day)}
                               sx={{
                                 verticalAlign: 'middle',
-                                p: '4px !important',
                                 cursor: 'pointer',
-                                '&:hover': {
-                                  bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
-                                },
                               }}
                             >
                               {hasClass ? (
-                                <Box
-                                  sx={{
-                                    borderRadius: 0.75,
-                                    p: 0.75,
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                  }}
-                                >
+                                <Stack alignItems="center" justifyContent="center">
                                   <Typography
                                     variant="subtitle2"
                                     sx={{
@@ -433,13 +392,12 @@ export function TimetableView() {
                                       sx={{
                                         color: 'text.secondary',
                                         fontWeight: 500,
-                                        mt: 0.25,
                                       }}
                                     >
                                       {cell.teacherName}
                                     </Typography>
                                   )}
-                                </Box>
+                                </Stack>
                               ) : (
                                 <Typography
                                   variant="body2"
