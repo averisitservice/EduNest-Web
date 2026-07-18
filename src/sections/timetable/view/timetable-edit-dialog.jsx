@@ -62,7 +62,6 @@ export function TimetableEditDialog({
   const [teacherError, setTeacherError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Update form fields when the row or day changes (e.g. when opening the dialog)
   useEffect(() => {
     if (open && row && day) {
       const cell = row.cells?.[day] || {};
@@ -73,7 +72,6 @@ export function TimetableEditDialog({
     }
   }, [open, row, day]);
 
-  // Load teachers who teach the selected subject (teacher_subject mapping)
   useEffect(() => {
     if (!subjectId) {
       setTeacherOptions([]);
