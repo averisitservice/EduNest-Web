@@ -8,7 +8,6 @@ import {
   Button,
   Switch,
   Select,
-  Dialog,
   TableRow,
   MenuItem,
   TextField,
@@ -19,15 +18,11 @@ import {
   InputLabel,
   FormControl,
   Autocomplete,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
   TableContainer,
   CircularProgress,
   FormControlLabel,
-  TablePagination,
 } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
+import { TimetableEditDialog } from './timetable-edit-dialog';
 import { paths } from 'src/routes/paths';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
@@ -35,11 +30,9 @@ import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-// ----------------------------------------------------------------------
 
 const BREAK_ICON = 'solar:cup-bold-duotone';
 
-// Backend serialises LocalTime as "HH:mm:ss" (string) or [h, m] (array); normalise to "hh:mm AM/PM".
 function formatTime(value) {
   if (!value) return '';
   let hours;
@@ -71,14 +64,13 @@ function getClassLabel(option) {
     : option.className || '';
 }
 
-// ----------------------------------------------------------------------
 
 export function TimetableView() {
   const [classSections, setClassSections] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
 
   const [workingDays, setWorkingDays] = useState([]);
-  const [workingDayMap, setWorkingDayMap] = useState({}); // dayName -> workingDayId
+  const [workingDayMap, setWorkingDayMap] = useState({});
   const [subjects, setSubjects] = useState([]);
   const [teachers, setTeachers] = useState([]);
 
@@ -86,18 +78,12 @@ export function TimetableView() {
   const [showTeacherName, setShowTeacherName] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-
   // Cell edit dialog
   const [editOpen, setEditOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [editDay, setEditDay] = useState('');
-  const [editSubjectId, setEditSubjectId] = useState('');
-  const [editTeacherId, setEditTeacherId] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Load lookups: class/section list, working days (for name -> id), subjects and teachers.
   useEffect(() => {
     async function loadLookups() {
       try {
@@ -129,7 +115,6 @@ export function TimetableView() {
     loadLookups();
   }, []);
 
-  // Load the timetable grid for the selected class/section.
   const loadTimetable = useCallback(async () => {
     if (!selectedClass) {
       setRows([]);
@@ -144,7 +129,6 @@ export function TimetableView() {
       );
       setWorkingDays(res?.data?.workingDays ?? []);
       setRows(res?.data?.rows ?? []);
-      setPage(0);
     } catch (err) {
       console.error('Failed to load timetable:', err);
       setWorkingDays([]);
@@ -159,15 +143,12 @@ export function TimetableView() {
   }, [loadTimetable]);
 
   const handleOpenCell = (row, day) => {
-    const cell = row.cells?.[day] || {};
     setEditRow(row);
     setEditDay(day);
-    setEditSubjectId(cell.subjectId ?? '');
-    setEditTeacherId(cell.teacherId ?? '');
     setEditOpen(true);
   };
 
-  const handleSaveCell = async () => {
+  const handleSaveCell = async ({ subjectId, teacherId }) => {
     if (!selectedClass || !editRow) return;
 
     const workingDayId = workingDayMap[editDay];
@@ -183,8 +164,8 @@ export function TimetableView() {
         sectionId: selectedClass.sectionId,
         workingDayId,
         timeSlotId: editRow.timeSlotId,
-        subjectId: editSubjectId || null,
-        teacherId: editTeacherId || null,
+        subjectId,
+        teacherId,
       };
       const res = await ApiService.saveTimetableCellAsync(payload);
       if (res?.data) {
@@ -238,12 +219,10 @@ export function TimetableView() {
     toast.success('Timetable exported successfully!');
   };
 
-  const paginatedRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   const headerTitle = selectedClass ? `${getClassLabel(selectedClass)} Timetable` : 'Timetable';
 
   return (
     <DashboardContent>
-      {/* Page Header & Breadcrumbs */}
       <CustomBreadcrumbs
         heading="Manage Timetable"
         links={[
@@ -253,7 +232,6 @@ export function TimetableView() {
         sx={{ mb: 4 }}
       />
 
-      {/* Class Selector and Export Button */}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         justifyContent="space-between"
@@ -292,9 +270,7 @@ export function TimetableView() {
         </Button>
       </Stack>
 
-      {/* Main Timetable View Card */}
       <Card sx={{ borderRadius: 2, boxShadow: (theme) => theme.customShadows?.card || 3 }}>
-        {/* Card Header Section */}
         <Stack
           direction="row"
           alignItems="center"
@@ -308,8 +284,7 @@ export function TimetableView() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
-              color: 'success.main',
+              bgcolor: (theme) => alpha(theme.palette.primary.lighter, 0.08),
               mr: 2,
             }}
           >
@@ -337,7 +312,6 @@ export function TimetableView() {
           </Box>
         ) : (
           <>
-            {/* Timetable Grid Table */}
             <TableContainer>
               <Table
                 sx={{
@@ -383,7 +357,7 @@ export function TimetableView() {
                 </TableHead>
 
                 <TableBody>
-                  {paginatedRows.map((row) => (
+                  {rows.map((row) => (
                     <TableRow key={row.timeSlotId} hover>
                       {/* Time column */}
                       <TableCell
@@ -400,12 +374,11 @@ export function TimetableView() {
                       </TableCell>
 
                       {row.isBreak ? (
-                        /* Break Rows span across all day columns */
                         <TableCell
                           colSpan={workingDays.length}
                           sx={{
                             p: '4px !important',
-                            bgcolor: (theme) => alpha(theme.palette.success.main, 0.01),
+                            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.01),
                           }}
                         >
                           <Box
@@ -413,9 +386,9 @@ export function TimetableView() {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              bgcolor: (theme) => alpha(theme.palette.success.main, 0.06),
+                              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
                               border: '1px dashed',
-                              borderColor: 'success.main',
+                              borderColor: 'primary.main',
                               borderRadius: 1,
                               py: 0.5,
                               mx: 'auto',
@@ -423,22 +396,20 @@ export function TimetableView() {
                               gap: 1,
                             }}
                           >
-                            <Iconify icon={BREAK_ICON} width={14} sx={{ color: 'success.main' }} />
                             <Typography
                               variant="subtitle2"
                               sx={{
-                                color: 'success.dark',
+                                color: 'primary.main',
                                 fontWeight: 800,
                                 fontSize: '0.7rem',
                                 letterSpacing: 1.5,
                               }}
                             >
-                              {(row.slotName || 'Break').toUpperCase()}
+                              BREAK
                             </Typography>
                           </Box>
                         </TableCell>
                       ) : (
-                        /* Normal class period cells - click to assign subject/teacher */
                         workingDays.map((day) => {
                           const cell = row.cells?.[day];
                           const hasClass = Boolean(cell && cell.subjectName);
@@ -511,15 +482,11 @@ export function TimetableView() {
               </Table>
             </TableContainer>
 
-            {/* Footer Actions / Pagination */}
             <Box
               sx={{
                 p: 1.5,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: 2,
                 borderTop: '1px solid',
                 borderColor: 'divider',
               }}
@@ -536,87 +503,21 @@ export function TimetableView() {
                 label="Show Teacher Name"
                 sx={{ ml: 1 }}
               />
-
-              <TablePagination
-                component="div"
-                count={rows.length}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                onPageChange={(e, newPage) => setPage(newPage)}
-                onRowsPerPageChange={(e) => {
-                  setRowsPerPage(parseInt(e.target.value, 10));
-                  setPage(0);
-                }}
-                rowsPerPageOptions={[10, 25, 50]}
-                sx={{ borderTopColor: 'transparent', alignSelf: 'flex-end' }}
-              />
             </Box>
           </>
         )}
       </Card>
 
-      {/* Cell Edit Dialog - assign subject & teacher (POST /timetable/cell) */}
-      <Dialog open={editOpen} onClose={() => setEditOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ fontWeight: 'bold' }}>Assign Period</DialogTitle>
-        <DialogContent dividers>
-          <Stack spacing={2.5} sx={{ mt: 0.5 }}>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {editDay} &nbsp;•&nbsp; {editRow ? getRowTimeLabel(editRow) : ''}
-            </Typography>
-
-            <FormControl fullWidth>
-              <InputLabel id="edit-subject-label">Subject</InputLabel>
-              <Select
-                labelId="edit-subject-label"
-                value={editSubjectId}
-                label="Subject"
-                onChange={(e) => setEditSubjectId(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {subjects.map((sub) => (
-                  <MenuItem key={sub.subjectId} value={sub.subjectId}>
-                    {sub.subjectName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl fullWidth>
-              <InputLabel id="edit-teacher-label">Teacher</InputLabel>
-              <Select
-                labelId="edit-teacher-label"
-                value={editTeacherId}
-                label="Teacher"
-                onChange={(e) => setEditTeacherId(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {teachers.map((teacher) => (
-                  <MenuItem key={teacher.teacherId} value={teacher.teacherId}>
-                    {teacher.teacherName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditOpen(false)} color="inherit" disabled={saving}>
-            Cancel
-          </Button>
-          <LoadingButton
-            onClick={handleSaveCell}
-            variant="contained"
-            color="success"
-            loading={saving}
-          >
-            Save
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
+      <TimetableEditDialog
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        row={editRow}
+        day={editDay}
+        subjects={subjects}
+        teachers={teachers}
+        saving={saving}
+        onSave={handleSaveCell}
+      />
     </DashboardContent>
   );
 }
