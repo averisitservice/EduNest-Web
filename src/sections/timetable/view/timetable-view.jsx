@@ -248,28 +248,11 @@ export function TimetableView() {
         <Stack
           direction="row"
           alignItems="center"
-          sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}
+          sx={{ p: 2 }}
         >
-          <Box
-            sx={{
-              width: 44,
-              height: 44,
-              borderRadius: 1.2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bgcolor: (theme) => alpha(theme.palette.primary.lighter, 0.08),
-              mr: 2,
-            }}
-          >
-            <Iconify icon="solar:calendar-bold-duotone" width={24} />
-          </Box>
           <Stack>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
               {headerTitle}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              All Days - Full Week
             </Typography>
           </Stack>
         </Stack>
