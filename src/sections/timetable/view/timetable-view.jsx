@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { alpha } from '@mui/material/styles';
 import {
   Box,
   Card,
@@ -83,19 +82,20 @@ export function TimetableView() {
           ApiService.getSubjectAsync(),
         ]);
 
-        const classList = classRes?.data ?? [];
+        const classList = classRes && classRes.data ? classRes.data : [];
         setClassSections(classList);
         if (classList.length > 0) {
           setSelectedClass(classList[0]);
         }
 
         const map = {};
-        (wdRes?.data ?? []).forEach((wd) => {
+        const wdList = wdRes && wdRes.data ? wdRes.data : [];
+        wdList.forEach((wd) => {
           map[wd.dayName] = wd.workingDayId;
         });
         setWorkingDayMap(map);
 
-        setSubjects(subRes?.data ?? []);
+        setSubjects(subRes && subRes.data ? subRes.data : []);
       } catch (err) {
         console.error('Failed to load timetable lookups:', err);
       }
@@ -115,8 +115,10 @@ export function TimetableView() {
         selectedClass.classId,
         selectedClass.sectionId
       );
-      setWorkingDays(res?.data?.workingDays ?? []);
-      setRows(res?.data?.rows ?? []);
+      const workingDaysList = res && res.data && res.data.workingDays ? res.data.workingDays : [];
+      const rowsList = res && res.data && res.data.rows ? res.data.rows : [];
+      setWorkingDays(workingDaysList);
+      setRows(rowsList);
     } catch (err) {
       console.error('Failed to load timetable:', err);
       setWorkingDays([]);
@@ -155,7 +157,7 @@ export function TimetableView() {
         const line = [
           timeLabel,
           ...workingDays.map((day) => {
-            const cell = row.cells?.[day];
+            const cell = row.cells && row.cells[day] ? row.cells[day] : null;
             if (!cell || !cell.subjectName) return '--';
             return showTeacherName && cell.teacherName
               ? `"${cell.subjectName} (${cell.teacherName})"`
@@ -201,7 +203,9 @@ export function TimetableView() {
         <Select
           size="small"
           value={
-            selectedClass ? `${selectedClass.classId}-${selectedClass.sectionId ?? 'null'}` : ''
+            selectedClass
+              ? `${selectedClass.classId}-${selectedClass.sectionId !== null && selectedClass.sectionId !== undefined ? selectedClass.sectionId : 'null'}`
+              : ''
           }
           onChange={(e) => {
             const val = e.target.value;
@@ -210,7 +214,10 @@ export function TimetableView() {
             } else {
               const [classId, sectionId] = val.split('-');
               const selectedOption = classSections.find(
-                (c) => c.classId == classId && (c.sectionId ?? 'null') == sectionId
+                (c) =>
+                  c.classId == classId &&
+                  (c.sectionId !== null && c.sectionId !== undefined ? c.sectionId : 'null') ==
+                    sectionId
               );
               setSelectedClass(selectedOption || null);
             }
@@ -223,8 +230,8 @@ export function TimetableView() {
           </MenuItem>
           {classSections.map((option) => (
             <MenuItem
-              key={`${option.classId}-${option.sectionId ?? 'null'}`}
-              value={`${option.classId}-${option.sectionId ?? 'null'}`}
+              key={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
+              value={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
             >
               {option.sectionName
                 ? `${option.className} - ${option.sectionName}`
@@ -245,11 +252,7 @@ export function TimetableView() {
       </Stack>
 
       <Card>
-        <Stack
-          direction="row"
-          alignItems="center"
-          sx={{ p: 2 }}
-        >
+        <Stack direction="row" alignItems="center" sx={{ p: 2 }}>
           <Stack>
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
               {headerTitle}
@@ -345,7 +348,7 @@ export function TimetableView() {
                         </TableCell>
                       ) : (
                         workingDays.map((day) => {
-                          const cell = row.cells?.[day];
+                          const cell = row.cells && row.cells[day] ? row.cells[day] : null;
                           const hasClass = Boolean(cell && cell.subjectName);
 
                           return (

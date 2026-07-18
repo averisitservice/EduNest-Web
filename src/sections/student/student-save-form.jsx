@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
-import {
-  Autocomplete, Box, Button, Card,
-  MenuItem, Stack, TextField
-} from '@mui/material';
+import { Autocomplete, Box, Button, Card, MenuItem, Stack, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -22,10 +19,15 @@ const StudentSchema = zod.object({
   middleName: zod.string().nullable().optional().or(zod.literal('')),
   lastName: zod.string().min(1, { message: 'Last Name is required.' }),
   gender: zod.string().min(1, { message: 'Gender is required.' }),
-  dateOfBirth: zod.string({ required_error: 'Date of Birth is required.' }).min(1, { message: 'Date of Birth is required.' }),
+  dateOfBirth: zod
+    .string({ required_error: 'Date of Birth is required.' })
+    .min(1, { message: 'Date of Birth is required.' }),
   bloodGroup: zod.string().nullable().optional().or(zod.literal('')),
   aadharNo: zod.string().nullable().optional().or(zod.literal('')),
-  email: zod.string().min(1, { message: 'Email is required.' }).email({ message: 'Email must be valid.' }),
+  email: zod
+    .string()
+    .min(1, { message: 'Email is required.' })
+    .email({ message: 'Email must be valid.' }),
   mobileNo: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
   addressLine1: zod.string().nullable().optional(),
   city: zod.string().nullable().optional(),
@@ -34,9 +36,20 @@ const StudentSchema = zod.object({
   fatherName: zod.string().min(1, { message: 'Father Name is required.' }),
   motherName: zod.string().nullable().optional(),
   parentMobile: schemaHelper.phoneNumber({ isValid: isValidPhoneNumber }),
-  parentEmail: zod.string().nullable().optional().or(zod.literal('').refine(val => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), { message: 'Parent Email must be valid.' })),
+  parentEmail: zod
+    .string()
+    .nullable()
+    .optional()
+    .or(
+      zod.literal('').refine((val) => !val || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val), {
+        message: 'Parent Email must be valid.',
+      })
+    ),
   parentAadhar: zod.string().nullable().optional().or(zod.literal('')),
-  studentClass: zod.any().nullable().refine(val => val !== null, { message: 'Class & Section is required.' }),
+  studentClass: zod
+    .any()
+    .nullable()
+    .refine((val) => val !== null, { message: 'Class & Section is required.' }),
   rollNo: zod.string().min(1, { message: 'Roll Number is required.' }),
 });
 
@@ -84,7 +97,6 @@ export function StudentSaveForm() {
     formState: { isSubmitting, isLoading, errors },
   } = methods;
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -96,9 +108,11 @@ export function StudentSaveForm() {
 
           methods.reset({
             ...data,
-            studentClass: classRes.data?.find(
-              (c) => c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
-            ) || null,
+            studentClass:
+              classRes.data?.find(
+                (c) =>
+                  c.classId === data.classId && (c.sectionId ?? null) === (data.sectionId ?? null)
+              ) || null,
           });
         }
       } catch (err) {
@@ -122,7 +136,7 @@ export function StudentSaveForm() {
 
     const response = await apiService.saveStudentAsync(payload);
     if (response.data) {
-      toast.success(id ? "Student updated successfully." : "Student created successfully.");
+      toast.success(id ? 'Student updated successfully.' : 'Student created successfully.');
       navigate(-1);
       return;
     }
@@ -169,7 +183,12 @@ export function StudentSaveForm() {
                     <MenuItem value="O">Other</MenuItem>
                   </Field.Select>
 
-                  <Field.DatePicker name="dateOfBirth" label="Date of Birth" allowFutureDates={false} allowPastDates={true} />
+                  <Field.DatePicker
+                    name="dateOfBirth"
+                    label="Date of Birth"
+                    allowFutureDates={false}
+                    allowPastDates={true}
+                  />
 
                   <Field.Select name="bloodGroup" label="Blood Group">
                     {BLOOD_GROUPS.map((group) => (
@@ -198,7 +217,9 @@ export function StudentSaveForm() {
                         }}
                         isOptionEqualToValue={(option, value) => {
                           if (!option || !value) return false;
-                          return option.classId === value.classId && option.sectionId === value.sectionId;
+                          return (
+                            option.classId === value.classId && option.sectionId === value.sectionId
+                          );
                         }}
                         renderInput={(params) => (
                           <TextField

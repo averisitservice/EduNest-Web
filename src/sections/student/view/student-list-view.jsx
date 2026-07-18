@@ -10,7 +10,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
+  TableRow,
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -120,16 +120,18 @@ export function StudentListView() {
       filteredData = filteredData.filter((student) => {
         if (student.classId !== undefined && student.classId !== null) {
           const matchesClass = student.classId == classId;
-          const matchesSection = (sectionId === 'null' || !sectionId)
-            ? (!student.sectionId || student.sectionId == 'null')
-            : student.sectionId == sectionId;
+          const matchesSection =
+            sectionId === 'null' || !sectionId
+              ? !student.sectionId || student.sectionId == 'null'
+              : student.sectionId == sectionId;
           return matchesClass && matchesSection;
         }
         if (selectedOption) {
           const matchesClass = student.className === selectedOption.className;
-          const matchesSection = (sectionId === 'null' || !sectionId)
-            ? !student.sectionName
-            : student.sectionName === selectedOption.sectionName;
+          const matchesSection =
+            sectionId === 'null' || !sectionId
+              ? !student.sectionName
+              : student.sectionName === selectedOption.sectionName;
           return matchesClass && matchesSection;
         }
         return false;
@@ -200,7 +202,9 @@ export function StudentListView() {
                 key={`${option.classId}-${option.sectionId ?? 'null'}`}
                 value={`${option.classId}-${option.sectionId ?? 'null'}`}
               >
-                {option.sectionName ? `${option.className} - ${option.sectionName}` : option.className}
+                {option.sectionName
+                  ? `${option.className} - ${option.sectionName}`
+                  : option.className}
               </MenuItem>
             ))}
           </Select>

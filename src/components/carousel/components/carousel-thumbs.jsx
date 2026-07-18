@@ -53,6 +53,8 @@ export const CarouselThumbs = forwardRef((props, ref) => {
   );
 });
 
+CarouselThumbs.displayName = 'CarouselThumbs';
+
 // ----------------------------------------------------------------------
 
 const ThumbsRoot = styled('div', {
