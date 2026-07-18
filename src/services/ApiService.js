@@ -261,6 +261,7 @@ export default {
   saveTeacherAsync,
   getTeacherDataByIdAsync,
   deleteTeacherAsync,
+  getTeachersBySubjectAsync,
 
   //Timetable
   getWorkingDaysAsync,
@@ -270,7 +271,6 @@ export default {
   getTimetableAsync,
   saveTimetableCellAsync,
   getTeacherTimetableAsync,
-  getTeachersBySubjectAsync,
 
   //Student
   getStudentListAsync,
