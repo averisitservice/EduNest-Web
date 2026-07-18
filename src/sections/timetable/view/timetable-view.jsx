@@ -372,15 +372,11 @@ export function TimetableView() {
         ]}
         action={
           <Button
+            // component={RouterLink}
+            //href={paths.dashboard.student.new}
             variant="contained"
-            color="success"
+            color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
-            onClick={handleOpenDialog}
-            sx={{
-              bgcolor: 'success.main',
-              color: 'success.contrastText',
-              '&:hover': { bgcolor: 'success.dark' },
-            }}
           >
             New Timetable
           </Button>
