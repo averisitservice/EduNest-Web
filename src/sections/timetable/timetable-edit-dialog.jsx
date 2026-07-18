@@ -113,10 +113,7 @@ export function TimetableEditDialog({
       if (!active) return;
       setTeacherOptions(options);
       const currentTeacher = watch('teacherId');
-      if (
-        currentTeacher &&
-        !options.some((t) => String(t.teacherId) === String(currentTeacher))
-      ) {
+      if (currentTeacher && !options.some((t) => String(t.teacherId) === String(currentTeacher))) {
         setValue('teacherId', '');
       }
       if (active) setLoadingTeachers(false);

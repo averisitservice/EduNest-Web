@@ -144,7 +144,11 @@ export function AttendanceMark({ selectedClass }) {
         gap={2}
         sx={{ p: 2 }}
       >
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ flexGrow: 1, width: { xs: '100%', sm: 'auto' } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{ flexGrow: 1, width: { xs: '100%', sm: 'auto' } }}
+        >
           <Field.DatePicker
             name="date"
             label="Date"
@@ -264,7 +268,12 @@ export function AttendanceMark({ selectedClass }) {
               borderColor: 'divider',
             }}
           >
-            <LoadingButton variant="contained" color="primary" loading={saving} onClick={handleSave}>
+            <LoadingButton
+              variant="contained"
+              color="primary"
+              loading={saving}
+              onClick={handleSave}
+            >
               Save Attendance
             </LoadingButton>
           </Box>

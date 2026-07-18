@@ -80,7 +80,7 @@ export function FeeHistoryDialog({ open, onClose, student }) {
           </TableContainer>
         )}
       </DialogContent>
-      <DialogActions >
+      <DialogActions>
         <Button variant="outlined" color="error" onClick={onClose}>
           Close
         </Button>

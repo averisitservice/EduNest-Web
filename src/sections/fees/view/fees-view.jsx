@@ -24,12 +24,10 @@ import ApiService from 'src/services/ApiService';
 import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { fNumber } from 'src/utils/format-number';
 
 import { FeeCollectDialog } from '../fee-collect-dialog';
 import { FeeHistoryDialog } from '../fee-history-dialog';
-import { fNumber } from 'src/utils/format-number';
-
-
 
 function getClassLabel(option) {
   if (!option) return '';
@@ -42,7 +40,6 @@ function classKey(option) {
   if (!option) return '';
   return `${option.classId}-${option.sectionId ?? 'null'}`;
 }
-
 
 export function FeesView() {
   const [classSections, setClassSections] = useState([]);
@@ -70,10 +67,7 @@ export function FeesView() {
       return;
     }
     setLoading(true);
-    const res = await ApiService.getFeeStatusAsync(
-      selectedClass.classId,
-      selectedClass.sectionId
-    );
+    const res = await ApiService.getFeeStatusAsync(selectedClass.classId, selectedClass.sectionId);
     setRows(res && res.data ? res.data : []);
     setLoading(false);
   }, [selectedClass]);
@@ -219,7 +213,11 @@ export function FeesView() {
                             Collect
                           </Button>
                           <Tooltip title="History">
-                            <IconButton size="small" color="primary" onClick={() => setHistoryStudent(r)}>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => setHistoryStudent(r)}
+                            >
                               <Iconify icon="solar:clock-circle-bold-duotone" />
                             </IconButton>
                           </Tooltip>

@@ -121,7 +121,12 @@ export function FeeCollectDialog({ open, onClose, student, onSuccess }) {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'flex-start' }}>
-          <LoadingButton type="submit" variant="contained" color="primary" loading={saving || isSubmitting}>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            loading={saving || isSubmitting}
+          >
             Collect
           </LoadingButton>
           <Button variant="outlined" color="error" onClick={onClose}>
