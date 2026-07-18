@@ -75,30 +75,26 @@ export function TimetableView() {
 
   useEffect(() => {
     async function loadLookups() {
-      try {
-        const [classRes, wdRes, subRes] = await Promise.all([
-          ApiService.getAllClassMasterSectionsAsync(),
-          ApiService.getWorkingDaysAsync(),
-          ApiService.getSubjectAsync(),
-        ]);
+      const [classRes, wdRes, subRes] = await Promise.all([
+        ApiService.getAllClassMasterSectionsAsync(),
+        ApiService.getWorkingDaysAsync(),
+        ApiService.getSubjectAsync(),
+      ]);
 
-        const classList = classRes && classRes.data ? classRes.data : [];
-        setClassSections(classList);
-        if (classList.length > 0) {
-          setSelectedClass(classList[0]);
-        }
-
-        const map = {};
-        const wdList = wdRes && wdRes.data ? wdRes.data : [];
-        wdList.forEach((wd) => {
-          map[wd.dayName] = wd.workingDayId;
-        });
-        setWorkingDayMap(map);
-
-        setSubjects(subRes && subRes.data ? subRes.data : []);
-      } catch (err) {
-        console.error('Failed to load timetable lookups:', err);
+      const classList = classRes && classRes.data ? classRes.data : [];
+      setClassSections(classList);
+      if (classList.length > 0) {
+        setSelectedClass(classList[0]);
       }
+
+      const map = {};
+      const wdList = wdRes && wdRes.data ? wdRes.data : [];
+      wdList.forEach((wd) => {
+        map[wd.dayName] = wd.workingDayId;
+      });
+      setWorkingDayMap(map);
+
+      setSubjects(subRes && subRes.data ? subRes.data : []);
     }
     loadLookups();
   }, []);
@@ -110,22 +106,15 @@ export function TimetableView() {
       return;
     }
     setLoading(true);
-    try {
-      const res = await ApiService.getTimetableAsync(
-        selectedClass.classId,
-        selectedClass.sectionId
-      );
-      const workingDaysList = res && res.data && res.data.workingDays ? res.data.workingDays : [];
-      const rowsList = res && res.data && res.data.rows ? res.data.rows : [];
-      setWorkingDays(workingDaysList);
-      setRows(rowsList);
-    } catch (err) {
-      console.error('Failed to load timetable:', err);
-      setWorkingDays([]);
-      setRows([]);
-    } finally {
-      setLoading(false);
-    }
+    const res = await ApiService.getTimetableAsync(
+      selectedClass.classId,
+      selectedClass.sectionId
+    );
+    const workingDaysList = res && res.data && res.data.workingDays ? res.data.workingDays : [];
+    const rowsList = res && res.data && res.data.rows ? res.data.rows : [];
+    setWorkingDays(workingDaysList);
+    setRows(rowsList);
+    setLoading(false);
   }, [selectedClass]);
 
   useEffect(() => {

@@ -242,6 +242,35 @@ async function getAttendanceSummaryAsync(classId, sectionId, fromDate, toDate) {
   return await axios(config);
 }
 
+//Fee
+async function getFeeStatusAsync(classId, sectionId) {
+  const params = new URLSearchParams();
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/fee/status/${classId}?${query}` : `/fee/status/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function collectFeePaymentAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/fee/payment',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function getFeeHistoryAsync(studentId) {
+  const config = {
+    method: 'get',
+    url: `/fee/history/${studentId}`,
+  };
+  return await axios(config);
+}
+
 export default {
   loginAsync,
   renewSessionAsync,
@@ -283,4 +312,9 @@ export default {
   getAttendanceRosterAsync,
   saveAttendanceAsync,
   getAttendanceSummaryAsync,
+
+  //Fee
+  getFeeStatusAsync,
+  collectFeePaymentAsync,
+  getFeeHistoryAsync,
 };

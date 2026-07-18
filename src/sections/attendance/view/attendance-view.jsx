@@ -29,14 +29,10 @@ export function AttendanceView() {
 
   useEffect(() => {
     async function loadClasses() {
-      try {
-        const res = await ApiService.getAllClassMasterSectionsAsync();
-        const list = res && res.data ? res.data : [];
-        setClassSections(list);
-        if (list.length > 0) setSelectedClass(list[0]);
-      } catch (err) {
-        console.error('Failed to load classes:', err);
-      }
+      const res = await ApiService.getAllClassMasterSectionsAsync();
+      const list = res && res.data ? res.data : [];
+      setClassSections(list);
+      if (list.length > 0) setSelectedClass(list[0]);
     }
     loadClasses();
   }, []);

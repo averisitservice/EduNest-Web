@@ -108,26 +108,18 @@ export function TimetableEditDialog({
     let active = true;
     setLoadingTeachers(true);
     (async () => {
-      try {
-        const res = await ApiService.getTeachersBySubjectAsync(subjectId);
-        const options = res?.data ?? [];
-        if (!active) return;
-        setTeacherOptions(options);
-        // Drop the selected teacher only if they don't teach the chosen subject
-        // (keeps the existing teacher when opening a filled cell).
-        const currentTeacher = watch('teacherId');
-        if (
-          currentTeacher &&
-          !options.some((t) => String(t.teacherId) === String(currentTeacher))
-        ) {
-          setValue('teacherId', '');
-        }
-      } catch (err) {
-        console.error('Failed to load teachers for subject:', err);
-        if (active) setTeacherOptions([]);
-      } finally {
-        if (active) setLoadingTeachers(false);
+      const res = await ApiService.getTeachersBySubjectAsync(subjectId);
+      const options = res && res.data ? res.data : [];
+      if (!active) return;
+      setTeacherOptions(options);
+      const currentTeacher = watch('teacherId');
+      if (
+        currentTeacher &&
+        !options.some((t) => String(t.teacherId) === String(currentTeacher))
+      ) {
+        setValue('teacherId', '');
       }
+      if (active) setLoadingTeachers(false);
     })();
     return () => {
       active = false;
@@ -164,7 +156,7 @@ export function TimetableEditDialog({
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle sx={{ fontWeight: 'bold' }}>Assign Period</DialogTitle>
       <Form methods={methods} onSubmit={onSubmit}>
-        <DialogContent dividers>
+        <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 0.5 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {day} &nbsp;•&nbsp; {getRowTimeLabel(row)}

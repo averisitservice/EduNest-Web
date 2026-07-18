@@ -66,26 +66,17 @@ export function StudentListView() {
 
   const getStudentList = async () => {
     setIsLoading(true);
-    try {
-      const { data } = await ApiService.getStudentListAsync();
-      if (data) {
-        setTableData(data);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+    const { data } = await ApiService.getStudentListAsync();
+    if (data) {
+      setTableData(data);
     }
+    setIsLoading(false);
   };
 
   const getClassMasters = async () => {
-    try {
-      const { data } = await ApiService.getAllClassMasterSectionsAsync();
-      if (data) {
-        setClassMasters(data);
-      }
-    } catch (error) {
-      console.error(error);
+    const { data } = await ApiService.getAllClassMasterSectionsAsync();
+    if (data) {
+      setClassMasters(data);
     }
   };
 

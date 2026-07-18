@@ -39,22 +39,15 @@ export function AttendanceReport({ selectedClass }) {
   const loadSummary = async () => {
     if (!selectedClass) return;
     setLoading(true);
-    try {
-      const res = await ApiService.getAttendanceSummaryAsync(
-        selectedClass.classId,
-        selectedClass.sectionId,
-        fromDate,
-        toDate
-      );
-      setSummary(res && res.data ? res.data : []);
-      setLoaded(true);
-    } catch (err) {
-      console.error('Failed to load summary:', err);
-      setSummary([]);
-      setLoaded(true);
-    } finally {
-      setLoading(false);
-    }
+    const res = await ApiService.getAttendanceSummaryAsync(
+      selectedClass.classId,
+      selectedClass.sectionId,
+      fromDate,
+      toDate
+    );
+    setSummary(res && res.data ? res.data : []);
+    setLoaded(true);
+    setLoading(false);
   };
 
   return (

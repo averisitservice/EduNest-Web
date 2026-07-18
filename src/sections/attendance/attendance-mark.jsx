@@ -54,20 +54,14 @@ export function AttendanceMark({ selectedClass }) {
       return;
     }
     setLoading(true);
-    try {
-      const res = await ApiService.getAttendanceRosterAsync(
-        selectedClass.classId,
-        selectedClass.sectionId,
-        date
-      );
-      const records = res && res.data && res.data.records ? res.data.records : [];
-      setRoster(records.map((r) => ({ ...r, status: r.status || 'P' })));
-    } catch (err) {
-      console.error('Failed to load roster:', err);
-      setRoster([]);
-    } finally {
-      setLoading(false);
-    }
+    const res = await ApiService.getAttendanceRosterAsync(
+      selectedClass.classId,
+      selectedClass.sectionId,
+      date
+    );
+    const records = res && res.data && res.data.records ? res.data.records : [];
+    setRoster(records.map((r) => ({ ...r, status: r.status || 'P' })));
+    setLoading(false);
   }, [selectedClass, date]);
 
   useEffect(() => {

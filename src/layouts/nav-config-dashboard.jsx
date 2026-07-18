@@ -65,6 +65,11 @@ export const navData = [
         path: paths.dashboard.attendance.root,
         icon: ICONS.patient,
       },
+      {
+        title: 'Fees',
+        path: paths.dashboard.fees.root,
+        icon: ICONS.invoice,
+      },
     ],
   },
 ];
