@@ -174,7 +174,7 @@ async function saveTimeSlotsAsync(payload) {
 async function getTimetableAsync(classId, sectionId) {
   const config = {
     method: 'get',
-    url: `/timetable/${classId}/${sectionId}`,
+    url: sectionId != null ? `/timetable/${classId}/${sectionId}` : `/timetable/${classId}`,
   };
   return await axios(config);
 }
