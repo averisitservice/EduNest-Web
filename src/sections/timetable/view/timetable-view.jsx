@@ -7,13 +7,14 @@ import {
   Stack,
   Button,
   Switch,
+  Select,
   TableRow,
+  MenuItem,
   TextField,
   TableBody,
   TableCell,
   TableHead,
   Typography,
-  Autocomplete,
   TableContainer,
   CircularProgress,
   FormControlLabel,
@@ -198,38 +199,49 @@ export function TimetableView() {
         spacing={2}
         sx={{ mb: 3 }}
       >
-        <Autocomplete
-          sx={{ minWidth: 260 }}
-          options={classSections}
-          value={selectedClass}
-          onChange={(event, newValue) => setSelectedClass(newValue)}
-          getOptionLabel={getClassLabel}
-          isOptionEqualToValue={(option, value) =>
-            option.classId === value.classId && option.sectionId === value.sectionId
-          }
-          renderInput={(params) => (
-            <TextField {...params} label="Class & Section" placeholder="Select Class & Section" />
-          )}
-        />
+        <Select
+          size="small"
+          value={selectedClass ? `${selectedClass.classId}-${selectedClass.sectionId ?? 'null'}` : ''}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (!val) {
+              setSelectedClass(null);
+            } else {
+              const [classId, sectionId] = val.split('-');
+              const selectedOption = classSections.find(
+                (c) => c.classId == classId && (c.sectionId ?? 'null') == sectionId
+              );
+              setSelectedClass(selectedOption || null);
+            }
+          }}
+          displayEmpty
+          sx={{ minWidth: 200, textAlign: 'left' }}
+        >
+          <MenuItem value="" disabled>
+            <em>Select Class & Section</em>
+          </MenuItem>
+          {classSections.map((option) => (
+            <MenuItem
+              key={`${option.classId}-${option.sectionId ?? 'null'}`}
+              value={`${option.classId}-${option.sectionId ?? 'null'}`}
+            >
+              {option.sectionName ? `${option.className} - ${option.sectionName}` : option.className}
+            </MenuItem>
+          ))}
+        </Select>
 
         <Button
-          variant="outlined"
-          color="inherit"
+          variant="contained"
+          color="primary"
           startIcon={<Iconify icon="solar:download-linear" />}
           onClick={handleExport}
           disabled={rows.length === 0}
-          sx={{
-            borderColor: 'divider',
-            alignSelf: { xs: 'flex-start', sm: 'auto' },
-            px: 2.5,
-            py: 1.2,
-          }}
         >
           Export
         </Button>
       </Stack>
 
-      <Card sx={{ borderRadius: 2, boxShadow: (theme) => theme.customShadows?.card || 3 }}>
+      <Card>
         <Stack
           direction="row"
           alignItems="center"
