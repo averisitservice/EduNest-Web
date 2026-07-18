@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z as zod } from 'zod';
-
 import {
   Stack,
   Button,
@@ -15,7 +14,6 @@ import {
   DialogActions,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
@@ -46,12 +44,16 @@ function getRowTimeLabel(row) {
 }
 
 const TimetablePeriodSchema = zod.object({
-  subjectId: zod.any().refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
-    message: 'Subject is required.',
-  }),
-  teacherId: zod.any().refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
-    message: 'Teacher is required.',
-  }),
+  subjectId: zod
+    .any()
+    .refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
+      message: 'Subject is required.',
+    }),
+  teacherId: zod
+    .any()
+    .refine((val) => val !== null && val !== undefined && String(val).trim() !== '', {
+      message: 'Teacher is required.',
+    }),
 });
 
 export function TimetableEditDialog({
@@ -101,7 +103,6 @@ export function TimetableEditDialog({
   useEffect(() => {
     if (!subjectId) {
       setTeacherOptions([]);
-      setValue('teacherId', '');
       return undefined;
     }
     let active = true;
@@ -109,7 +110,18 @@ export function TimetableEditDialog({
     (async () => {
       try {
         const res = await ApiService.getTeachersBySubjectAsync(subjectId);
-        if (active) setTeacherOptions(res?.data ?? []);
+        const options = res?.data ?? [];
+        if (!active) return;
+        setTeacherOptions(options);
+        // Drop the selected teacher only if they don't teach the chosen subject
+        // (keeps the existing teacher when opening a filled cell).
+        const currentTeacher = watch('teacherId');
+        if (
+          currentTeacher &&
+          !options.some((t) => String(t.teacherId) === String(currentTeacher))
+        ) {
+          setValue('teacherId', '');
+        }
       } catch (err) {
         console.error('Failed to load teachers for subject:', err);
         if (active) setTeacherOptions([]);
@@ -120,7 +132,7 @@ export function TimetableEditDialog({
     return () => {
       active = false;
     };
-  }, [subjectId, setValue]);
+  }, [subjectId, setValue, watch]);
 
   const onSubmit = handleSubmit(async (data) => {
     if (!selectedClass || !row) return;

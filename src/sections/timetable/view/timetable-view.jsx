@@ -10,7 +10,6 @@ import {
   Select,
   TableRow,
   MenuItem,
-  TextField,
   TableBody,
   TableCell,
   TableHead,
@@ -201,7 +200,9 @@ export function TimetableView() {
       >
         <Select
           size="small"
-          value={selectedClass ? `${selectedClass.classId}-${selectedClass.sectionId ?? 'null'}` : ''}
+          value={
+            selectedClass ? `${selectedClass.classId}-${selectedClass.sectionId ?? 'null'}` : ''
+          }
           onChange={(e) => {
             const val = e.target.value;
             if (!val) {
@@ -225,7 +226,9 @@ export function TimetableView() {
               key={`${option.classId}-${option.sectionId ?? 'null'}`}
               value={`${option.classId}-${option.sectionId ?? 'null'}`}
             >
-              {option.sectionName ? `${option.className} - ${option.sectionName}` : option.className}
+              {option.sectionName
+                ? `${option.className} - ${option.sectionName}`
+                : option.className}
             </MenuItem>
           ))}
         </Select>
@@ -310,7 +313,6 @@ export function TimetableView() {
                       sx={{
                         fontWeight: 800,
                         width: '180px',
-                        fontSize: '0.95rem',
                         color: 'text.secondary',
                         textTransform: 'uppercase',
                         letterSpacing: 0.5,
@@ -323,7 +325,6 @@ export function TimetableView() {
                         key={day}
                         sx={{
                           fontWeight: 800,
-                          fontSize: '0.7rem',
                           color: 'text.secondary',
                           textTransform: 'uppercase',
                           letterSpacing: 0.5,
@@ -339,13 +340,11 @@ export function TimetableView() {
                 <TableBody>
                   {rows.map((row) => (
                     <TableRow key={row.timeSlotId} hover>
-                      {/* Time column */}
                       <TableCell
                         sx={{
                           fontWeight: 700,
                           color: 'text.secondary',
                           bgcolor: (theme) => alpha(theme.palette.grey[500], 0.02),
-                          fontSize: '1rem',
                           lineHeight: 1.2,
                           py: '8px !important',
                         }}
@@ -381,7 +380,6 @@ export function TimetableView() {
                               sx={{
                                 color: 'primary.main',
                                 fontWeight: 800,
-                                fontSize: '0.7rem',
                                 letterSpacing: 1.5,
                               }}
                             >
@@ -423,7 +421,6 @@ export function TimetableView() {
                                     variant="subtitle2"
                                     sx={{
                                       fontWeight: 700,
-                                      fontSize: '0.72rem',
                                       color: 'text.primary',
                                       lineHeight: 1.2,
                                     }}
@@ -435,7 +432,6 @@ export function TimetableView() {
                                       variant="caption"
                                       sx={{
                                         color: 'text.secondary',
-                                        fontSize: '0.65rem',
                                         fontWeight: 500,
                                         mt: 0.25,
                                       }}
@@ -447,7 +443,7 @@ export function TimetableView() {
                               ) : (
                                 <Typography
                                   variant="body2"
-                                  sx={{ color: 'text.disabled', fontSize: '0.72rem', opacity: 0.4 }}
+                                  sx={{ color: 'text.disabled', opacity: 0.4 }}
                                 >
                                   --
                                 </Typography>
