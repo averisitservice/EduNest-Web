@@ -7,22 +7,17 @@ import {
   Stack,
   Button,
   Switch,
-  Select,
   TableRow,
-  MenuItem,
   TextField,
   TableBody,
   TableCell,
   TableHead,
   Typography,
-  InputLabel,
-  FormControl,
   Autocomplete,
   TableContainer,
   CircularProgress,
   FormControlLabel,
 } from '@mui/material';
-import { TimetableEditDialog } from './timetable-edit-dialog';
 import { paths } from 'src/routes/paths';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
@@ -30,8 +25,7 @@ import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-
-const BREAK_ICON = 'solar:cup-bold-duotone';
+import { TimetableEditDialog } from './timetable-edit-dialog';
 
 function formatTime(value) {
   if (!value) return '';
@@ -64,7 +58,6 @@ function getClassLabel(option) {
     : option.className || '';
 }
 
-
 export function TimetableView() {
   const [classSections, setClassSections] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
@@ -72,7 +65,6 @@ export function TimetableView() {
   const [workingDays, setWorkingDays] = useState([]);
   const [workingDayMap, setWorkingDayMap] = useState({});
   const [subjects, setSubjects] = useState([]);
-  const [teachers, setTeachers] = useState([]);
 
   const [rows, setRows] = useState([]);
   const [showTeacherName, setShowTeacherName] = useState(true);
@@ -86,11 +78,10 @@ export function TimetableView() {
   useEffect(() => {
     async function loadLookups() {
       try {
-        const [classRes, wdRes, subRes, teacherRes] = await Promise.all([
+        const [classRes, wdRes, subRes] = await Promise.all([
           ApiService.getAllClassMasterSectionsAsync(),
           ApiService.getWorkingDaysAsync(),
           ApiService.getSubjectAsync(),
-          ApiService.getTeacherListAsync(),
         ]);
 
         const classList = classRes?.data ?? [];
@@ -106,7 +97,6 @@ export function TimetableView() {
         setWorkingDayMap(map);
 
         setSubjects(subRes?.data ?? []);
-        setTeachers(teacherRes?.data ?? []);
       } catch (err) {
         console.error('Failed to load timetable lookups:', err);
       }
@@ -491,7 +481,6 @@ export function TimetableView() {
         row={editRow}
         day={editDay}
         subjects={subjects}
-        teachers={teachers}
         selectedClass={selectedClass}
         workingDayId={workingDayMap[editDay]}
         onSuccess={loadTimetable}

@@ -50,13 +50,14 @@ export function TimetableEditDialog({
   row,
   day,
   subjects,
-  teachers,
   selectedClass,
   workingDayId,
   onSuccess,
 }) {
   const [subjectId, setSubjectId] = useState('');
   const [teacherId, setTeacherId] = useState('');
+  const [teacherOptions, setTeacherOptions] = useState([]);
+  const [loadingTeachers, setLoadingTeachers] = useState(false);
   const [subjectError, setSubjectError] = useState('');
   const [teacherError, setTeacherError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -71,6 +72,30 @@ export function TimetableEditDialog({
       setTeacherError('');
     }
   }, [open, row, day]);
+
+  // Load teachers who teach the selected subject (teacher_subject mapping)
+  useEffect(() => {
+    if (!subjectId) {
+      setTeacherOptions([]);
+      return undefined;
+    }
+    let active = true;
+    setLoadingTeachers(true);
+    (async () => {
+      try {
+        const res = await ApiService.getTeachersBySubjectAsync(subjectId);
+        if (active) setTeacherOptions(res?.data ?? []);
+      } catch (err) {
+        console.error('Failed to load teachers for subject:', err);
+        if (active) setTeacherOptions([]);
+      } finally {
+        if (active) setLoadingTeachers(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [subjectId]);
 
   const handleSave = async () => {
     let isValid = true;
@@ -133,6 +158,7 @@ export function TimetableEditDialog({
               label="Subject"
               onChange={(e) => {
                 setSubjectId(e.target.value);
+                setTeacherId('');
                 if (e.target.value) setSubjectError('');
               }}
             >
@@ -148,7 +174,11 @@ export function TimetableEditDialog({
             {subjectError && <FormHelperText>{subjectError}</FormHelperText>}
           </FormControl>
 
-          <FormControl fullWidth error={Boolean(teacherError)}>
+          <FormControl
+            fullWidth
+            error={Boolean(teacherError)}
+            disabled={!subjectId || loadingTeachers}
+          >
             <InputLabel id="edit-teacher-label">Teacher</InputLabel>
             <Select
               labelId="edit-teacher-label"
@@ -162,23 +192,27 @@ export function TimetableEditDialog({
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              {teachers.map((teacher) => (
+              {teacherOptions.map((teacher) => (
                 <MenuItem key={teacher.teacherId} value={teacher.teacherId}>
                   {teacher.teacherName}
                 </MenuItem>
               ))}
             </Select>
-            {teacherError && <FormHelperText>{teacherError}</FormHelperText>}
+            <FormHelperText>
+              {teacherError ||
+                (!subjectId
+                  ? 'Select a subject first'
+                  : loadingTeachers
+                    ? 'Loading teachers…'
+                    : teacherOptions.length === 0
+                      ? 'No teachers assigned to this subject'
+                      : '')}
+            </FormHelperText>
           </FormControl>
         </Stack>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'flex-start' }}>
-        <LoadingButton
-          onClick={handleSave}
-          variant="contained"
-          color="primary"
-          loading={saving}
-        >
+        <LoadingButton onClick={handleSave} variant="contained" color="primary" loading={saving}>
           Save
         </LoadingButton>
         <Button variant="outlined" color="error" onClick={onClose} disabled={saving}>
@@ -195,7 +229,6 @@ TimetableEditDialog.propTypes = {
   row: PropTypes.object,
   day: PropTypes.string,
   subjects: PropTypes.array.isRequired,
-  teachers: PropTypes.array.isRequired,
   selectedClass: PropTypes.object,
   workingDayId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSuccess: PropTypes.func.isRequired,

@@ -196,6 +196,14 @@ async function getTeacherTimetableAsync(teacherId) {
   return await axios(config);
 }
 
+async function getTeachersBySubjectAsync(subjectId) {
+  const config = {
+    method: 'get',
+    url: `/teacher/subject/${subjectId}`,
+  };
+  return await axios(config);
+}
+
 //Student
 async function getStudentListAsync() {
   const config = {
@@ -262,6 +270,7 @@ export default {
   getTimetableAsync,
   saveTimetableCellAsync,
   getTeacherTimetableAsync,
+  getTeachersBySubjectAsync,
 
   //Student
   getStudentListAsync,
