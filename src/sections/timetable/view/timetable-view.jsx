@@ -24,7 +24,7 @@ import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { TimetableEditDialog } from './timetable-edit-dialog';
+import { TimetableEditDialog } from '../timetable-edit-dialog';
 
 function formatTime(value) {
   if (!value) return '';
@@ -217,7 +217,7 @@ export function TimetableView() {
                 (c) =>
                   c.classId == classId &&
                   (c.sectionId !== null && c.sectionId !== undefined ? c.sectionId : 'null') ==
-                    sectionId
+                  sectionId
               );
               setSelectedClass(selectedOption || null);
             }

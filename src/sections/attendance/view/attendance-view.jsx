@@ -5,8 +5,8 @@ import ApiService from 'src/services/ApiService';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { AttendanceMark } from './attendance-mark';
-import { AttendanceReport } from './attendance-report';
+import { AttendanceMark } from '../attendance-mark';
+import { AttendanceReport } from '../attendance-report';
 
 
 function getClassLabel(option) {
