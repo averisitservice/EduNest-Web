@@ -70,6 +70,11 @@ export const navData = [
         path: paths.dashboard.fees.root,
         icon: ICONS.invoice,
       },
+      {
+        title: 'Exams',
+        path: paths.dashboard.exam.root,
+        icon: ICONS.rateCard,
+      },
     ],
   },
 ];

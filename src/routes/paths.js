@@ -52,5 +52,8 @@ export const paths = {
     fees: {
       root: `${ROOTS.DASHBOARD}/fees`,
     },
+    exam: {
+      root: `${ROOTS.DASHBOARD}/exam`,
+    },
   },
 };

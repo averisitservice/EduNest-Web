@@ -279,6 +279,63 @@ async function getFeeHistoryAsync(studentId) {
   return await axios(config);
 }
 
+//Exam
+async function getExamListAsync(classId) {
+  const params = new URLSearchParams();
+  if (classId != null) params.append('classId', classId);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/exam/list?${query}` : `/exam/list`,
+  };
+  return await axios(config);
+}
+
+async function saveExamAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/exam',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function deleteExamAsync(examId) {
+  const config = {
+    method: 'delete',
+    url: `/exam/${examId}`,
+  };
+  return await axios(config);
+}
+
+async function getExamMarksEntryAsync(examId, classId, sectionId) {
+  const params = new URLSearchParams();
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/exam/${examId}/marks/${classId}?${query}` : `/exam/${examId}/marks/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function saveExamMarksAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/exam/marks',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function getReportCardAsync(examId, studentId) {
+  const config = {
+    method: 'get',
+    url: `/exam/${examId}/report/${studentId}`,
+  };
+  return await axios(config);
+}
+
 export default {
   loginAsync,
   renewSessionAsync,
@@ -326,4 +383,12 @@ export default {
   getFeeStatusAsync,
   collectFeePaymentAsync,
   getFeeHistoryAsync,
+
+  //Exam
+  getExamListAsync,
+  saveExamAsync,
+  deleteExamAsync,
+  getExamMarksEntryAsync,
+  saveExamMarksAsync,
+  getReportCardAsync,
 };
