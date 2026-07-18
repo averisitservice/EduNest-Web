@@ -145,31 +145,6 @@ async function getWorkingDaysAsync() {
   return await axios(config);
 }
 
-async function saveWorkingDaysAsync(payload) {
-  const config = {
-    method: 'post',
-    url: '/timetable/working-days',
-    data: payload,
-  };
-  return await axios(config);
-}
-
-async function getTimeSlotsAsync(classId) {
-  const config = {
-    method: 'get',
-    url: `/timetable/time-slots/${classId}`,
-  };
-  return await axios(config);
-}
-
-async function saveTimeSlotsAsync(payload) {
-  const config = {
-    method: 'post',
-    url: '/timetable/time-slots',
-    data: payload,
-  };
-  return await axios(config);
-}
 
 async function getTimetableAsync(classId, sectionId) {
   const config = {
@@ -265,9 +240,6 @@ export default {
 
   //Timetable
   getWorkingDaysAsync,
-  saveWorkingDaysAsync,
-  getTimeSlotsAsync,
-  saveTimeSlotsAsync,
   getTimetableAsync,
   saveTimetableCellAsync,
   getTeacherTimetableAsync,
