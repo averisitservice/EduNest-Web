@@ -145,7 +145,6 @@ async function getWorkingDaysAsync() {
   return await axios(config);
 }
 
-
 async function getTimetableAsync(classId, sectionId) {
   const config = {
     method: 'get',
@@ -213,6 +212,36 @@ async function deleteStudentAsync(studentId) {
   return await axios(config);
 }
 
+//Attendance
+async function getAttendanceRosterAsync(classId, sectionId, date) {
+  const params = new URLSearchParams({ date });
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const config = {
+    method: 'get',
+    url: `/attendance/roster/${classId}?${params.toString()}`,
+  };
+  return await axios(config);
+}
+
+async function saveAttendanceAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/attendance',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function getAttendanceSummaryAsync(classId, sectionId, fromDate, toDate) {
+  const params = new URLSearchParams({ fromDate, toDate });
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const config = {
+    method: 'get',
+    url: `/attendance/summary/${classId}?${params.toString()}`,
+  };
+  return await axios(config);
+}
+
 export default {
   loginAsync,
   renewSessionAsync,
@@ -249,4 +278,9 @@ export default {
   saveStudentAsync,
   getStudentDataByIdAsync,
   deleteStudentAsync,
+
+  //Attendance
+  getAttendanceRosterAsync,
+  saveAttendanceAsync,
+  getAttendanceSummaryAsync,
 };

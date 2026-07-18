@@ -46,5 +46,8 @@ export const paths = {
     timetable: {
       root: `${ROOTS.DASHBOARD}/timetable`,
     },
+    attendance: {
+      root: `${ROOTS.DASHBOARD}/attendance`,
+    },
   },
 };

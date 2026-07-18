@@ -17,6 +17,7 @@ const StudentListPage = lazy(() => import('src/pages/student/list'));
 const StudentCreatePage = lazy(() => import('src/pages/student/new'));
 const StudentEditPage = lazy(() => import('src/pages/student/edit'));
 const TimetableListPage = lazy(() => import('src/pages/timetable/list'));
+const AttendanceListPage = lazy(() => import('src/pages/attendance/list'));
 
 const dashboardLayout = () => (
   <DashboardLayout>
@@ -74,6 +75,10 @@ export const dashboardRoutes = [
       {
         path: 'timetable',
         children: [{ index: true, element: <TimetableListPage /> }],
+      },
+      {
+        path: 'attendance',
+        children: [{ index: true, element: <AttendanceListPage /> }],
       },
     ],
   },

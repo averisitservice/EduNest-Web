@@ -60,6 +60,11 @@ export const navData = [
         path: paths.dashboard.timetable.root,
         icon: ICONS.stage,
       },
+      {
+        title: 'Attendance',
+        path: paths.dashboard.attendance.root,
+        icon: ICONS.patient,
+      },
     ],
   },
 ];
