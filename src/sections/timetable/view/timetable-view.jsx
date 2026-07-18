@@ -75,10 +75,9 @@ export function TimetableView() {
 
   useEffect(() => {
     async function loadLookups() {
-      const [classRes, wdRes, subRes] = await Promise.all([
+      const [classRes, wdRes] = await Promise.all([
         ApiService.getAllClassMasterSectionsAsync(),
         ApiService.getWorkingDaysAsync(),
-        ApiService.getSubjectAsync(),
       ]);
 
       const classList = classRes && classRes.data ? classRes.data : [];
@@ -93,8 +92,6 @@ export function TimetableView() {
         map[wd.dayName] = wd.workingDayId;
       });
       setWorkingDayMap(map);
-
-      setSubjects(subRes && subRes.data ? subRes.data : []);
     }
     loadLookups();
   }, []);
@@ -103,17 +100,20 @@ export function TimetableView() {
     if (!selectedClass) {
       setRows([]);
       setWorkingDays([]);
+      setSubjects([]);
       return;
     }
     setLoading(true);
-    const res = await ApiService.getTimetableAsync(
-      selectedClass.classId,
-      selectedClass.sectionId
-    );
+    // Only load subjects assigned to this class (set at class level), not all subjects.
+    const [res, subRes] = await Promise.all([
+      ApiService.getTimetableAsync(selectedClass.classId, selectedClass.sectionId),
+      ApiService.getClassSubjectsAsync(selectedClass.classId),
+    ]);
     const workingDaysList = res && res.data && res.data.workingDays ? res.data.workingDays : [];
     const rowsList = res && res.data && res.data.rows ? res.data.rows : [];
     setWorkingDays(workingDaysList);
     setRows(rowsList);
+    setSubjects(subRes && subRes.data ? subRes.data : []);
     setLoading(false);
   }, [selectedClass]);
 
@@ -206,7 +206,7 @@ export function TimetableView() {
                 (c) =>
                   c.classId == classId &&
                   (c.sectionId !== null && c.sectionId !== undefined ? c.sectionId : 'null') ==
-                  sectionId
+                    sectionId
               );
               setSelectedClass(selectedOption || null);
             }

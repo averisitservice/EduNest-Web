@@ -94,6 +94,14 @@ async function getClassDataByIdAsync(classId) {
   return await axios(config);
 }
 
+async function getClassSubjectsAsync(classId) {
+  const config = {
+    method: 'get',
+    url: `/class/${classId}/subjects`,
+  };
+  return await axios(config);
+}
+
 async function deleteClassAsync(classId) {
   const config = {
     method: 'delete',
@@ -287,6 +295,7 @@ export default {
   getClassListAsync,
   saveClassAsync,
   getClassDataByIdAsync,
+  getClassSubjectsAsync,
   deleteClassAsync,
 
   //Teacher

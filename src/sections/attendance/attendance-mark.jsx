@@ -6,6 +6,7 @@ import {
   Table,
   Stack,
   Button,
+  Tooltip,
   TableRow,
   TableBody,
   TableCell,
@@ -25,10 +26,10 @@ import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
 const STATUS_OPTIONS = [
-  { value: 'P', color: 'success' },
-  { value: 'A', color: 'error' },
-  { value: 'L', color: 'warning' },
-  { value: 'H', color: 'info' },
+  { value: 'P', color: 'success', label: 'Present' },
+  { value: 'A', color: 'error', label: 'Absent' },
+  { value: 'L', color: 'warning', label: 'Late' },
+  { value: 'H', color: 'info', label: 'Half Day' },
 ];
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -227,14 +228,15 @@ export function AttendanceMark({ selectedClass }) {
                         onChange={(e, v) => setStatus(r.studentId, v)}
                       >
                         {STATUS_OPTIONS.map((opt) => (
-                          <ToggleButton
-                            key={opt.value}
-                            value={opt.value}
-                            color={opt.color}
-                            sx={{ px: 1.5, fontWeight: 700 }}
-                          >
-                            {opt.value}
-                          </ToggleButton>
+                          <Tooltip key={opt.value} title={opt.label} arrow>
+                            <ToggleButton
+                              value={opt.value}
+                              color={opt.color}
+                              sx={{ px: 1.5, fontWeight: 700 }}
+                            >
+                              {opt.value}
+                            </ToggleButton>
+                          </Tooltip>
                         ))}
                       </ToggleButtonGroup>
                     </TableCell>
