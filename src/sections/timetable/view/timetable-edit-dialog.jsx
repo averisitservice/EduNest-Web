@@ -20,7 +20,6 @@ import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-// Helper to format time slot label
 function formatTime(value) {
   if (!value) return '';
   let hours;
@@ -89,7 +88,6 @@ export function TimetableEditDialog({
 
   const subjectId = watch('subjectId');
 
-  // Update form fields when the row or day changes (e.g. when opening the dialog)
   useEffect(() => {
     if (open && row && day) {
       const cell = row.cells?.[day] || {};
@@ -100,7 +98,6 @@ export function TimetableEditDialog({
     }
   }, [open, row, day, reset]);
 
-  // Load teachers who teach the selected subject (teacher_subject mapping)
   useEffect(() => {
     if (!subjectId) {
       setTeacherOptions([]);
