@@ -70,7 +70,6 @@ export function TimetableView() {
   const [showTeacherName, setShowTeacherName] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // Cell edit dialog
   const [editOpen, setEditOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [editDay, setEditDay] = useState('');
