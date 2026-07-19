@@ -20,6 +20,7 @@ const TimetableListPage = lazy(() => import('src/pages/timetable/list'));
 const AttendanceListPage = lazy(() => import('src/pages/attendance/list'));
 const FeesListPage = lazy(() => import('src/pages/fees/list'));
 const ExamListPage = lazy(() => import('src/pages/exam/list'));
+const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 
 const dashboardLayout = () => (
   <DashboardLayout>
@@ -89,6 +90,10 @@ export const dashboardRoutes = [
       {
         path: 'exam',
         children: [{ index: true, element: <ExamListPage /> }],
+      },
+      {
+        path: 'announcement',
+        children: [{ index: true, element: <AnnouncementListPage /> }],
       },
     ],
   },

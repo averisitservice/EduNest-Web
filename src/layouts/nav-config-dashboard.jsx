@@ -75,6 +75,11 @@ export const navData = [
         path: paths.dashboard.exam.root,
         icon: ICONS.rateCard,
       },
+      {
+        title: 'Announcements',
+        path: paths.dashboard.announcement.root,
+        icon: ICONS.notifications,
+      },
     ],
   },
 ];

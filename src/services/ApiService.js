@@ -336,6 +336,32 @@ async function getReportCardAsync(examId, studentId) {
   return await axios(config);
 }
 
+//Announcement
+async function getAnnouncementListAsync() {
+  const config = {
+    method: 'get',
+    url: `/announcement/list`,
+  };
+  return await axios(config);
+}
+
+async function saveAnnouncementAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/announcement',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function deleteAnnouncementAsync(announcementId) {
+  const config = {
+    method: 'delete',
+    url: `/announcement/${announcementId}`,
+  };
+  return await axios(config);
+}
+
 export default {
   loginAsync,
   renewSessionAsync,
@@ -391,4 +417,9 @@ export default {
   getExamMarksEntryAsync,
   saveExamMarksAsync,
   getReportCardAsync,
+
+  //Announcement
+  getAnnouncementListAsync,
+  saveAnnouncementAsync,
+  deleteAnnouncementAsync,
 };
