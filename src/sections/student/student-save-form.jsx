@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid2';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { isValidPhoneNumber } from 'react-phone-number-input';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Field, Form, schemaHelper } from 'src/components/hook-form';
 import { LoadingScreen } from 'src/components/loading-screen';
@@ -51,6 +52,7 @@ const StudentSchema = zod.object({
     .nullable()
     .refine((val) => val !== null, { message: 'Class & Section is required.' }),
   rollNo: zod.string().min(1, { message: 'Roll Number is required.' }),
+  isHostel: zod.boolean().optional(),
 });
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -58,6 +60,8 @@ const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 export function StudentSaveForm() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const tenant = useSelector((state) => state.AuthReducer.tenantDetail);
+  const showHostel = Boolean(tenant?.isHostel);
   const [classMasters, setClassMasters] = useState([]);
   const [fetchingData, setFetchingData] = useState(true);
 
@@ -82,6 +86,7 @@ export function StudentSaveForm() {
     parentAadhar: '',
     studentClass: null,
     rollNo: '',
+    isHostel: false,
   };
 
   const methods = useForm({
@@ -234,6 +239,7 @@ export function StudentSaveForm() {
                     )}
                   />
                   <Field.Text name="aadharNo" label="Aadhar Number" />
+                  {showHostel && <Field.Switch name="isHostel" label="Hostel Student" />}
                 </Box>
               </Stack>
             </Card>

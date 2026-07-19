@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { z as zod } from 'zod';
 import { Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
@@ -23,6 +24,7 @@ import ApiService from 'src/services/ApiService';
 const ClassSchema = zod.object({
   className: zod.string().trim().min(1, { message: 'Class Name is required.' }),
   annualFee: zod.coerce.number().nullable().optional(),
+  hostelFee: zod.coerce.number().nullable().optional(),
   sections: zod.string().trim().optional(),
   subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.' }),
 });
@@ -30,11 +32,14 @@ const ClassSchema = zod.object({
 const defaultValues = {
   className: '',
   annualFee: '',
+  hostelFee: '',
   sections: '',
   subjectIds: [],
 };
 
 export function ClassDialog({ id, open, onClose, onSuccess }) {
+  const tenant = useSelector((state) => state.AuthReducer.tenantDetail);
+  const showHostel = Boolean(tenant?.isHostel);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [subjects, setSubjects] = useState([]);
@@ -77,6 +82,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
         reset({
           className: data.className,
           annualFee: data.annualFee,
+          hostelFee: data.hostelFee ?? '',
           sections: data.sections?.join(', ') || '',
           subjectIds: data.subjectIds || [],
         });
@@ -93,6 +99,8 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
       className: values.className,
       annualFee:
         values.annualFee === '' || values.annualFee == null ? null : Number(values.annualFee),
+      hostelFee:
+        values.hostelFee === '' || values.hostelFee == null ? null : Number(values.hostelFee),
       sections: values.sections
         .split(',')
         .map((x) => x.trim())
@@ -139,6 +147,10 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
               <Field.Text name="className" label="Class Name" fullWidth />
 
               <Field.Text name="annualFee" label="Annual Fee" type="number" fullWidth />
+
+              {showHostel && (
+                <Field.Text name="hostelFee" label="Hostel Fee" type="number" fullWidth />
+              )}
 
               <Field.Text name="sections" label="Sections" placeholder="A, B, C" fullWidth />
 
