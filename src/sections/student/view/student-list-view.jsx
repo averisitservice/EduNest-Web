@@ -13,15 +13,11 @@ import {
   TableRow,
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { Iconify } from 'src/components/iconify';
 import { toast } from 'src/components/snackbar';
 import {
-  emptyRows,
-  getComparator,
-  rowInPage,
-  TableEmptyRows,
   TableHeadCustom,
   TableNoData,
   TablePaginationCustom,
@@ -40,7 +36,7 @@ const FILTEREDTABLEHEAD = [
   { id: 'mobileNo', label: 'Phone', width: '15%' },
   { id: 'parent', label: 'Parent', width: '20%', sortBy: false },
   { id: 'classId', label: 'Class', width: '15%', sortBy: false },
-  { id: 'rollNo', label: 'Roll No', width: '10%' },
+  { id: 'rollNo', label: 'Roll No', width: '10%', sortBy: false },
   { id: 'updatedDate', label: 'Last Update', width: '15%' },
 ];
 
@@ -49,87 +45,69 @@ const TABLEHEAD = [
   { id: '', label: 'Action', width: '10%', sortBy: false, sx: { textAlign: 'center' } },
 ];
 
+// Parse the "classId-sectionId" filter value into ids the API understands.
+function parseClassSection(value) {
+  if (!value) return { classId: null, sectionId: null };
+  const [c, s] = value.split('-');
+  return {
+    classId: c ? Number(c) : null,
+    sectionId: s && s !== 'null' ? Number(s) : null,
+  };
+}
+
 export function StudentListView() {
   const table = useTable({ defaultOrderBy: 'updatedDate', defaultOrder: 'desc' });
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [classMasters, setClassMasters] = useState([]);
-  const filters = useSetState({ search: '', classSection: '' });
-  const dataInPage = rowInPage(tableData, table.page, table.rowsPerPage);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
+  const filters = useSetState({ search: '', classSection: '' });
   const { state: currentFilters, setState: updateFilters } = filters;
 
+  const { page, rowsPerPage, order, orderBy } = table;
+  const { classSection } = currentFilters;
+
   useEffect(() => {
-    getStudentList();
-    getClassMasters();
+    (async () => {
+      const { data } = await ApiService.getAllClassMasterSectionsAsync();
+      if (data) setClassMasters(data);
+    })();
   }, []);
 
-  const getStudentList = async () => {
+  // Debounce the search box so we don't hit the server on every keystroke.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(currentFilters.search), 400);
+    return () => clearTimeout(timer);
+  }, [currentFilters.search]);
+
+  const fetchStudents = useCallback(async () => {
     setIsLoading(true);
-    const { data } = await ApiService.getStudentListAsync();
-    if (data) {
-      setTableData(data);
-    }
-    setIsLoading(false);
-  };
-
-  const getClassMasters = async () => {
-    const { data } = await ApiService.getAllClassMasterSectionsAsync();
-    if (data) {
-      setClassMasters(data);
-    }
-  };
-
-  const dataFiltered = useMemo(() => {
-    const { search, classSection } = currentFilters;
-    const stabilizedThis = tableData.map((el, idx) => [el, idx]);
-    stabilizedThis.sort((a, b) => {
-      const order = getComparator(table.order, table.orderBy)(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
+    const { classId, sectionId } = parseClassSection(classSection);
+    const { data } = await ApiService.getStudentListAsync({
+      page,
+      size: rowsPerPage,
+      search: debouncedSearch,
+      classId,
+      sectionId,
+      sortBy: orderBy,
+      sortDir: order,
     });
-    let filteredData = stabilizedThis.map((el) => el[0]);
-    if (search) {
-      const lower = search.toLowerCase();
-      filteredData = filteredData.filter((student) => {
-        const fullName = student.studentName || `${student.firstName} ${student.lastName}`;
-        return (
-          fullName.toLowerCase().includes(lower) ||
-          (student.email && student.email.toLowerCase().includes(lower)) ||
-          (student.rollNo && student.rollNo.toLowerCase().includes(lower)) ||
-          (student.fatherName && student.fatherName.toLowerCase().includes(lower)) ||
-          (student.parentMobile && student.parentMobile.toLowerCase().includes(lower))
-        );
-      });
-    }
-    if (classSection) {
-      const [classId, sectionId] = classSection.split('-');
-      const selectedOption = classMasters.find(
-        (c) => c.classId == classId && (c.sectionId ?? 'null') == sectionId
-      );
+    setTableData(data?.content ?? []);
+    setTotalCount(data?.totalElements ?? 0);
+    setIsLoading(false);
+  }, [page, rowsPerPage, order, orderBy, debouncedSearch, classSection]);
 
-      filteredData = filteredData.filter((student) => {
-        if (student.classId !== undefined && student.classId !== null) {
-          const matchesClass = student.classId == classId;
-          const matchesSection =
-            sectionId === 'null' || !sectionId
-              ? !student.sectionId || student.sectionId == 'null'
-              : student.sectionId == sectionId;
-          return matchesClass && matchesSection;
-        }
-        if (selectedOption) {
-          const matchesClass = student.className === selectedOption.className;
-          const matchesSection =
-            sectionId === 'null' || !sectionId
-              ? !student.sectionName
-              : student.sectionName === selectedOption.sectionName;
-          return matchesClass && matchesSection;
-        }
-        return false;
-      });
-    }
-    return filteredData;
-  }, [tableData, table.order, table.orderBy, currentFilters]);
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  // Reset to the first page whenever a filter changes.
+  useEffect(() => {
+    table.onResetPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch, classSection]);
 
   const handleFilterChange = (newValue, key = 'search') => {
     updateFilters({ [key]: newValue });
@@ -139,16 +117,17 @@ export function StudentListView() {
     async (studentId) => {
       const { data, errors } = await ApiService.deleteStudentAsync(studentId);
       if (data) {
-        setTableData((prevData) => prevData.filter((row) => row.studentId !== studentId));
         toast.success('Student deleted successfully.');
-        table.onUpdatePageDeleteRow(dataInPage.length);
+        fetchStudents();
       } else if (errors) {
         toast.error(errors[0].msg);
       }
       return data;
     },
-    [table, dataInPage.length]
+    [fetchStudents]
   );
+
+  const notFound = !isLoading && tableData.length === 0;
 
   return (
     <DashboardContent>
@@ -175,7 +154,7 @@ export function StudentListView() {
         <TableToolbar
           filters={filters}
           onFilterChange={handleFilterChange}
-          placeholder={'Search By Name or Roll No or Parent'}
+          placeholder="Search By Name or Roll No or Parent"
         >
           <Select
             name="classSection"
@@ -207,7 +186,7 @@ export function StudentListView() {
                 order={table.order}
                 orderBy={table.orderBy}
                 headCells={TABLEHEAD}
-                rowCount={dataFiltered.length}
+                rowCount={tableData.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
               />
@@ -233,24 +212,15 @@ export function StudentListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No student found." notFound={dataFiltered.length <= 0} />
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row) => (
-                      <StudentTableRow
-                        key={row.studentId}
-                        row={row}
-                        selected={table.selected.includes(row.studentId)}
-                        onDeleteRow={() => onDeleteRow(row.studentId)}
-                      />
-                    ))}
-                  <TableEmptyRows
-                    height={table.dense ? 56 : 56 + 20}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                  />
+                  <TableNoData label="No student found." notFound={notFound} />
+                  {tableData.map((row) => (
+                    <StudentTableRow
+                      key={row.studentId}
+                      row={row}
+                      selected={table.selected.includes(row.studentId)}
+                      onDeleteRow={() => onDeleteRow(row.studentId)}
+                    />
+                  ))}
                 </TableBody>
               )}
             </Table>
@@ -259,7 +229,7 @@ export function StudentListView() {
         <TablePaginationCustom
           page={table.page}
           dense={table.dense}
-          count={filters ? dataFiltered.length : tableData.length}
+          count={totalCount}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           onChangeDense={table.onChangeDense}

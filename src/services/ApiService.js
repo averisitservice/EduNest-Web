@@ -187,10 +187,20 @@ async function getTeachersBySubjectAsync(subjectId) {
 }
 
 //Student
-async function getStudentListAsync() {
+async function getStudentListAsync(params = {}) {
+  const query = new URLSearchParams();
+  const { page, size, search, classId, sectionId, sortBy, sortDir } = params;
+  if (page != null) query.append('page', page);
+  if (size != null) query.append('size', size);
+  if (search) query.append('search', search);
+  if (classId != null) query.append('classId', classId);
+  if (sectionId != null) query.append('sectionId', sectionId);
+  if (sortBy) query.append('sortBy', sortBy);
+  if (sortDir) query.append('sortDir', sortDir);
+  const qs = query.toString();
   const config = {
     method: 'get',
-    url: `/student/list`,
+    url: qs ? `/student/list?${qs}` : `/student/list`,
   };
   return await axios(config);
 }
