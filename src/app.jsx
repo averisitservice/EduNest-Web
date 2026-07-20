@@ -20,7 +20,7 @@ import { login, logout, setTenantDetail } from './store/reducers/authReducer';
 
 export default function App({ children }) {
   const dispatch = useDispatch();
-  const tenantDetail = utils.getItemFromStorage('tenantDetail');
+  const tenantDetail = utils.getItemFromStorage('tenant');
   const navigate = useNavigate();
   defaultSettings.primaryColor = tenantDetail && tenantDetail.primaryColor;
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function App({ children }) {
 
   const bindInitData = async () => {
     const token = utils.getTokensFromStorage();
-    dispatch(setTenantDetail(JSON.parse(tenantDetail)));
+    dispatch(setTenantDetail(tenantDetail ? JSON.parse(tenantDetail) : {}));
     let currentTokenUser = token && jwtDecode(token.session);
     if (currentTokenUser) {
       dispatch(login({ teacher: currentTokenUser, token }));
