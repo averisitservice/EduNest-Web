@@ -230,6 +230,36 @@ async function deleteStudentAsync(studentId) {
   return await axios(config);
 }
 
+//Homework & Notes
+async function getHomeworkListAsync(classId, sectionId, type) {
+  const params = new URLSearchParams();
+  if (sectionId != null) params.append('sectionId', sectionId);
+  if (type) params.append('type', type);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/homework/list/${classId}?${query}` : `/homework/list/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function saveHomeworkAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/homework',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function deleteHomeworkAsync(homeworkId) {
+  const config = {
+    method: 'delete',
+    url: `/homework/${homeworkId}`,
+  };
+  return await axios(config);
+}
+
 //Attendance
 async function getAttendanceRosterAsync(classId, sectionId, date) {
   const params = new URLSearchParams({ date });
@@ -409,6 +439,11 @@ export default {
   saveStudentAsync,
   getStudentDataByIdAsync,
   deleteStudentAsync,
+
+  //Homework & Notes
+  getHomeworkListAsync,
+  saveHomeworkAsync,
+  deleteHomeworkAsync,
 
   //Attendance
   getAttendanceRosterAsync,

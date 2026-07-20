@@ -58,5 +58,8 @@ export const paths = {
     announcement: {
       root: `${ROOTS.DASHBOARD}/announcement`,
     },
+    homework: {
+      root: `${ROOTS.DASHBOARD}/homework`,
+    },
   },
 };

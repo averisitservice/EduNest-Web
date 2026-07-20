@@ -80,6 +80,11 @@ export const navData = [
         path: paths.dashboard.announcement.root,
         icon: ICONS.notifications,
       },
+      {
+        title: 'Homework & Notes',
+        path: paths.dashboard.homework.root,
+        icon: ICONS.logs,
+      },
     ],
   },
 ];
