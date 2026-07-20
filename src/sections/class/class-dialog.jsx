@@ -21,13 +21,20 @@ import { Field } from 'src/components/hook-form';
 import { toast } from 'src/components/snackbar';
 import ApiService from 'src/services/ApiService';
 
-const ClassSchema = zod.object({
-  className: zod.string().trim().min(1, { message: 'Class Name is required.' }),
-  annualFee: zod.coerce.number().nullable().optional(),
-  hostelFee: zod.coerce.number().nullable().optional(),
-  sections: zod.string().trim().optional(),
-  subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.' }),
-});
+const getClassSchema = (showHostel) =>
+  zod.object({
+    className: zod.string().trim().min(1, { message: 'Class Name is required.' }),
+    annualFee: zod.coerce
+      .number()
+      .positive({ message: 'Annual Fee is required.' }),
+    hostelFee: showHostel
+      ? zod.coerce
+        .number()
+        .positive({ message: 'Hostel Fee is required.' })
+      : zod.coerce.number().nullable().optional(),
+    sections: zod.string().trim().optional(),
+    subjectIds: zod.array(zod.number()).min(1, { message: 'Please select at least one subject.' }),
+  });
 
 const defaultValues = {
   className: '',
@@ -39,13 +46,13 @@ const defaultValues = {
 
 export function ClassDialog({ id, open, onClose, onSuccess }) {
   const tenant = useSelector((state) => state.AuthReducer.tenantDetail);
-  const showHostel = Boolean(tenant?.isHostel);
+  const showHostel = Boolean(tenant && tenant.isHostel);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [subjects, setSubjects] = useState([]);
 
   const methods = useForm({
-    resolver: zodResolver(ClassSchema),
+    resolver: zodResolver(getClassSchema(showHostel)),
     defaultValues,
   });
 
@@ -82,8 +89,8 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
         reset({
           className: data.className,
           annualFee: data.annualFee,
-          hostelFee: data.hostelFee ?? '',
-          sections: data.sections?.join(', ') || '',
+          hostelFee: data.hostelFee != null ? data.hostelFee : '',
+          sections: data.sections ? data.sections.join(', ') : '',
           subjectIds: data.subjectIds || [],
         });
       }
@@ -112,7 +119,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
 
     if (response.data) {
       toast.success(id ? 'Class updated successfully.' : 'Class created successfully.');
-      onSuccess?.();
+      if (onSuccess) onSuccess();
       onClose();
       reset(defaultValues);
     } else if (response.errors) {
@@ -178,7 +185,7 @@ export function ClassDialog({ id, open, onClose, onSuccess }) {
                         label="Subjects"
                         placeholder="Select Subjects"
                         error={!!methods.formState.errors.subjectIds}
-                        helperText={methods.formState.errors.subjectIds?.message}
+                        helperText={methods.formState.errors.subjectIds ? methods.formState.errors.subjectIds.message : ''}
                       />
                     )}
                     renderOption={(props, option) => {

@@ -72,7 +72,7 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
                   gap: 1,
                 }}
               >
-                {row.sections?.length > 0
+                {row.sections && row.sections.length > 0
                   ? row.sections.map((section) => (
                       <Chip key={section} label={section} size="small" variant="soft" />
                     ))

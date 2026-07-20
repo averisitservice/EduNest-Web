@@ -54,7 +54,7 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
 
     if (response.data) {
       toast.success(id ? 'Subject updated successfully.' : 'Subject created successfully.');
-      onSuccess?.();
+      if (onSuccess) onSuccess();
       onClose();
       reset(defaultValues);
     } else if (response.errors) {
