@@ -27,6 +27,15 @@ async function forgotPasswordAsync(payload) {
   return await axios(config);
 }
 
+async function resetPasswordAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/auth/reset-password',
+    data: payload,
+  };
+  return await axios(config);
+}
+
 //Lookup
 async function getRolesAsync() {
   const config = {
@@ -415,6 +424,7 @@ export default {
   loginAsync,
   renewSessionAsync,
   forgotPasswordAsync,
+  resetPasswordAsync,
 
   //Lookup
   getRolesAsync,

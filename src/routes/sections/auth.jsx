@@ -7,6 +7,7 @@ import { AuthSplitLayout } from 'src/layouts/auth-split';
 const Jwt = {
   SignInPage: lazy(() => import('src/pages/auth/sign-in')),
   ForgotPasswordPage: lazy(() => import('src/pages/auth/forgot-password')),
+  ChangePasswordPage: lazy(() => import('src/pages/auth/change-password')),
 };
 
 const LoginSection = () => {
@@ -43,6 +44,23 @@ const ForgotPasswordSection = () => {
   );
 };
 
+const ChangePasswordSection = () => {
+  return (
+    <GuestGuard>
+      <AuthSplitLayout
+        slotProps={{
+          section: {
+            title: '',
+            subtitle: '',
+          },
+        }}
+      >
+        <Jwt.ChangePasswordPage />
+      </AuthSplitLayout>
+    </GuestGuard>
+  );
+};
+
 const authJwt = {
   path: '',
   children: [
@@ -57,6 +75,10 @@ const authJwt = {
     {
       path: 'forgot-password',
       element: <ForgotPasswordSection />,
+    },
+    {
+      path: 'change-password',
+      element: <ChangePasswordSection />,
     },
   ],
 };

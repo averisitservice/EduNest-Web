@@ -14,6 +14,7 @@ import { paths } from 'src/routes/paths';
 import apiService from 'src/services/ApiService';
 import { z as zod } from 'zod';
 import { useNavigate } from 'react-router';
+import { toast } from 'src/components/snackbar';
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ export function SplitForgotPasswordView() {
     const { data, errors } = await apiService.forgotPasswordAsync(values);
 
     if (data) {
-      setSuccessMessage(data);
+      toast.success(data);
       navigate(paths.auth.signIn);
     } else if (errors) {
       setErrorMessage(Array.isArray(errors) ? (errors[0] && errors[0].msg) : (errors && errors.msg));
