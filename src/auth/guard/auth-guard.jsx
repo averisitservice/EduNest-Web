@@ -32,7 +32,6 @@ export function AuthGuard({ children }) {
 
   useEffect(() => {
     check();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInTeacher]);
 
   if (isChecking) {
