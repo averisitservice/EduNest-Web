@@ -17,7 +17,7 @@ import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
 
-// ----------------------------------------------------------------------
+const today = () => new Date().toISOString().slice(0, 10);
 
 const HomeworkSchema = zod.object({
   subjectId: zod.string().optional(),
@@ -31,7 +31,7 @@ const defaultValues = {
   subjectId: '',
   title: '',
   description: '',
-  dueDate: '',
+  dueDate: today(),
   attachmentUrl: '',
 };
 
@@ -65,7 +65,7 @@ export function HomeworkFormDialog({
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
       description: item && item.description ? item.description : '',
-      dueDate: item && item.dueDate ? item.dueDate : '',
+      dueDate: item && item.dueDate ? item.dueDate : today(),
       attachmentUrl: item && item.attachmentUrl ? item.attachmentUrl : '',
     });
   }, [open, item, reset]);
