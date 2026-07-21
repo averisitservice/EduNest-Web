@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Link } from '@mui/material';
+import { Alert, Link } from '@mui/material';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PasswordIcon } from 'src/assets/icons';
 import { FormHead } from 'src/auth/components/form-head';
@@ -10,7 +11,9 @@ import { Field, Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
+import apiService from 'src/services/ApiService';
 import { z as zod } from 'zod';
+import { useNavigate } from 'react-router';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +27,10 @@ export const ResetPasswordSchema = zod.object({
 // ----------------------------------------------------------------------
 
 export function SplitForgotPasswordView() {
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const defaultValues = {
     email: '',
   };
@@ -38,11 +45,17 @@ export function SplitForgotPasswordView() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = handleSubmit(async () => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    } catch (error) {
-      console.error(error);
+  const onSubmit = handleSubmit(async (values) => {
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    const { data, errors } = await apiService.forgotPasswordAsync(values);
+
+    if (data) {
+      setSuccessMessage(data);
+      navigate(paths.auth.signIn);
+    } else if (errors) {
+      setErrorMessage(Array.isArray(errors) ? (errors[0] && errors[0].msg) : (errors && errors.msg));
     }
   });
 
@@ -74,8 +87,20 @@ export function SplitForgotPasswordView() {
       <FormHead
         icon={<PasswordIcon />}
         title="Forgot your Password?"
-        description={`Please enter the email address associated with your account. We'll email you a link to reset your password.`}
+        description={`Please enter the email address associated with your account and we'll email you a new password.`}
       />
+
+      {!!errorMessage && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {errorMessage}
+        </Alert>
+      )}
+
+      {!!successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}

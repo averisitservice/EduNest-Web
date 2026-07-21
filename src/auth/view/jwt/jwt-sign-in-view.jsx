@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Alert, Box, IconButton, InputAdornment, Typography } from '@mui/material';
+import { Alert, Box, IconButton, InputAdornment, Link, Typography } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Field, Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
+import { RouterLink } from 'src/routes/components';
+import { paths } from 'src/routes/paths';
 import apiService from 'src/services/ApiService';
 import { login, setTenantDetail } from 'src/store/reducers/authReducer';
 import { z as zod } from 'zod';
@@ -85,6 +87,17 @@ export function JwtSignInView() {
           },
         }}
       />
+
+      <Link
+        component={RouterLink}
+        href={paths.auth.forgotPassword}
+        variant="body2"
+        color="inherit"
+        sx={{ alignSelf: 'flex-end' }}
+      >
+        Forgot password?
+      </Link>
+
       <LoadingButton
         fullWidth
         color="inherit"
