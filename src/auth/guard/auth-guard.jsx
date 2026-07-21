@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { usePathname, useRouter } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { SplashScreen } from 'src/components/loading-screen';
 
 import { RoleBasedGuard } from '.';
 
@@ -19,6 +20,24 @@ export function AuthGuard({ children }) {
     const queryString = new URLSearchParams({ returnTo: pathname }).toString();
     return `${currentPath}?${queryString}`;
   };
+
+  const check = () => {
+    if (!loggedInTeacher) {
+      const redirectPath = createRedirectPath(signInPaths.jwt);
+      router.replace(redirectPath);
+    } else {
+      setIsChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    check();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedInTeacher]);
+
+  if (isChecking) {
+    return <SplashScreen />;
+  }
 
   if (!isCheckPermission) {
     return <RoleBasedGuard hasContent sx={{ py: 10 }} />;

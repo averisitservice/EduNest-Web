@@ -12,11 +12,11 @@ export function GuestGuard({ children }) {
 
   const searchParams = useSearchParams();
   const returnTo = searchParams.get('returnTo') || CONFIG.auth.redirectPath;
-  const { loggedInUser } = useSelector((state) => state.AuthReducer);
+  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
 
   const [isChecking, setIsChecking] = useState(true);
   const checkPermissions = async () => {
-    if (loggedInUser) {
+    if (loggedInTeacher) {
       if (returnTo === '/' || returnTo === '/dashboard') {
         router.replace('/dashboard/tenant');
       } else {
@@ -29,7 +29,7 @@ export function GuestGuard({ children }) {
 
   useEffect(() => {
     checkPermissions();
-  }, [loggedInUser]);
+  }, [loggedInTeacher]);
 
   if (isChecking) {
     return <SplashScreen />;
