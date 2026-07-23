@@ -31,11 +31,7 @@ export function AnnouncementTableRow({ row, onEditRow, onDeleteRow }) {
         </Box>
       </TableCell>
       <TableCell>
-        <Chip
-          size="small"
-          label={row.audience}
-          color={AUDIENCE_COLOR[row.audience] || 'default'}
-        />
+        <Chip size="small" label={row.audience} color={AUDIENCE_COLOR[row.audience] || 'default'} />
       </TableCell>
       <TableCell>
         <Box sx={{ whiteSpace: 'nowrap' }}>

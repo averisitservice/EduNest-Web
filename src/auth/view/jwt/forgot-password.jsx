@@ -56,7 +56,7 @@ export function SplitForgotPasswordView() {
       toast.success(data);
       navigate(paths.auth.signIn);
     } else if (errors) {
-      setErrorMessage(Array.isArray(errors) ? (errors[0] && errors[0].msg) : (errors && errors.msg));
+      setErrorMessage(Array.isArray(errors) ? errors[0] && errors[0].msg : errors && errors.msg);
     }
   });
 

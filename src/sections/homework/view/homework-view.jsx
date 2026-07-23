@@ -27,7 +27,6 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 import { HomeworkFormDialog } from '../homework-form-dialog';
 
-
 function getClassLabel(option) {
   if (!option) return '';
   return option.sectionName
@@ -39,7 +38,6 @@ function classKey(option) {
   if (!option) return '';
   return `${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`;
 }
-
 
 export function HomeworkView() {
   const [classSections, setClassSections] = useState([]);

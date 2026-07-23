@@ -3,14 +3,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z as zod } from 'zod';
-import {
-  Stack,
-  Dialog,
-  Button,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
-} from '@mui/material';
+import { Stack, Dialog, Button, DialogTitle, DialogActions, DialogContent } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
@@ -89,24 +82,9 @@ export function ExamFormDialog({ open, onClose, exam, classId, onSuccess }) {
       <Form methods={methods} onSubmit={handleSave}>
         <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 0.5 }}>
-            <Field.Text
-              name="examName"
-              label="Exam Name"
-              placeholder="e.g. Mid-Term"
-              fullWidth
-            />
-            <Field.Text
-              name="maxMarks"
-              type="number"
-              label="Max Marks"
-              fullWidth
-            />
-            <Field.Text
-              name="passMarks"
-              type="number"
-              label="Pass Marks"
-              fullWidth
-            />
+            <Field.Text name="examName" label="Exam Name" placeholder="e.g. Mid-Term" fullWidth />
+            <Field.Text name="maxMarks" type="number" label="Max Marks" fullWidth />
+            <Field.Text name="passMarks" type="number" label="Pass Marks" fullWidth />
             <Field.DatePicker
               name="examDate"
               label="Exam Date"
@@ -121,10 +99,16 @@ export function ExamFormDialog({ open, onClose, exam, classId, onSuccess }) {
             type="submit"
             variant="contained"
             color="primary"
-            loading={saving || isSubmitting}>
+            loading={saving || isSubmitting}
+          >
             Save
           </LoadingButton>
-          <Button variant="outlined" color="error" onClick={onClose} disabled={saving || isSubmitting}>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={onClose}
+            disabled={saving || isSubmitting}
+          >
             Cancel
           </Button>
         </DialogActions>

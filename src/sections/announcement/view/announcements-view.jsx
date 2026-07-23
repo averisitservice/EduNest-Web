@@ -36,7 +36,6 @@ import {
 import { NoticeFormDialog } from '../notice-form-dialog';
 import { AnnouncementTableRow } from '../announcement-table-row';
 
-
 const FILTEREDTABLEHEAD = [
   { id: 'title', label: 'Title', width: '20%' },
   { id: 'message', label: 'Message', width: '35%', sortBy: false },
@@ -158,8 +157,7 @@ export function AnnouncementsView() {
           filters={filters}
           onFilterChange={handleFilterChange}
           placeholder="Search By Title or Message"
-        >
-        </TableToolbar>
+        ></TableToolbar>
 
         <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
           <Box sx={{ position: 'relative' }}>
@@ -195,7 +193,10 @@ export function AnnouncementsView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No announcements found." notFound={dataFiltered.length <= 0} />
+                  <TableNoData
+                    label="No announcements found."
+                    notFound={dataFiltered.length <= 0}
+                  />
                   {dataFiltered.map((row) => (
                     <AnnouncementTableRow
                       key={row.announcementId}

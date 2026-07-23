@@ -197,7 +197,11 @@ export function ExamsView() {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                          <IconButton size="small" color="error" onClick={() => setDeleteExam(exam)}>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => setDeleteExam(exam)}
+                          >
                             <Iconify icon="solar:trash-bin-trash-bold" />
                           </IconButton>
                         </Tooltip>
@@ -238,7 +242,11 @@ export function ExamsView() {
         open={Boolean(deleteExam)}
         onClose={() => setDeleteExam(null)}
         title="Delete Exam"
-        content={deleteExam && deleteExam.examName ? `Are you sure you want to delete ${deleteExam.examName}?` : 'Are you sure you want to delete this exam?'}
+        content={
+          deleteExam && deleteExam.examName
+            ? `Are you sure you want to delete ${deleteExam.examName}?`
+            : 'Are you sure you want to delete this exam?'
+        }
         action={
           <Button
             variant="contained"

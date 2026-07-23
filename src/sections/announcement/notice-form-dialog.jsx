@@ -96,18 +96,8 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
       <Form methods={methods} onSubmit={handleSave}>
         <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 0.5 }}>
-            <Field.Text
-              name="title"
-              label="Title"
-              fullWidth
-            />
-            <Field.Text
-              name="message"
-              label="Message"
-              multiline
-              minRows={3}
-              fullWidth
-            />
+            <Field.Text name="title" label="Title" fullWidth />
+            <Field.Text name="message" label="Message" multiline minRows={3} fullWidth />
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Field.Select name="audience" label="Audience" fullWidth>

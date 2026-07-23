@@ -23,7 +23,6 @@ import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 
-
 export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }) {
   const [subjects, setSubjects] = useState([]);
   const [maxMarks, setMaxMarks] = useState(0);

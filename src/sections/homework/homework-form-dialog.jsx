@@ -4,10 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z as zod } from 'zod';
 import {
+  Box,
   Stack,
   Dialog,
   Button,
   MenuItem,
+  FormLabel,
+  Typography,
   DialogTitle,
   DialogActions,
   DialogContent,
@@ -15,6 +18,7 @@ import {
 import LoadingButton from '@mui/lab/LoadingButton';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
+import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -47,6 +51,7 @@ export function HomeworkFormDialog({
   const isHomework = type === 'HOMEWORK';
   const noun = isHomework ? 'Homework' : 'Note';
   const [saving, setSaving] = useState(false);
+  const [fileName, setFileName] = useState('No file chosen');
 
   const methods = useForm({
     resolver: zodResolver(HomeworkSchema),
@@ -61,6 +66,19 @@ export function HomeworkFormDialog({
 
   useEffect(() => {
     if (!open) return;
+
+    let initialFileName = 'No file chosen';
+    if (item && item.attachmentUrl) {
+      if (item.attachmentUrl.indexOf('data:') === 0) {
+        initialFileName = 'Attached File';
+      } else if (item.attachmentUrl.indexOf('http') === 0) {
+        initialFileName = 'Attached Link';
+      } else {
+        initialFileName = 'Attached File';
+      }
+    }
+    setFileName(initialFileName);
+
     reset({
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
@@ -70,13 +88,29 @@ export function HomeworkFormDialog({
     });
   }, [open, item, reset]);
 
+  const handleFileChange = (e) => {
+    if (e.target && e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        methods.setValue('attachmentUrl', reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFileName('No file chosen');
+      methods.setValue('attachmentUrl', '');
+    }
+  };
+
   const handleSave = handleSubmit(async (values) => {
     setSaving(true);
     try {
       const payload = {
         homeworkId: item && item.homeworkId ? item.homeworkId : null,
         classId: selectedClass && selectedClass.classId ? selectedClass.classId : null,
-        sectionId: selectedClass && selectedClass.sectionId != null ? selectedClass.sectionId : null,
+        sectionId:
+          selectedClass && selectedClass.sectionId != null ? selectedClass.sectionId : null,
         subjectId: values.subjectId === '' ? null : Number(values.subjectId),
         type,
         title: values.title.trim(),
@@ -117,19 +151,9 @@ export function HomeworkFormDialog({
               ))}
             </Field.Select>
 
-            <Field.Text
-              name="title"
-              label="Title"
-              fullWidth
-            />
+            <Field.Text name="title" label="Title" fullWidth />
 
-            <Field.Text
-              name="description"
-              label="Description"
-              multiline
-              minRows={3}
-              fullWidth
-            />
+            <Field.Text name="description" label="Description" multiline minRows={3} fullWidth />
 
             {isHomework && (
               <Field.DatePicker
@@ -141,12 +165,27 @@ export function HomeworkFormDialog({
               />
             )}
 
-            <Field.Text
-              name="attachmentUrl"
-              label="Attachment link (optional)"
-              placeholder="https://..."
-              fullWidth
-            />
+            <Box sx={{ mt: 1 }}>
+              <FormLabel
+                htmlFor="attachment-file"
+                sx={{ display: 'block', mb: 1, fontWeight: 'medium' }}
+              >
+                Attachment File (optional)
+              </FormLabel>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={<Iconify icon="solar:upload-bold" />}
+                >
+                  Choose File
+                  <input id="attachment-file" type="file" hidden onChange={handleFileChange} />
+                </Button>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {fileName}
+                </Typography>
+              </Box>
+            </Box>
           </Stack>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'flex-start' }}>
