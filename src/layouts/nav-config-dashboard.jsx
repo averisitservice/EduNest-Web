@@ -85,6 +85,11 @@ export const navData = [
         path: paths.dashboard.homework.root,
         icon: ICONS.logs,
       },
+      {
+        title: 'Events',
+        path: paths.dashboard.event.root,
+        icon: ICONS.stage,
+      },
     ],
   },
 ];

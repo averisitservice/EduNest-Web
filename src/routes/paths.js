@@ -62,5 +62,8 @@ export const paths = {
     homework: {
       root: `${ROOTS.DASHBOARD}/homework`,
     },
+    event: {
+      root: `${ROOTS.DASHBOARD}/event`,
+    },
   },
 };
