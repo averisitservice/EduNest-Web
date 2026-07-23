@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -207,14 +206,3 @@ export function TimetableEditDialog({
     </Dialog>
   );
 }
-
-TimetableEditDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  row: PropTypes.object,
-  day: PropTypes.string,
-  subjects: PropTypes.array.isRequired,
-  selectedClass: PropTypes.object,
-  workingDayId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  onSuccess: PropTypes.func.isRequired,
-};

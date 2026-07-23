@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import {
   Box,
@@ -149,10 +148,3 @@ export function ReportCardDialog({ open, onClose, examId, student }) {
     </Dialog>
   );
 }
-
-ReportCardDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  examId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  student: PropTypes.object,
-};

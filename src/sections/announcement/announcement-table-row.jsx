@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Box, TableRow, TableCell, Tooltip, IconButton, Chip, Stack } from '@mui/material';
 import { Iconify } from 'src/components/iconify';
 import dateHelper from 'src/utils/dateHelper';
@@ -67,9 +66,3 @@ export function AnnouncementTableRow({ row, onEditRow, onDeleteRow }) {
     </TableRow>
   );
 }
-
-AnnouncementTableRow.propTypes = {
-  row: PropTypes.object.isRequired,
-  onEditRow: PropTypes.func.isRequired,
-  onDeleteRow: PropTypes.func.isRequired,
-};

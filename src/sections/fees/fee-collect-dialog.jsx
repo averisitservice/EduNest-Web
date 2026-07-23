@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -137,10 +136,3 @@ export function FeeCollectDialog({ open, onClose, student, onSuccess }) {
     </Dialog>
   );
 }
-
-FeeCollectDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  student: PropTypes.object,
-  onSuccess: PropTypes.func.isRequired,
-};

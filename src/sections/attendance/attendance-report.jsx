@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
@@ -132,7 +131,3 @@ export function AttendanceReport({ selectedClass }) {
     </Form>
   );
 }
-
-AttendanceReport.propTypes = {
-  selectedClass: PropTypes.object,
-};

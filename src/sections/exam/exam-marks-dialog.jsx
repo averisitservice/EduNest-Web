@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback } from 'react';
 import {
   Box,
@@ -192,11 +191,3 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
     </Dialog>
   );
 }
-
-ExamMarksDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  exam: PropTypes.object,
-  selectedClass: PropTypes.object,
-  onReport: PropTypes.func.isRequired,
-};

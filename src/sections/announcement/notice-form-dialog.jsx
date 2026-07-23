@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -151,11 +150,3 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
     </Dialog>
   );
 }
-
-NoticeFormDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  notice: PropTypes.object,
-  classes: PropTypes.array,
-  onSuccess: PropTypes.func.isRequired,
-};

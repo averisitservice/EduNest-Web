@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import {
   Box,
@@ -88,9 +87,3 @@ export function FeeHistoryDialog({ open, onClose, student }) {
     </Dialog>
   );
 }
-
-FeeHistoryDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  student: PropTypes.object,
-};
