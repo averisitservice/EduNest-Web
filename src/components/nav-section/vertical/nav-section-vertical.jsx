@@ -82,7 +82,7 @@ function Group({
 
   return (
     <NavLi>
-      {subheader && !(subheader === 'Overview') ? (
+      {subheader ? (
         <>
           <NavSubheader
             data-title={subheader}
