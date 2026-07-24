@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router';
-import { GuestGuard } from 'src/auth/guard';
+import { AuthGuard, GuestGuard } from 'src/auth/guard';
 import { SplashScreen } from 'src/components/loading-screen';
 import { AuthSplitLayout } from 'src/layouts/auth-split';
 
@@ -46,7 +46,7 @@ const ForgotPasswordSection = () => {
 
 const ChangePasswordSection = () => {
   return (
-    <GuestGuard>
+    <AuthGuard>
       <AuthSplitLayout
         slotProps={{
           section: {
@@ -57,7 +57,7 @@ const ChangePasswordSection = () => {
       >
         <Jwt.ChangePasswordPage />
       </AuthSplitLayout>
-    </GuestGuard>
+    </AuthGuard>
   );
 };
 
