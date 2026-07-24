@@ -394,6 +394,15 @@ async function getReportCardAsync(examId, studentId) {
   return await axios(config);
 }
 
+//Dashboard
+async function getDashboardSummaryAsync() {
+  const config = {
+    method: 'get',
+    url: `/dashboard/summary`,
+  };
+  return await axios(config);
+}
+
 //Event
 async function getEventListAsync(fromDate, toDate) {
   const params = new URLSearchParams();
@@ -512,6 +521,9 @@ export default {
   getExamMarksEntryAsync,
   saveExamMarksAsync,
   getReportCardAsync,
+
+  //Dashboard
+  getDashboardSummaryAsync,
 
   //Event
   getEventListAsync,

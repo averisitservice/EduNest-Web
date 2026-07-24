@@ -23,6 +23,7 @@ const ExamListPage = lazy(() => import('src/pages/exam/list'));
 const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 const HomeworkListPage = lazy(() => import('src/pages/homework/list'));
 const EventListPage = lazy(() => import('src/pages/event/list'));
+const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 
 const dashboardLayout = () => (
   <DashboardLayout>
@@ -48,6 +49,10 @@ export const dashboardRoutes = [
     element: <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
+      {
+        path: 'analytics',
+        children: [{ index: true, element: <AnalyticsPage /> }],
+      },
       {
         path: 'class',
         children: [
