@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
 import { CONFIG } from 'src/global-config';
+import { paths } from 'src/routes/paths';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useSelector } from 'react-redux';
 import enums from 'src/utils/enums';
@@ -18,7 +19,7 @@ export function GuestGuard({ children }) {
   const checkPermissions = async () => {
     if (loggedInTeacher) {
       if (returnTo === '/' || returnTo === '/dashboard') {
-        router.replace('/dashboard/tenant');
+        router.replace(paths.dashboard.teacher.root);
       } else {
         router.replace(returnTo);
       }
