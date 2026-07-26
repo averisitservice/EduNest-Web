@@ -1,186 +1,118 @@
-# 🎓 EduNest Web Portal
+# EduNest — Admin Web Panel
 
-> **EduNest** is a modern, high-performance web dashboard application designed for educational institutions (schools, universities, learning academies). It provides a robust interface for administrators to manage teachers, classes, and view comprehensive institutional analytics.
+React + MUI admin panel for the EduNest school ERP. Used by **teachers and staff** to
+manage classes, students, teachers, attendance, fees, exams, homework, announcements,
+events, and a dashboard overview.
 
-Built with **React 18**, **Material UI (MUI v6)**, **Redux Toolkit**, and **Vite**.
+Part of a three-app system:
 
----
+| Project | Role |
+|---|---|
+| **EduNest-Web** (this repo) | React admin panel — teachers / staff |
+| `EduNest-App` | Flutter mobile app — students |
+| `EduNest-backend` | Spring Boot REST API (serves both) |
 
-## 🚀 Features
-
-- **📊 Institutional Analytics**: Interactive analytics dashboard containing metrics and visualizations powered by [ApexCharts](https://apexcharts.com/).
-- **🧑‍🏫 Teacher Administration**: Comprehensive CRUD capabilities (Create, Read, Update, Delete) for teacher records, profiles, and employment types.
-- **👶 Student Management**: Comprehensive CRUD capabilities (Create, Read, Update, Delete) for student profiles, class & section assignments, roll numbers, and parent/guardian details.
-- **🏫 Class & Section Management**: Efficient management of classes, class master structures, and section assignments.
-- **🔐 Modular Authentication**: Integrated with JWT authorization by default, with built-in hooks/configurations to easily swap/use Firebase, Auth0, or AWS Amplify.
-- **🎨 Dynamic Theme & Branding Customizer**:
-  - Live light/dark mode switcher.
-  - Multi-tenant customization (branding assets, favicons, primary color overrides saved across sessions).
-  - Built-in settings drawer for custom layouts, presets, and RTL adjustments.
-- **🌐 Internationalization (i18n)**: Fully integrated localization engine supporting multiple languages and dynamic Right-to-Left (RTL) rendering.
-- **⚡ Advanced UI/UX Components**: Seamless page transitions and micro-animations via [Framer Motion](https://www.framer.com/motion/), top-bar loading indicators, and custom Material UI Snackbar and Sonner notifications.
-
----
-
-## 🛠️ Tech Stack & Architecture
-
-| Category | Technology |
-| :--- | :--- |
-| **Core Framework** | [React 18](https://react.dev/) |
-| **Build Tooling** | [Vite 6](https://vite.dev/) |
-| **Design System** | [Material UI (MUI v6)](https://mui.com/), [Emotion](https://emotion.sh/) |
-| **State Management** | [Redux Toolkit](https://redux-toolkit.js.org/) |
-| **Routing** | [React Router v6 / v7](https://reactrouter.com/) (with Auth Guards) |
-| **HTTP client** | [Axios](https://axios-http.com/) (with request/response interceptors) |
-| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
-| **Charts** | [ApexCharts](https://apexcharts.com/) |
-| **Forms & Validation**| [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/) |
-| **Linting & Quality** | [ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [Knip](https://github.com/webpro/knip) |
-
----
-
-## 📁 Project Structure
-
-```text
-EduNest-Web/
-├── config/               # Prettier, environment, or lint configurations
-├── public/               # Static assets (icons, images)
-├── src/
-│   ├── app.jsx           # App root initialization, providers wrapper
-│   ├── main.jsx          # DOM rendering, router setup
-│   ├── global-config.js  # Global app settings (firebase/auth/theme configs)
-│   ├── global.css        # Global CSS overrides
-│   ├── assets/           # Application-specific visual assets
-│   ├── auth/             # Authentication guards, contexts, and helper hooks
-│   ├── components/       # Reusable shared components (charts, scrollbars, settings, etc.)
-│   ├── layouts/          # Page layouts (Dashboard layout, Auth layout, main)
-│   ├── locales/          # Language files & i18n localization providers
-│   ├── pages/            # View pages/routes (analytics, classes, teachers, auth)
-│   ├── routes/           # Central routing configs, paths list, route hooks
-│   ├── sections/         # Feature-specific component chunks used in pages
-│   ├── services/         # API abstraction layers (AxiosService, ApiService)
-│   ├── store/            # Redux store config, actions, and slices
-│   ├── theme/            # MUI custom design system configurations, overrides, and providers
-│   └── utils/            # Helper utility functions (storage, JWT decoders, formatting)
-├── .env                  # Environment variables config
-├── index.html            # Main HTML entry point
-├── package.json          # Dependency and script manager
-└── vite.config.js        # Vite bundler configuration
-```
-
----
-
-## ⚙️ Configuration & Environment Variables
-
-Create or update the `.env` file in the root directory:
-
-```env
-# API Server base URL
-VITE_SERVER_URL=http://localhost:8081
-
-# Application version
-VITE_APP_VERSION=1.0.0
-
-# Assets prefix directory (if any)
-VITE_ASSETS_DIR=
-
-# Mapbox API key (optional, for map features)
-VITE_MAPBOX_API_KEY=
-
-# Firebase Auth Configuration (if Firebase Auth method is active)
-VITE_FIREBASE_API_KEY=
-VITE_FIREBASE_AUTH_DOMAIN=
-VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
-VITE_FIREBASE_MESSAGING_SENDER_ID=
-VITE_FIREBASE_APPID=
-VITE_FIREBASE_MEASUREMENT_ID=
-```
-
----
-
-## 🧑‍💻 Getting Started
-
-### Prerequisites
-
-Ensure you have **Node.js (version 20.x recommended)** installed.
-
-### Installation
+## Getting started
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-
-# Navigate into the project folder
-cd EduNest-Web
-
-# Install dependencies
-npm install
+npm install        # or: yarn
+npm start          # dev server — HTTPS on https://localhost:3030
+npm run build      # production build (vite)
+npm run lint:fix   # eslint --fix
+npm run fm:fix     # prettier
+npm run fix:all    # lint:fix + fm:fix
 ```
 
-### Run Locally
+- Node **20.x**, package manager **yarn 1.22**.
+- **The dev server runs HTTPS** using local certs at `config/certs/localhost.{key,crt}`
+  (see `vite.config.js`). If the server won't boot, those cert files are the usual cause.
+- Set the API base URL via the `VITE_SERVER_URL` env var (in a `.env` file).
 
-To spin up the local development server (uses Vite):
+## Stack
 
-```bash
-npm start
+- **React 18** + **Vite 6** (`@vitejs/plugin-react-swc`), plain **JavaScript/JSX** (no TypeScript)
+- **MUI v6** (+ `@mui/lab`, `x-data-grid`, `x-date-pickers`) — built on the *Minimals* admin template
+- **Redux Toolkit** + react-redux for global state
+- **react-hook-form** + **zod** for forms, **axios** for HTTP
+- **ApexCharts** for charts, `sonner` for toasts, `i18next` for i18n
+
+Import alias: `src/...` maps to the `src` directory (`vite.config.js` + `jsconfig.json`).
+
+## Architecture
+
+### API layer
+
+Two files own all backend communication:
+
+- **`src/services/ApiService.js`** — every endpoint is a small named async function
+  (`getStudentListAsync`, `saveClassAsync`, …) exported from one default object.
+  Add new endpoints here, grouped by the existing `//Student`, `//Fee` style comments.
+- **`src/services/AxiosService.js`** — axios defaults + interceptors:
+  - attaches `Authorization: Bearer <sessionToken>` from the Redux store;
+  - **unwraps the envelope** — components receive `{ data }` where `data` is the
+    backend's inner `data` field, not the full `{success, errors, data}` body;
+  - on 401 attempts a refresh via `renewSessionAsync`, then logs out on failure;
+  - validation / bad-request errors resolve (not reject) as `{ data, errors }`, so
+    callers check `errors` rather than using try/catch.
+
+Base URL comes from `VITE_SERVER_URL`.
+
+### Routing
+
+- **`src/routes/paths.js`** is the single source of truth for URLs — never hardcode a
+  path; add it here and reference `paths.dashboard.<module>`.
+- Route trees live in `src/routes/sections/` (`auth`, `dashboard`, `main`, `guest`).
+- Nav / menu items: `src/layouts/nav-config-dashboard.jsx`.
+
+### Feature code layout
+
+Each module is split across two directories:
+
+- **`src/pages/<module>/`** — thin route components (`list.jsx`, `new.jsx`, `edit.jsx`)
+- **`src/sections/<module>/`** — the real UI: `view/` (page views), plus dialogs,
+  forms and table rows (e.g. `student-save-form.jsx`, `event-form-dialog.jsx`)
+
+```
+src/
+  services/         ApiService.js, AxiosService.js
+  routes/           paths.js, sections/ (auth, dashboard, main, guest)
+  pages/<module>/   route components
+  sections/<module>/ views, dialogs, table rows
+  store/            Redux: authReducer, appReducer, snackbar
+  auth/             JWT views, guards (auth / guest / role-based), context
+  components/       template component library (hook-form, table, iconify, upload, …)
+  layouts/          dashboard layout + nav-config
+  utils/            enums.js, constants.js, utils.js, format helpers, azureBlob.js
+  theme/  locales/  global-config.js
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser to view the application.
+## Modules
 
-### Build for Production
+Dashboard, Classes, Teachers, Students, Timetable, Attendance, Fees, Exams,
+Announcements, Homework & Notes, Events. (Nav order in `nav-config-dashboard.jsx`.)
 
-To generate the optimized static build output in the `dist` folder:
+The **Dashboard** (`src/sections/analytics`) reads `GET /dashboard/summary` for
+student/teacher/class counts, today's attendance, monthly fee collection, upcoming
+events, and latest announcements.
 
-```bash
-npm run build
-```
+## Conventions
 
----
+- Endpoint functions end in `Async` and live only in `ApiService.js`.
+- Paths only from `paths.js`.
+- Forms use `react-hook-form` with the `src/components/hook-form` wrappers and `zod` schemas.
+- Components are `.jsx`; PropTypes are intentionally not used.
 
-## 🧹 Code Quality & Formatting
+## Notes / gotchas
 
-To ensure consistent code style and identify errors, the project uses ESLint and Prettier.
+- This codebase was **adapted from a dental product** ("Dentory"). Some leftovers still
+  exist (`src/pages/auth/dentist-*.jsx`, dental role names in `src/utils/enums.js`) —
+  don't treat these as EduNest features.
+- `src/sections/calendar/` is unused Minimals template code (imports uninstalled
+  `@fullcalendar/*`); the live calendar-style feature is the **Events** module.
+- `enums.roleType` and `enums.displayRole` disagree with each other — verify against the
+  backend `role` table before relying on either.
 
-- **Check Code Quality**:
-  ```bash
-  npm run lint
-  ```
-- **Automatically Fix Code Quality Issues**:
-  ```bash
-  npm run lint:fix
-  ```
-- **Automatically Format Code with Prettier**:
-  ```bash
-  npm run fm:fix
-  ```
-- **Run all Fixes (Format + Lint Fix)**:
-  ```bash
-  npm run fix:all
-  ```
+## Related projects
 
----
-
-## 📦 API & Store Integration
-
-- **API Requests**: All requests are centralized in `src/services/ApiService.js` which references standard configurations from `src/services/AxiosService.js`.
-- **Redux Store**: Managed in `src/store/index.js`.
-  - `AuthReducer` handles session login, session logout, and current tenant details.
-  - `AppReducer` handles layout configuration parameters.
-  - `snackbar` slice controls the global alerts display mechanism.
-
----
-
-## 🔒 Authentication Flow
-
-Change the active authentication mechanism in `src/global-config.js`:
-
-```javascript
-export const CONFIG = {
-  auth: {
-    method: 'jwt', // Options: 'jwt', 'amplify', 'firebase', 'auth0'
-    skip: false,
-    redirectPath: paths.dashboard.teacher.root, // Default land page
-  },
-};
-```
+- `EduNest-backend` — Spring Boot API this app calls
+- `EduNest-App` — Flutter mobile app (students)
