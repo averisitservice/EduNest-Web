@@ -33,6 +33,8 @@ const ExamSchema = zod.object({
         examDate: zod.string().min(1, { message: 'Date required.' }),
         startTime: zod.string().optional(),
         endTime: zod.string().optional(),
+        maxMarks: zod.coerce.number().positive({ message: 'Max marks required.' }),
+        passMarks: zod.coerce.number().nonnegative({ message: 'Pass marks ≥ 0.' }),
       })
     )
     .min(1, { message: 'This class has no subjects to schedule.' }),
@@ -98,6 +100,9 @@ export function ExamFormDialog({ open, onClose, exam, classId, onSuccess }) {
             examDate: prev && prev.examDate ? prev.examDate : '',
             startTime: prev && prev.startTime ? String(prev.startTime).slice(0, 5) : '',
             endTime: prev && prev.endTime ? String(prev.endTime).slice(0, 5) : '',
+            maxMarks: prev && prev.maxMarks != null ? String(prev.maxMarks) : baseValues.maxMarks,
+            passMarks:
+              prev && prev.passMarks != null ? String(prev.passMarks) : baseValues.passMarks,
           };
         });
 
@@ -123,6 +128,8 @@ export function ExamFormDialog({ open, onClose, exam, classId, onSuccess }) {
           examDate: s.examDate || null,
           startTime: s.startTime || null,
           endTime: s.endTime || null,
+          maxMarks: Number(s.maxMarks),
+          passMarks: Number(s.passMarks) || 0,
         })),
       };
       const res = await ApiService.saveExamAsync(payload);
@@ -205,38 +212,64 @@ export function ExamFormDialog({ open, onClose, exam, classId, onSuccess }) {
                       </Stack>
 
                       <Box sx={{ flex: 1, width: 1 }}>
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-                          <Box sx={{ flex: 1.4, minWidth: 0 }}>
-                            <Field.DatePicker
-                              name={`subjects.${index}.examDate`}
-                              label="Exam Date"
-                              allowFutureDates
-                              allowPastDates
-                              slotProps={{
-                                textField: { size: 'small', fullWidth: true, sx: { minWidth: 0 } },
-                              }}
-                            />
-                          </Box>
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Field.Text
-                              name={`subjects.${index}.startTime`}
-                              label="Start"
-                              type="time"
-                              size="small"
-                              fullWidth
-                              slotProps={{ inputLabel: { shrink: true } }}
-                            />
-                          </Box>
-                          <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Field.Text
-                              name={`subjects.${index}.endTime`}
-                              label="End"
-                              type="time"
-                              size="small"
-                              fullWidth
-                              slotProps={{ inputLabel: { shrink: true } }}
-                            />
-                          </Box>
+                        <Stack spacing={1.5}>
+                          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                            <Box sx={{ flex: 1.4, minWidth: 0 }}>
+                              <Field.DatePicker
+                                name={`subjects.${index}.examDate`}
+                                label="Exam Date"
+                                allowFutureDates
+                                allowPastDates
+                                slotProps={{
+                                  textField: {
+                                    size: 'small',
+                                    fullWidth: true,
+                                    sx: { minWidth: 0 },
+                                  },
+                                }}
+                              />
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Field.Text
+                                name={`subjects.${index}.startTime`}
+                                label="Start"
+                                type="time"
+                                size="small"
+                                fullWidth
+                                slotProps={{ inputLabel: { shrink: true } }}
+                              />
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Field.Text
+                                name={`subjects.${index}.endTime`}
+                                label="End"
+                                type="time"
+                                size="small"
+                                fullWidth
+                                slotProps={{ inputLabel: { shrink: true } }}
+                              />
+                            </Box>
+                          </Stack>
+                          <Stack direction="row" spacing={1.5}>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Field.Text
+                                name={`subjects.${index}.maxMarks`}
+                                label="Max Marks"
+                                type="number"
+                                size="small"
+                                fullWidth
+                              />
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Field.Text
+                                name={`subjects.${index}.passMarks`}
+                                label="Pass Marks"
+                                type="number"
+                                size="small"
+                                fullWidth
+                              />
+                            </Box>
+                          </Stack>
                         </Stack>
                       </Box>
                     </Stack>
