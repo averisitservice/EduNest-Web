@@ -18,6 +18,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
 import ApiService from 'src/services/ApiService';
 import dateHelper from 'src/utils/dateHelper';
 import { toast } from 'src/components/snackbar';
@@ -26,7 +27,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
-import { ExamFormDialog } from '../exam-form-dialog';
 import { ExamMarksDialog } from '../exam-marks-dialog';
 import { ReportCardDialog } from '../report-card-dialog';
 
@@ -48,8 +48,6 @@ export function ExamsView() {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [formExam, setFormExam] = useState(null);
-  const [formOpen, setFormOpen] = useState(false);
   const [marksExam, setMarksExam] = useState(null);
   const [reportStudent, setReportStudent] = useState(null);
   const [deleteExam, setDeleteExam] = useState(null);
@@ -83,16 +81,6 @@ export function ExamsView() {
     setSelectedClass(classSections.find((c) => classKey(c) === value) || null);
   };
 
-  const openNew = () => {
-    setFormExam(null);
-    setFormOpen(true);
-  };
-
-  const openEdit = (exam) => {
-    setFormExam(exam);
-    setFormOpen(true);
-  };
-
   const handleDelete = async (exam) => {
     if (!exam) return;
     const res = await ApiService.deleteExamAsync(exam.examId);
@@ -114,11 +102,12 @@ export function ExamsView() {
         ]}
         action={
           <Button
+            component={RouterLink}
+            href={paths.dashboard.exam.new}
+            state={{ classId: selectedClass ? selectedClass.classId : null }}
             variant="contained"
             color="primary"
             startIcon={<Iconify icon="mingcute:add-line" />}
-            onClick={openNew}
-            disabled={!selectedClass}
           >
             New Exam
           </Button>
@@ -180,7 +169,7 @@ export function ExamsView() {
                     <TableCell align="center">{exam.examDate || '-'}</TableCell>
                     <TableCell>
                       <Stack sx={{ typography: 'body2' }}>
-                        <Box component="span">{exam.updatedBy ?? ''}</Box>
+                        <Box component="span">{exam.updatedBy ? exam.updatedBy : ''}</Box>
                         <Box component="span" sx={{ color: 'text.disabled' }}>
                           {exam.updatedDate ? dateHelper.formatDateTime(exam.updatedDate) : '-'}
                         </Box>
@@ -192,7 +181,11 @@ export function ExamsView() {
                           Enter Marks
                         </Button>
                         <Tooltip title="Edit">
-                          <IconButton size="small" onClick={() => openEdit(exam)}>
+                          <IconButton
+                            component={RouterLink}
+                            href={paths.dashboard.exam.edit(exam.examId)}
+                            size="small"
+                          >
                             <Iconify icon="solar:pen-bold" />
                           </IconButton>
                         </Tooltip>
@@ -214,14 +207,6 @@ export function ExamsView() {
           </TableContainer>
         )}
       </Card>
-
-      <ExamFormDialog
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        exam={formExam}
-        classId={selectedClass && selectedClass.classId ? selectedClass.classId : null}
-        onSuccess={loadExams}
-      />
 
       <ExamMarksDialog
         open={Boolean(marksExam)}

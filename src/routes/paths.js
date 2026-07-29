@@ -56,6 +56,9 @@ export const paths = {
     },
     exam: {
       root: `${ROOTS.DASHBOARD}/exam`,
+      list: `${ROOTS.DASHBOARD}/exam/list`,
+      new: `${ROOTS.DASHBOARD}/exam/new`,
+      edit: (id) => `${ROOTS.DASHBOARD}/exam/edit/${id}`,
     },
     announcement: {
       root: `${ROOTS.DASHBOARD}/announcement`,

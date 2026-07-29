@@ -338,6 +338,14 @@ async function getFeeHistoryAsync(studentId) {
 }
 
 //Exam
+async function getExamByIdAsync(examId) {
+  const config = {
+    method: 'get',
+    url: `/exam/${examId}`,
+  };
+  return await axios(config);
+}
+
 async function getExamListAsync(classId) {
   const params = new URLSearchParams();
   if (classId != null) params.append('classId', classId);
@@ -515,6 +523,7 @@ export default {
   getFeeHistoryAsync,
 
   //Exam
+  getExamByIdAsync,
   getExamListAsync,
   saveExamAsync,
   deleteExamAsync,
