@@ -6,7 +6,7 @@ import { ExamSaveForm } from '../exam-save-form';
 
 export function ExamCreateView() {
   return (
-    <DashboardContent>
+    <DashboardContent maxWidth={false}>
       <CustomBreadcrumbs
         heading="Create Exam"
         links={[

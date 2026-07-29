@@ -181,12 +181,16 @@ export function ExamSaveForm() {
     setSaving(true);
     try {
       const selectedClass = values.studentClass;
+      const firstSubject = values.subjects && values.subjects[0];
+      const examMaxMarks = firstSubject ? Number(firstSubject.maxMarks) : (Number(values.maxMarks) || 100);
+      const examPassMarks = firstSubject ? Number(firstSubject.passMarks) : (Number(values.passMarks) || 35);
+
       const payload = {
         examId: id ? Number(id) : null,
         classId: selectedClass ? selectedClass.classId : null,
         examName: values.examName.trim(),
-        maxMarks: Number(values.maxMarks),
-        passMarks: Number(values.passMarks) || 0,
+        maxMarks: examMaxMarks,
+        passMarks: examPassMarks,
         examDate: null,
         subjects: (values.subjects || []).map((s) => ({
           subjectId: Number(s.subjectId),
@@ -219,7 +223,7 @@ export function ExamSaveForm() {
   return (
     <Form methods={methods} onSubmit={handleSave}>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={12}>
           <Stack spacing={3}>
             <Card sx={{ p: 3 }}>
               <Typography variant="h6" sx={{ mb: 2 }}>
@@ -269,11 +273,6 @@ export function ExamSaveForm() {
                   placeholder="e.g. Mid-Term / Final Exam"
                   fullWidth
                 />
-
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                  <Field.Text name="maxMarks" type="number" label="Max Marks" fullWidth />
-                  <Field.Text name="passMarks" type="number" label="Pass Marks" fullWidth />
-                </Stack>
               </Stack>
             </Card>
 
