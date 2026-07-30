@@ -26,15 +26,6 @@ const AUDIENCE_COLOR = {
   STUDENTS: 'success',
 };
 
-const TYPE_COLOR = {
-  GENERAL: 'default',
-  HOLIDAY: 'error',
-  EXAM: 'warning',
-  SPORTS: 'success',
-  CULTURAL: 'secondary',
-  MEETING: 'info',
-};
-
 function StatCard({ title, value, icon, color = 'primary.main' }) {
   return (
     <Card sx={{ p: 3, height: 1 }}>
@@ -80,7 +71,6 @@ export function OverviewAnalyticsView() {
   }, [loadSummary]);
 
   const attendance = summary?.attendanceToday;
-  const upcomingEvents = summary?.upcomingEvents || [];
   const latestAnnouncements = summary?.latestAnnouncements || [];
 
   return (
@@ -126,7 +116,7 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         {/* Today's attendance */}
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12}>
           <Card sx={{ height: 1 }}>
             <CardHeader
               title="Today's Attendance"
@@ -184,46 +174,6 @@ export function OverviewAnalyticsView() {
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   Attendance has not been marked today.
                 </Typography>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Upcoming events */}
-        <Grid item xs={12} md={7}>
-          <Card sx={{ height: 1 }}>
-            <CardHeader title="Upcoming Events" />
-            <CardContent sx={{ pt: 1 }}>
-              {upcomingEvents.length === 0 ? (
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  No upcoming events.
-                </Typography>
-              ) : (
-                <Stack divider={<Divider flexItem />} spacing={1.5}>
-                  {upcomingEvents.map((ev) => (
-                    <Stack
-                      key={ev.eventId}
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Stack direction="row" alignItems="center" spacing={1.5}>
-                        <Iconify icon="solar:calendar-mark-bold" sx={{ color: 'text.disabled' }} />
-                        <Typography variant="subtitle2">{ev.title}</Typography>
-                      </Stack>
-                      <Stack direction="row" alignItems="center" spacing={1.5}>
-                        <Chip
-                          size="small"
-                          label={ev.eventType || 'GENERAL'}
-                          color={TYPE_COLOR[ev.eventType] || 'default'}
-                        />
-                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                          {ev.startDate ? dateHelper.formatDate(ev.startDate) : ''}
-                        </Typography>
-                      </Stack>
-                    </Stack>
-                  ))}
-                </Stack>
               )}
             </CardContent>
           </Card>

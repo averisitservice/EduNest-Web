@@ -24,7 +24,6 @@ const ExamCreatePage = lazy(() => import('src/pages/exam/new'));
 const ExamEditPage = lazy(() => import('src/pages/exam/edit'));
 const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 const HomeworkListPage = lazy(() => import('src/pages/homework/list'));
-const EventListPage = lazy(() => import('src/pages/event/list'));
 const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 
 const dashboardLayout = () => (
@@ -112,10 +111,6 @@ export const dashboardRoutes = [
       {
         path: 'homework',
         children: [{ index: true, element: <HomeworkListPage /> }],
-      },
-      {
-        path: 'event',
-        children: [{ index: true, element: <EventListPage /> }],
       },
     ],
   },

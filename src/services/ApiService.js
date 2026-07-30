@@ -411,36 +411,6 @@ async function getDashboardSummaryAsync() {
   return await axios(config);
 }
 
-//Event
-async function getEventListAsync(fromDate, toDate) {
-  const params = new URLSearchParams();
-  if (fromDate) params.append('fromDate', fromDate);
-  if (toDate) params.append('toDate', toDate);
-  const query = params.toString();
-  const config = {
-    method: 'get',
-    url: query ? `/event/list?${query}` : `/event/list`,
-  };
-  return await axios(config);
-}
-
-async function saveEventAsync(payload) {
-  const config = {
-    method: 'post',
-    url: '/event',
-    data: payload,
-  };
-  return await axios(config);
-}
-
-async function deleteEventAsync(eventId) {
-  const config = {
-    method: 'delete',
-    url: `/event/${eventId}`,
-  };
-  return await axios(config);
-}
-
 //Announcement
 async function getAnnouncementListAsync() {
   const config = {
@@ -533,11 +503,6 @@ export default {
 
   //Dashboard
   getDashboardSummaryAsync,
-
-  //Event
-  getEventListAsync,
-  saveEventAsync,
-  deleteEventAsync,
 
   //Announcement
   getAnnouncementListAsync,
