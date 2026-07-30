@@ -157,8 +157,6 @@ export function ExamsView() {
               <TableHead>
                 <TableRow>
                   <TableCell>Exam</TableCell>
-                  <TableCell align="center">Max Marks</TableCell>
-                  <TableCell align="center">Pass Marks</TableCell>
                   <TableCell align="center">Start Date</TableCell>
                   <TableCell align="center">End Date</TableCell>
                   <TableCell>Updated By</TableCell>
@@ -171,8 +169,6 @@ export function ExamsView() {
                 {exams.map((exam) => (
                   <TableRow key={exam.examId} hover>
                     <TableCell>{exam.examName}</TableCell>
-                    <TableCell align="center">{exam.maxMarks}</TableCell>
-                    <TableCell align="center">{exam.passMarks}</TableCell>
                     <TableCell align="center">
                       {exam.startDate ? dateHelper.formatDate(exam.startDate) : '-'}
                     </TableCell>
