@@ -37,6 +37,12 @@ function getClassLabel(option) {
     : option.className || '';
 }
 
+function isExamEnded(exam) {
+  const lastDate = exam.endDate || exam.examDate;
+  if (!lastDate) return false;
+  return lastDate < new Date().toISOString().slice(0, 10);
+}
+
 function classKey(option) {
   if (!option) return '';
   return `${option.classId}-${option.sectionId != null ? option.sectionId : 'null'}`;
@@ -186,24 +192,28 @@ export function ExamsView() {
                         <Button size="small" variant="outlined" onClick={() => setMarksExam(exam)}>
                           Enter Marks
                         </Button>
-                        <Tooltip title="Edit">
-                          <IconButton
-                            component={RouterLink}
-                            href={paths.dashboard.exam.edit(exam.examId)}
-                            size="small"
-                          >
-                            <Iconify icon="solar:pen-bold" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => setDeleteExam(exam)}
-                          >
-                            <Iconify icon="solar:trash-bin-trash-bold" />
-                          </IconButton>
-                        </Tooltip>
+                        {!isExamEnded(exam) && (
+                          <>
+                            <Tooltip title="Edit">
+                              <IconButton
+                                component={RouterLink}
+                                href={paths.dashboard.exam.edit(exam.examId)}
+                                size="small"
+                              >
+                                <Iconify icon="solar:pen-bold" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete">
+                              <IconButton
+                                size="small"
+                                color="error"
+                                onClick={() => setDeleteExam(exam)}
+                              >
+                                <Iconify icon="solar:trash-bin-trash-bold" />
+                              </IconButton>
+                            </Tooltip>
+                          </>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>
