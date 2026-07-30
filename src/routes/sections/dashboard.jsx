@@ -24,6 +24,7 @@ const ExamCreatePage = lazy(() => import('src/pages/exam/new'));
 const ExamEditPage = lazy(() => import('src/pages/exam/edit'));
 const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 const HomeworkListPage = lazy(() => import('src/pages/homework/list'));
+const NoteListPage = lazy(() => import('src/pages/note/list'));
 const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 
 const dashboardLayout = () => (
@@ -111,6 +112,10 @@ export const dashboardRoutes = [
       {
         path: 'homework',
         children: [{ index: true, element: <HomeworkListPage /> }],
+      },
+      {
+        path: 'note',
+        children: [{ index: true, element: <NoteListPage /> }],
       },
     ],
   },

@@ -20,13 +20,10 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
-const today = () => new Date().toISOString().slice(0, 10);
-
-const HomeworkSchema = zod.object({
+const NoteSchema = zod.object({
   subjectId: zod.string().optional(),
   title: zod.string().trim().min(1, { message: 'Title is required.' }),
   description: zod.string().trim().optional(),
-  dueDate: zod.string().optional(),
   attachmentUrl: zod.string().trim().optional(),
 });
 
@@ -34,16 +31,15 @@ const defaultValues = {
   subjectId: '',
   title: '',
   description: '',
-  dueDate: today(),
   attachmentUrl: '',
 };
 
-export function HomeworkFormDialog({ open, onClose, item, selectedClass, subjects, onSuccess }) {
+export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, onSuccess }) {
   const [saving, setSaving] = useState(false);
   const [fileName, setFileName] = useState('No file chosen');
 
   const methods = useForm({
-    resolver: zodResolver(HomeworkSchema),
+    resolver: zodResolver(NoteSchema),
     defaultValues,
   });
 
@@ -72,7 +68,6 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
       description: item && item.description ? item.description : '',
-      dueDate: item && item.dueDate ? item.dueDate : today(),
       attachmentUrl: item && item.attachmentUrl ? item.attachmentUrl : '',
     });
   }, [open, item, reset]);
@@ -96,19 +91,18 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
     setSaving(true);
     try {
       const payload = {
-        homeworkId: item && item.homeworkId ? item.homeworkId : null,
+        noteId: item && item.noteId ? item.noteId : null,
         classId: selectedClass && selectedClass.classId ? selectedClass.classId : null,
         sectionId:
           selectedClass && selectedClass.sectionId != null ? selectedClass.sectionId : null,
         subjectId: values.subjectId === '' ? null : Number(values.subjectId),
         title: values.title.trim(),
         description: values.description.trim() || null,
-        dueDate: values.dueDate || null,
         attachmentUrl: values.attachmentUrl.trim() || null,
       };
-      const res = await ApiService.saveHomeworkAsync(payload);
+      const res = await ApiService.saveNoteAsync(payload);
       if (res && res.data) {
-        toast.success(item ? 'Homework updated.' : 'Homework posted.');
+        toast.success(item ? 'Note updated.' : 'Note posted.');
         onSuccess();
         onClose();
       } else if (res && res.errors && res.errors.length) {
@@ -124,9 +118,7 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
-        {item ? 'Edit Homework' : 'New Homework'}
-      </DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>{item ? 'Edit Note' : 'New Note'}</DialogTitle>
       <Form methods={methods} onSubmit={handleSave}>
         <DialogContent dividers>
           <Stack spacing={2.5} sx={{ mt: 0.5 }}>
@@ -145,17 +137,9 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
 
             <Field.Text name="description" label="Description" multiline minRows={3} fullWidth />
 
-            <Field.DatePicker
-              name="dueDate"
-              label="Due Date"
-              allowFutureDates
-              allowPastDates
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-
             <Box sx={{ mt: 1 }}>
               <FormLabel
-                htmlFor="attachment-file"
+                htmlFor="note-attachment-file"
                 sx={{ display: 'block', mb: 1, fontWeight: 'medium' }}
               >
                 Attachment File (optional)
@@ -167,7 +151,7 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
                   startIcon={<Iconify icon="solar:upload-bold" />}
                 >
                   Choose File
-                  <input id="attachment-file" type="file" hidden onChange={handleFileChange} />
+                  <input id="note-attachment-file" type="file" hidden onChange={handleFileChange} />
                 </Button>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   {fileName}

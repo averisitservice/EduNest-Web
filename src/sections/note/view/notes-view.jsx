@@ -23,7 +23,7 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { HomeworkFormDialog } from '../homework-form-dialog';
+import { NoteFormDialog } from '../note-form-dialog';
 
 function getClassLabel(option) {
   if (!option) return '';
@@ -37,7 +37,7 @@ function classKey(option) {
   return `${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`;
 }
 
-export function HomeworkView() {
+export function NotesView() {
   const [classSections, setClassSections] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [subjects, setSubjects] = useState([]);
@@ -75,10 +75,7 @@ export function HomeworkView() {
       return;
     }
     setLoading(true);
-    const res = await ApiService.getHomeworkListAsync(
-      selectedClass.classId,
-      selectedClass.sectionId
-    );
+    const res = await ApiService.getNoteListAsync(selectedClass.classId, selectedClass.sectionId);
     setItems(res && res.data ? res.data : []);
     setLoading(false);
   }, [selectedClass]);
@@ -103,7 +100,7 @@ export function HomeworkView() {
 
   const handleDelete = async (item) => {
     if (!item) return;
-    const res = await ApiService.deleteHomeworkAsync(item.homeworkId);
+    const res = await ApiService.deleteNoteAsync(item.noteId);
     if (res && res.data) {
       toast.success('Deleted.');
       loadItems();
@@ -115,10 +112,10 @@ export function HomeworkView() {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Homework"
+        heading="Notes"
         links={[
           { name: 'Dashboard', href: '' },
-          { name: 'Homework', href: paths.dashboard.homework.root },
+          { name: 'Notes', href: paths.dashboard.note.root },
         ]}
         action={
           <Button
@@ -128,7 +125,7 @@ export function HomeworkView() {
             onClick={openNew}
             disabled={!selectedClass}
           >
-            New Homework
+            New Note
           </Button>
         }
         sx={{ mb: 4 }}
@@ -161,13 +158,13 @@ export function HomeworkView() {
         ) : items.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No homework posted yet.
+              No notes posted yet.
             </Typography>
           </Box>
         ) : (
           <Stack spacing={2} sx={{ p: 2 }}>
             {items.map((item) => (
-              <Card key={item.homeworkId} variant="outlined" sx={{ p: 2 }}>
+              <Card key={item.noteId} variant="outlined" sx={{ p: 2 }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                   <Box sx={{ flexGrow: 1, pr: 2 }}>
                     <Stack
@@ -181,13 +178,6 @@ export function HomeworkView() {
                         {item.title}
                       </Typography>
                       {item.subjectName && <Chip size="small" label={item.subjectName} />}
-                      {item.dueDate && (
-                        <Chip
-                          size="small"
-                          color="warning"
-                          label={`Due: ${dateHelper.formatDate(item.dueDate)}`}
-                        />
-                      )}
                     </Stack>
                     {item.description && (
                       <Typography
@@ -238,7 +228,7 @@ export function HomeworkView() {
         )}
       </Card>
 
-      <HomeworkFormDialog
+      <NoteFormDialog
         open={formOpen}
         onClose={() => setFormOpen(false)}
         item={formItem}

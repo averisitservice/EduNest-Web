@@ -248,11 +248,10 @@ async function deleteStudentAsync(studentId) {
   return await axios(config);
 }
 
-//Homework & Notes
-async function getHomeworkListAsync(classId, sectionId, type) {
+//Homework
+async function getHomeworkListAsync(classId, sectionId) {
   const params = new URLSearchParams();
   if (sectionId != null) params.append('sectionId', sectionId);
-  if (type) params.append('type', type);
   const query = params.toString();
   const config = {
     method: 'get',
@@ -274,6 +273,35 @@ async function deleteHomeworkAsync(homeworkId) {
   const config = {
     method: 'delete',
     url: `/homework/${homeworkId}`,
+  };
+  return await axios(config);
+}
+
+//Note
+async function getNoteListAsync(classId, sectionId) {
+  const params = new URLSearchParams();
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/note/list/${classId}?${query}` : `/note/list/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function saveNoteAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/note',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function deleteNoteAsync(noteId) {
+  const config = {
+    method: 'delete',
+    url: `/note/${noteId}`,
   };
   return await axios(config);
 }
@@ -477,10 +505,15 @@ export default {
   getStudentDataByIdAsync,
   deleteStudentAsync,
 
-  //Homework & Notes
+  //Homework
   getHomeworkListAsync,
   saveHomeworkAsync,
   deleteHomeworkAsync,
+
+  //Note
+  getNoteListAsync,
+  saveNoteAsync,
+  deleteNoteAsync,
 
   //Attendance
   getAttendanceRosterAsync,

@@ -91,9 +91,14 @@ export const navData = [
         icon: ICONS.notifications,
       },
       {
-        title: 'Homework & Notes',
+        title: 'Homework',
         path: paths.dashboard.homework.root,
         icon: ICONS.logs,
+      },
+      {
+        title: 'Notes',
+        path: paths.dashboard.note.root,
+        icon: ICONS.category,
       },
     ],
   },
