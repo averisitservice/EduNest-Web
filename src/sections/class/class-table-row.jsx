@@ -26,7 +26,7 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
     <ConfirmDialog
       open={confirmDialog.value}
       onClose={confirmDialog.onFalse}
-      title="Delete Teacher"
+      title="Delete Class"
       content={<>Are you sure want to delete {row.className}?</>}
       action={
         <LoadingButton

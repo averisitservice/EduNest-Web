@@ -75,15 +75,15 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
       };
       const res = await ApiService.saveAnnouncementAsync(payload);
       if (res && res.data) {
-        toast.success(notice ? 'Notice updated.' : 'Notice posted.');
+        toast.success(notice ? 'Announcement updated.' : 'Announcement posted.');
         onSuccess();
         onClose();
       } else if (res && res.errors && res.errors.length) {
         toast.error(res.errors[0].msg);
       }
     } catch (err) {
-      console.error('Failed to save notice:', err);
-      toast.error('Failed to save notice.');
+      console.error('Failed to save announcement:', err);
+      toast.error('Failed to save announcement.');
     } finally {
       setSaving(false);
     }
@@ -91,7 +91,9 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>{notice ? 'Edit Notice' : 'New Notice'}</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>
+        {notice ? 'Edit Announcement' : 'New Announcement'}
+      </DialogTitle>
       <Form methods={methods} onSubmit={handleSave}>
         <DialogContent>
           <Stack spacing={2.5} sx={{ mt: 0.5 }}>
@@ -135,7 +137,7 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
             color="primary"
             loading={saving || isSubmitting}
           >
-            {notice ? 'Update' : 'Post'}
+            {notice ? 'Update' : 'Save'}
           </LoadingButton>
           <Button
             variant="outlined"

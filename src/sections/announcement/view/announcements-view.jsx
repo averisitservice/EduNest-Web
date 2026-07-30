@@ -94,7 +94,7 @@ export function AnnouncementsView() {
     const res = await ApiService.deleteAnnouncementAsync(notice.announcementId);
     if (res && res.data) {
       setNotices((prev) => prev.filter((row) => row.announcementId !== notice.announcementId));
-      toast.success('Notice deleted.');
+      toast.success('Announcement deleted.');
       table.onUpdatePageDeleteRow(dataInPage.length);
     } else if (res && res.errors && res.errors.length) {
       toast.error(res.errors[0].msg);
@@ -146,7 +146,7 @@ export function AnnouncementsView() {
             startIcon={<Iconify icon="mingcute:add-line" />}
             onClick={openNew}
           >
-            New Notice
+            New Announcement
           </Button>
         }
         sx={{ mb: { xs: 2, md: 2 } }}
@@ -223,11 +223,11 @@ export function AnnouncementsView() {
       <ConfirmDialog
         open={Boolean(deleteNotice)}
         onClose={() => setDeleteNotice(null)}
-        title="Delete Notice"
+        title="Delete Announcement"
         content={
           deleteNotice && deleteNotice.title
             ? `Are you sure you want to delete "${deleteNotice.title}"?`
-            : 'Are you sure you want to delete this notice?'
+            : 'Are you sure you want to delete this announcement?'
         }
         action={
           <Button

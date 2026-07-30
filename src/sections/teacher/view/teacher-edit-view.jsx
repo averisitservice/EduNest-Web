@@ -11,7 +11,7 @@ export function TeacherEditView() {
         heading="Edit Teacher"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Teachert', href: paths.dashboard.teacher.root },
+          { name: 'Teacher', href: paths.dashboard.teacher.root },
           { name: 'Edit teacher' },
         ]}
         sx={{ mb: { xs: 2, md: 2 } }}

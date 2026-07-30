@@ -167,7 +167,7 @@ export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, o
             color="primary"
             loading={saving || isSubmitting}
           >
-            {item ? 'Update' : 'Post'}
+            {item ? 'Update' : 'Save'}
           </LoadingButton>
           <Button
             variant="outlined"

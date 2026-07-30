@@ -183,7 +183,7 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
             color="primary"
             loading={saving || isSubmitting}
           >
-            {item ? 'Update' : 'Post'}
+            {item ? 'Update' : 'Save'}
           </LoadingButton>
           <Button
             variant="outlined"

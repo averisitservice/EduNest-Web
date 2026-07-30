@@ -103,7 +103,7 @@ export function TeacherListView() {
       const { data, errors } = await ApiService.deleteTeacherAsync(teacherId);
       if (data) {
         setTableData((prevData) => prevData.filter((row) => row.teacherId !== teacherId));
-        toast.success('TeacherId deleted successfully.');
+        toast.success('Teacher deleted successfully.');
         table.onUpdatePageDeleteRow(dataInPage.length);
       } else if (errors) {
         toast.error(errors[0].msg);
