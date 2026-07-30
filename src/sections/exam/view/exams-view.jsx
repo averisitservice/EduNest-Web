@@ -153,7 +153,8 @@ export function ExamsView() {
                   <TableCell>Exam</TableCell>
                   <TableCell align="center">Max Marks</TableCell>
                   <TableCell align="center">Pass Marks</TableCell>
-                  <TableCell align="center">Date</TableCell>
+                  <TableCell align="center">Start Date</TableCell>
+                  <TableCell align="center">End Date</TableCell>
                   <TableCell>Updated By</TableCell>
                   <TableCell align="center" sx={{ width: 200 }}>
                     Actions
@@ -166,7 +167,12 @@ export function ExamsView() {
                     <TableCell>{exam.examName}</TableCell>
                     <TableCell align="center">{exam.maxMarks}</TableCell>
                     <TableCell align="center">{exam.passMarks}</TableCell>
-                    <TableCell align="center">{exam.examDate || '-'}</TableCell>
+                    <TableCell align="center">
+                      {exam.startDate ? dateHelper.formatDate(exam.startDate) : '-'}
+                    </TableCell>
+                    <TableCell align="center">
+                      {exam.endDate ? dateHelper.formatDate(exam.endDate) : '-'}
+                    </TableCell>
                     <TableCell>
                       <Stack sx={{ typography: 'body2' }}>
                         <Box component="span">{exam.updatedBy ? exam.updatedBy : ''}</Box>
