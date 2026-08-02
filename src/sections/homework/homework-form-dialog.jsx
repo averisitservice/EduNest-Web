@@ -27,7 +27,6 @@ const HomeworkSchema = zod.object({
   title: zod.string().trim().min(1, { message: 'Title is required.' }),
   description: zod.string().trim().optional(),
   dueDate: zod.string().optional(),
-  attachmentUrl: zod.string().trim().optional(),
 });
 
 const defaultValues = {
@@ -35,12 +34,12 @@ const defaultValues = {
   title: '',
   description: '',
   dueDate: today(),
-  attachmentUrl: '',
 };
 
 export function HomeworkFormDialog({ open, onClose, item, selectedClass, subjects, onSuccess }) {
   const [saving, setSaving] = useState(false);
   const [fileName, setFileName] = useState('No file chosen');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const methods = useForm({
     resolver: zodResolver(HomeworkSchema),
@@ -56,24 +55,14 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
   useEffect(() => {
     if (!open) return;
 
-    let initialFileName = 'No file chosen';
-    if (item && item.attachmentUrl) {
-      if (item.attachmentUrl.indexOf('data:') === 0) {
-        initialFileName = 'Attached File';
-      } else if (item.attachmentUrl.indexOf('http') === 0) {
-        initialFileName = 'Attached Link';
-      } else {
-        initialFileName = 'Attached File';
-      }
-    }
-    setFileName(initialFileName);
+    setFileName(item && item.attachmentUrl ? 'Attached File' : 'No file chosen');
+    setSelectedFile(null);
 
     reset({
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
       description: item && item.description ? item.description : '',
       dueDate: item && item.dueDate ? item.dueDate : today(),
-      attachmentUrl: item && item.attachmentUrl ? item.attachmentUrl : '',
     });
   }, [open, item, reset]);
 
@@ -81,14 +70,10 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
     if (e.target && e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        methods.setValue('attachmentUrl', reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file);
     } else {
       setFileName('No file chosen');
-      methods.setValue('attachmentUrl', '');
+      setSelectedFile(null);
     }
   };
 
@@ -104,9 +89,8 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
         title: values.title.trim(),
         description: values.description.trim() || null,
         dueDate: values.dueDate || null,
-        attachmentUrl: values.attachmentUrl.trim() || null,
       };
-      const res = await ApiService.saveHomeworkAsync(payload);
+      const res = await ApiService.saveHomeworkAsync(payload, selectedFile);
       if (res && res.data) {
         toast.success(item ? 'Homework updated.' : 'Homework posted.');
         onSuccess();

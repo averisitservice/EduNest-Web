@@ -260,11 +260,15 @@ async function getHomeworkListAsync(classId, sectionId) {
   return await axios(config);
 }
 
-async function saveHomeworkAsync(payload) {
+async function saveHomeworkAsync(payload, file) {
+  const formData = new FormData();
+  formData.append('data', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+  if (file) formData.append('file', file);
+
   const config = {
     method: 'post',
     url: '/homework',
-    data: payload,
+    data: formData,
   };
   return await axios(config);
 }
@@ -289,11 +293,15 @@ async function getNoteListAsync(classId, sectionId) {
   return await axios(config);
 }
 
-async function saveNoteAsync(payload) {
+async function saveNoteAsync(payload, file) {
+  const formData = new FormData();
+  formData.append('data', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+  if (file) formData.append('file', file);
+
   const config = {
     method: 'post',
     url: '/note',
-    data: payload,
+    data: formData,
   };
   return await axios(config);
 }

@@ -24,19 +24,18 @@ const NoteSchema = zod.object({
   subjectId: zod.string().optional(),
   title: zod.string().trim().min(1, { message: 'Title is required.' }),
   description: zod.string().trim().optional(),
-  attachmentUrl: zod.string().trim().optional(),
 });
 
 const defaultValues = {
   subjectId: '',
   title: '',
   description: '',
-  attachmentUrl: '',
 };
 
 export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, onSuccess }) {
   const [saving, setSaving] = useState(false);
   const [fileName, setFileName] = useState('No file chosen');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const methods = useForm({
     resolver: zodResolver(NoteSchema),
@@ -52,23 +51,13 @@ export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, o
   useEffect(() => {
     if (!open) return;
 
-    let initialFileName = 'No file chosen';
-    if (item && item.attachmentUrl) {
-      if (item.attachmentUrl.indexOf('data:') === 0) {
-        initialFileName = 'Attached File';
-      } else if (item.attachmentUrl.indexOf('http') === 0) {
-        initialFileName = 'Attached Link';
-      } else {
-        initialFileName = 'Attached File';
-      }
-    }
-    setFileName(initialFileName);
+    setFileName(item && item.attachmentUrl ? 'Attached File' : 'No file chosen');
+    setSelectedFile(null);
 
     reset({
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
       description: item && item.description ? item.description : '',
-      attachmentUrl: item && item.attachmentUrl ? item.attachmentUrl : '',
     });
   }, [open, item, reset]);
 
@@ -76,14 +65,10 @@ export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, o
     if (e.target && e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        methods.setValue('attachmentUrl', reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedFile(file);
     } else {
       setFileName('No file chosen');
-      methods.setValue('attachmentUrl', '');
+      setSelectedFile(null);
     }
   };
 
@@ -98,9 +83,8 @@ export function NoteFormDialog({ open, onClose, item, selectedClass, subjects, o
         subjectId: values.subjectId === '' ? null : Number(values.subjectId),
         title: values.title.trim(),
         description: values.description.trim() || null,
-        attachmentUrl: values.attachmentUrl.trim() || null,
       };
-      const res = await ApiService.saveNoteAsync(payload);
+      const res = await ApiService.saveNoteAsync(payload, selectedFile);
       if (res && res.data) {
         toast.success(item ? 'Note updated.' : 'Note posted.');
         onSuccess();
