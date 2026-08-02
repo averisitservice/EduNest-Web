@@ -32,6 +32,7 @@ const ICONS = {
   analytics: icon('ic-analytics'),
   supplier: icon('ic-supplier'),
   student: icon('ic-course'),
+  leave: icon('ic-calendar'),
 };
 
 // ----------------------------------------------------------------------
@@ -99,6 +100,11 @@ export const navData = [
         title: 'Notes',
         path: paths.dashboard.note.root,
         icon: ICONS.category,
+      },
+      {
+        title: 'Leave Requests',
+        path: paths.dashboard.leave.root,
+        icon: ICONS.leave,
       },
     ],
   },

@@ -306,6 +306,27 @@ async function deleteNoteAsync(noteId) {
   return await axios(config);
 }
 
+//Leave
+async function getLeaveListAsync(classId, sectionId) {
+  const params = new URLSearchParams();
+  if (sectionId != null) params.append('sectionId', sectionId);
+  const query = params.toString();
+  const config = {
+    method: 'get',
+    url: query ? `/leave/list/${classId}?${query}` : `/leave/list/${classId}`,
+  };
+  return await axios(config);
+}
+
+async function updateLeaveStatusAsync(leaveId, status) {
+  const config = {
+    method: 'patch',
+    url: `/leave/${leaveId}/status`,
+    data: { status },
+  };
+  return await axios(config);
+}
+
 //Attendance
 async function getAttendanceRosterAsync(classId, sectionId, date) {
   const params = new URLSearchParams({ date });
@@ -514,6 +535,10 @@ export default {
   getNoteListAsync,
   saveNoteAsync,
   deleteNoteAsync,
+
+  //Leave
+  getLeaveListAsync,
+  updateLeaveStatusAsync,
 
   //Attendance
   getAttendanceRosterAsync,

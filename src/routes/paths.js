@@ -69,5 +69,8 @@ export const paths = {
     note: {
       root: `${ROOTS.DASHBOARD}/note`,
     },
+    leave: {
+      root: `${ROOTS.DASHBOARD}/leave`,
+    },
   },
 };
