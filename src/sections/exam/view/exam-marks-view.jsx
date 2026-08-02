@@ -1,28 +1,33 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router';
 import {
   Box,
   Table,
   Button,
-  Dialog,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
   TextField,
   Typography,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
   CircularProgress,
   TableContainer,
-  IconButton,
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { paths } from 'src/routes/paths';
+import { useParams } from 'src/routes/hooks';
+import { RouterLink } from 'src/routes/components';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
+import { DashboardContent } from 'src/layouts/dashboard';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }) {
+export function ExamMarksView() {
+  const { id: examId } = useParams();
+  const location = useLocation();
+  const { classId, sectionId, examName } = location.state || {};
+
   const [subjects, setSubjects] = useState([]);
   const [maxMarks, setMaxMarks] = useState(0);
   const [rows, setRows] = useState([]);
@@ -30,13 +35,9 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    if (!exam || !selectedClass) return;
+    if (!examId || !classId) return;
     setLoading(true);
-    const res = await ApiService.getExamMarksEntryAsync(
-      exam.examId,
-      selectedClass.classId,
-      selectedClass.sectionId
-    );
+    const res = await ApiService.getExamMarksEntryAsync(examId, classId, sectionId);
     const data = res && res.data ? res.data : null;
     setSubjects(data && data.subjects ? data.subjects : []);
     setMaxMarks(data && data.maxMarks ? data.maxMarks : 0);
@@ -50,11 +51,11 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
       })
     );
     setLoading(false);
-  }, [exam, selectedClass]);
+  }, [examId, classId, sectionId]);
 
   useEffect(() => {
-    if (open) load();
-  }, [open, load]);
+    load();
+  }, [load]);
 
   const setMark = (studentId, subjectId, value) => {
     if (value !== '' && value != null) {
@@ -92,7 +93,7 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
 
     setSaving(true);
     try {
-      const res = await ApiService.saveExamMarksAsync({ examId: exam.examId, records });
+      const res = await ApiService.saveExamMarksAsync({ examId, records });
       if (res && res.data) {
         toast.success('Marks saved successfully!');
         load();
@@ -108,11 +109,36 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-      <DialogTitle sx={{ fontWeight: 'bold' }}>
-        {exam && exam.examName ? exam.examName : ''} — Marks Entry (max {maxMarks})
-      </DialogTitle>
-      <DialogContent dividers sx={{ p: 0 }}>
+    <DashboardContent maxWidth={false}>
+      <CustomBreadcrumbs
+        heading={examName ? `${examName} — Marks Entry` : 'Marks Entry'}
+        links={[
+          { name: 'Dashboard', href: paths.dashboard.root },
+          { name: 'Exams', href: paths.dashboard.exam.root },
+          { name: 'Marks Entry' },
+        ]}
+        action={
+          <Button
+            component={RouterLink}
+            href={paths.dashboard.exam.report(examId)}
+            state={{ classId, sectionId, examName }}
+            variant="contained"
+            color="primary"
+            startIcon={<Iconify icon="solar:document-text-bold" />}
+          >
+            Generate Report
+          </Button>
+        }
+        sx={{ mb: { xs: 2, md: 3 } }}
+      />
+
+      <Box
+        sx={{
+          bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: (theme) => theme.customShadows?.card,
+        }}
+      >
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
             <CircularProgress />
@@ -130,7 +156,7 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
             </Typography>
           </Box>
         ) : (
-          <TableContainer sx={{ maxHeight: 460 }}>
+          <TableContainer sx={{ maxHeight: 640 }}>
             <Table stickyHeader size="small">
               <TableHead>
                 <TableRow>
@@ -141,9 +167,6 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
                       {sub.subjectName}
                     </TableCell>
                   ))}
-                  <TableCell align="center" sx={{ minWidth: 90 }}>
-                    Report
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -162,32 +185,25 @@ export function ExamMarksDialog({ open, onClose, exam, selectedClass, onReport }
                         />
                       </TableCell>
                     ))}
-                    <TableCell align="center">
-                      <IconButton size="small" onClick={() => onReport(r)}>
-                        <Iconify icon="solar:eye-bold" />
-                      </IconButton>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         )}
-      </DialogContent>
-      <DialogActions sx={{ justifyContent: 'flex-start' }}>
-        <LoadingButton
-          color="primary"
-          variant="contained"
-          loading={saving}
-          onClick={handleSave}
-          disabled={rows.length === 0 || subjects.length === 0}
-        >
-          Save Marks
-        </LoadingButton>
-        <Button variant="outlined" color="error" onClick={onClose} disabled={saving}>
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
+
+        <Box sx={{ p: 2 }}>
+          <LoadingButton
+            color="primary"
+            variant="contained"
+            loading={saving}
+            onClick={handleSave}
+            disabled={rows.length === 0 || subjects.length === 0}
+          >
+            Save Marks
+          </LoadingButton>
+        </Box>
+      </Box>
+    </DashboardContent>
   );
 }

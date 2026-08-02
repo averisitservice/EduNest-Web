@@ -22,6 +22,8 @@ const FeesListPage = lazy(() => import('src/pages/fees/list'));
 const ExamListPage = lazy(() => import('src/pages/exam/list'));
 const ExamCreatePage = lazy(() => import('src/pages/exam/new'));
 const ExamEditPage = lazy(() => import('src/pages/exam/edit'));
+const ExamMarksPage = lazy(() => import('src/pages/exam/marks'));
+const ExamReportPage = lazy(() => import('src/pages/exam/report'));
 const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 const HomeworkListPage = lazy(() => import('src/pages/homework/list'));
 const NoteListPage = lazy(() => import('src/pages/note/list'));
@@ -104,6 +106,8 @@ export const dashboardRoutes = [
           { path: 'list', element: <ExamListPage /> },
           { path: 'new', element: <ExamCreatePage /> },
           { path: 'edit/:id', element: <ExamEditPage /> },
+          { path: 'marks/:id', element: <ExamMarksPage /> },
+          { path: 'report/:id', element: <ExamReportPage /> },
         ],
       },
       {

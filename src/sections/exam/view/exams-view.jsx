@@ -27,9 +27,6 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
-import { ExamMarksDialog } from '../exam-marks-dialog';
-import { ReportCardDialog } from '../report-card-dialog';
-
 function getClassLabel(option) {
   if (!option) return '';
   return option.sectionName
@@ -54,8 +51,6 @@ export function ExamsView() {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [marksExam, setMarksExam] = useState(null);
-  const [reportStudent, setReportStudent] = useState(null);
   const [deleteExam, setDeleteExam] = useState(null);
 
   useEffect(() => {
@@ -185,7 +180,17 @@ export function ExamsView() {
                     </TableCell>
                     <TableCell align="center">
                       <Stack direction="row" spacing={1} justifyContent="center">
-                        <Button size="small" variant="outlined" onClick={() => setMarksExam(exam)}>
+                        <Button
+                          component={RouterLink}
+                          href={paths.dashboard.exam.marks(exam.examId)}
+                          state={{
+                            classId: selectedClass ? selectedClass.classId : null,
+                            sectionId: selectedClass ? selectedClass.sectionId : null,
+                            examName: exam.examName,
+                          }}
+                          size="small"
+                          variant="outlined"
+                        >
                           Enter Marks
                         </Button>
                         {!isExamEnded(exam) && (
@@ -219,21 +224,6 @@ export function ExamsView() {
           </TableContainer>
         )}
       </Card>
-
-      <ExamMarksDialog
-        open={Boolean(marksExam)}
-        onClose={() => setMarksExam(null)}
-        exam={marksExam}
-        selectedClass={selectedClass}
-        onReport={(student) => setReportStudent(student)}
-      />
-
-      <ReportCardDialog
-        open={Boolean(reportStudent)}
-        onClose={() => setReportStudent(null)}
-        examId={marksExam && marksExam.examId ? marksExam.examId : null}
-        student={reportStudent}
-      />
 
       <ConfirmDialog
         open={Boolean(deleteExam)}
