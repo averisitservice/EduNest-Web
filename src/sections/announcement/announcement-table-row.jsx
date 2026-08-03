@@ -35,7 +35,7 @@ export function AnnouncementTableRow({ row, onEditRow, onDeleteRow }) {
       <TableCell>
         <Stack direction="row" spacing={1} alignItems="center" sx={{ whiteSpace: 'nowrap' }}>
           <Box component="span">
-            {row.publishDate ? dateHelper.formatDateTime(row.publishDate) : '-'}
+            {row.publishDate ? dateHelper.formatDate(row.publishDate) : '-'}
           </Box>
           {row.status === 'SCHEDULED' && <Chip size="small" color="warning" label="Scheduled" />}
         </Stack>

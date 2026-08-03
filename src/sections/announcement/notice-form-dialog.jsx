@@ -137,13 +137,22 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
                 chip
                 placeholder="Whole school"
                 options={classes.map((c) => ({ value: String(c.classId), label: c.className }))}
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  select: { notched: true },
+                }}
               />
             </Stack>
 
-            <Field.RadioGroup name="publishMode" label="Publish" row options={PUBLISH_MODE_OPTIONS} />
+            <Field.RadioGroup
+              name="publishMode"
+              label="Publish"
+              row
+              options={PUBLISH_MODE_OPTIONS}
+            />
 
             {publishMode === 'SCHEDULED' && (
-              <Field.MobileDateTimePicker name="publishDate" label="Publish Date & Time" />
+              <Field.DatePicker name="publishDate" label="Publish Date" allowFutureDates />
             )}
           </Stack>
         </DialogContent>
