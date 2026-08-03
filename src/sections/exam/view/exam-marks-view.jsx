@@ -91,6 +91,11 @@ export function ExamMarksView() {
       });
     });
 
+    if (records.length === 0) {
+      toast.error('Please enter marks for at least one student before saving.');
+      return;
+    }
+
     setSaving(true);
     try {
       const res = await ApiService.saveExamMarksAsync({ examId, records });
