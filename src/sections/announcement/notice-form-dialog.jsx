@@ -90,7 +90,7 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
         publishMode: values.publishMode,
         publishDate:
           values.publishMode === 'SCHEDULED' && values.publishDate
-            ? dayjs(values.publishDate).format('YYYY-MM-DDTHH:mm:ss')
+            ? dayjs(values.publishDate).format('YYYY-MM-DD')
             : null,
       };
       const res = await ApiService.saveAnnouncementAsync(payload);
