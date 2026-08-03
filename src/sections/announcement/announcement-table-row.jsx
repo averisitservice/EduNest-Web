@@ -33,9 +33,12 @@ export function AnnouncementTableRow({ row, onEditRow, onDeleteRow }) {
         <Chip size="small" label={row.audience} color={AUDIENCE_COLOR[row.audience] || 'default'} />
       </TableCell>
       <TableCell>
-        <Box sx={{ whiteSpace: 'nowrap' }}>
-          {row.publishDate ? dateHelper.formatDate(row.publishDate) : '-'}
-        </Box>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ whiteSpace: 'nowrap' }}>
+          <Box component="span">
+            {row.publishDate ? dateHelper.formatDateTime(row.publishDate) : '-'}
+          </Box>
+          {row.status === 'SCHEDULED' && <Chip size="small" color="warning" label="Scheduled" />}
+        </Stack>
       </TableCell>
       <TableCell>
         <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>

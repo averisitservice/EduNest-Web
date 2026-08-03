@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,22 +20,32 @@ import { Form, Field } from 'src/components/hook-form';
 // ----------------------------------------------------------------------
 
 const AUDIENCE_OPTIONS = ['ALL', 'TEACHERS', 'PARENTS', 'STUDENTS'];
-const today = () => new Date().toISOString().slice(0, 10);
+const PUBLISH_MODE_OPTIONS = [
+  { value: 'NOW', label: 'Now' },
+  { value: 'SCHEDULED', label: 'Publish Date' },
+];
 
-const NoticeSchema = zod.object({
-  title: zod.string().trim().min(1, { message: 'Title is required.' }),
-  message: zod.string().trim().min(1, { message: 'Message is required.' }),
-  audience: zod.string().min(1, { message: 'Audience is required.' }),
-  classId: zod.string().optional(),
-  publishDate: zod.string().min(1, { message: 'Publish date is required.' }),
-});
+const NoticeSchema = zod
+  .object({
+    title: zod.string().trim().min(1, { message: 'Title is required.' }),
+    message: zod.string().trim().min(1, { message: 'Message is required.' }),
+    audience: zod.string().min(1, { message: 'Audience is required.' }),
+    classIds: zod.array(zod.string()).optional(),
+    publishMode: zod.enum(['NOW', 'SCHEDULED']),
+    publishDate: zod.string().nullable().optional(),
+  })
+  .refine((data) => data.publishMode !== 'SCHEDULED' || !!data.publishDate, {
+    message: 'Publish date is required.',
+    path: ['publishDate'],
+  });
 
 const defaultValues = {
   title: '',
   message: '',
   audience: 'ALL',
-  classId: '',
-  publishDate: today(),
+  classIds: [],
+  publishMode: 'NOW',
+  publishDate: null,
 };
 
 export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) {
@@ -47,9 +58,12 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
 
   const {
     reset,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  const publishMode = watch('publishMode');
 
   useEffect(() => {
     if (!open) return;
@@ -57,8 +71,10 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
       title: notice && notice.title ? notice.title : '',
       message: notice && notice.message ? notice.message : '',
       audience: notice && notice.audience ? notice.audience : 'ALL',
-      classId: notice && notice.classId != null ? String(notice.classId) : '',
-      publishDate: notice && notice.publishDate ? notice.publishDate : today(),
+      classIds:
+        notice && Array.isArray(notice.classIds) ? notice.classIds.map((id) => String(id)) : [],
+      publishMode: notice && notice.status === 'SCHEDULED' ? 'SCHEDULED' : 'NOW',
+      publishDate: notice && notice.publishDate ? notice.publishDate : null,
     });
   }, [open, notice, reset]);
 
@@ -70,8 +86,12 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
         title: values.title.trim(),
         message: values.message.trim(),
         audience: values.audience,
-        classId: values.classId === '' ? null : Number(values.classId),
-        publishDate: values.publishDate || null,
+        classIds: (values.classIds || []).map(Number),
+        publishMode: values.publishMode,
+        publishDate:
+          values.publishMode === 'SCHEDULED' && values.publishDate
+            ? dayjs(values.publishDate).format('YYYY-MM-DDTHH:mm:ss')
+            : null,
       };
       const res = await ApiService.saveAnnouncementAsync(payload);
       if (res && res.data) {
@@ -109,25 +129,22 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
                 ))}
               </Field.Select>
 
-              <Field.Select name="classId" label="Class (optional)" fullWidth>
-                <MenuItem value="">
-                  <em>Whole school</em>
-                </MenuItem>
-                {classes.map((c) => (
-                  <MenuItem key={c.classId} value={String(c.classId)}>
-                    {c.className}
-                  </MenuItem>
-                ))}
-              </Field.Select>
+              <Field.MultiSelect
+                name="classIds"
+                label="Classes (optional)"
+                fullWidth
+                checkbox
+                chip
+                placeholder="Whole school"
+                options={classes.map((c) => ({ value: String(c.classId), label: c.className }))}
+              />
             </Stack>
 
-            <Field.DatePicker
-              name="publishDate"
-              label="Publish Date"
-              allowFutureDates
-              allowPastDates
-              slotProps={{ textField: { fullWidth: true } }}
-            />
+            <Field.RadioGroup name="publishMode" label="Publish" row options={PUBLISH_MODE_OPTIONS} />
+
+            {publishMode === 'SCHEDULED' && (
+              <Field.MobileDateTimePicker name="publishDate" label="Publish Date & Time" />
+            )}
           </Stack>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'flex-start' }}>
