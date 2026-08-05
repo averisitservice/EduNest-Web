@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Box,
+  Chip,
   Table,
   Stack,
   Button,
@@ -27,7 +28,7 @@ import { Form, Field } from 'src/components/hook-form';
 const STATUS_OPTIONS = [
   { value: 'P', color: 'success', label: 'Present' },
   { value: 'A', color: 'error', label: 'Absent' },
-  { value: 'L', color: 'warning', label: 'Late' },
+  { value: 'L', color: 'warning', label: 'Leave' },
   { value: 'H', color: 'info', label: 'Half Day' },
 ];
 
@@ -222,7 +223,16 @@ export function AttendanceMark({ selectedClass }) {
                 {filteredRoster.map((r) => (
                   <TableRow key={r.studentId} hover>
                     <TableCell>{r.rollNo}</TableCell>
-                    <TableCell>{r.studentName}</TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <span>{r.studentName}</span>
+                        {r.onLeave && (
+                          <Tooltip title="Approved leave for this date" arrow>
+                            <Chip size="small" color="warning" label="Leave" />
+                          </Tooltip>
+                        )}
+                      </Stack>
+                    </TableCell>
                     <TableCell align="center">
                       <ToggleButtonGroup
                         exclusive

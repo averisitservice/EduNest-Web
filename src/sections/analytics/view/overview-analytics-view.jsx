@@ -159,7 +159,7 @@ export function OverviewAnalyticsView() {
                         {attendance.late}
                       </Typography>
                       <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        Late
+                        Leave
                       </Typography>
                     </Stack>
                     <Stack>

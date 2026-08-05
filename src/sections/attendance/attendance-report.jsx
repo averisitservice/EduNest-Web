@@ -97,7 +97,7 @@ export function AttendanceReport({ selectedClass }) {
                 <TableCell>Student</TableCell>
                 <TableCell align="center">Present</TableCell>
                 <TableCell align="center">Absent</TableCell>
-                <TableCell align="center">Late</TableCell>
+                <TableCell align="center">Leave</TableCell>
                 <TableCell align="center">Half</TableCell>
                 <TableCell align="center">Total</TableCell>
                 <TableCell align="center">%</TableCell>
