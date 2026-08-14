@@ -113,7 +113,8 @@ events, and latest announcements.
   exist (`src/pages/auth/dentist-*.jsx`, dental role names in `src/utils/enums.js`) —
   don't treat these as EduNest features.
 - `src/sections/calendar/` is unused Minimals template code (imports uninstalled
-  `@fullcalendar/*`); the live calendar-style feature is the **Events** module.
+  `@fullcalendar/*`) — there is no "Events" module and no live calendar-style feature
+  in this app; don't reference either.
 - `enums.roleType` and `enums.displayRole` disagree with each other — verify against the
   backend `role` table before relying on either.
 - `firebase` and `@auth0/auth0-react` are dependencies but **unused** — `src/global-config.js`
