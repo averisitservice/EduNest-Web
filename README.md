@@ -10,7 +10,7 @@ Part of a three-app system:
 |---|---|
 | **EduNest-Web** (this repo) | React admin panel — teachers / staff |
 | `EduNest-App` | Flutter mobile app — students |
-| `EduNest-backend` | Spring Boot REST API (serves both) |
+| `EduNest-Api` | Spring Boot REST API (serves both) |
 
 ## Getting started
 
@@ -89,7 +89,12 @@ src/
 ## Modules
 
 Dashboard, Classes, Teachers, Students, Timetable, Attendance, Fees, Exams,
-Announcements, Homework & Notes, Events. (Nav order in `nav-config-dashboard.jsx`.)
+Announcements, Homework, Notes, Leave Requests. (Nav order in `nav-config-dashboard.jsx`.)
+
+**Leave Requests** (`src/pages/leave`, `src/sections/leave`) — teacher-side review of
+student-submitted leave requests: list by class/section (`getLeaveListAsync`) and
+approve/reject (`updateLeaveStatusAsync`). Students submit these from the mobile app;
+there's no leave-creation UI here.
 
 The **Dashboard** (`src/sections/analytics`) reads `GET /dashboard/summary` for
 student/teacher/class counts, today's attendance, monthly fee collection, upcoming
@@ -111,8 +116,12 @@ events, and latest announcements.
   `@fullcalendar/*`); the live calendar-style feature is the **Events** module.
 - `enums.roleType` and `enums.displayRole` disagree with each other — verify against the
   backend `role` table before relying on either.
+- `firebase` and `@auth0/auth0-react` are dependencies but **unused** — `src/global-config.js`
+  supports `auth.method: jwt | amplify | firebase | auth0` as a template feature, and this
+  app is configured for `jwt` (the custom backend JWT flow described above). `src/lib/firebase.js`
+  only initializes if `auth.method === 'firebase'`, which it never is here.
 
 ## Related projects
 
-- `EduNest-backend` — Spring Boot API this app calls
+- `EduNest-Api` — Spring Boot API this app calls
 - `EduNest-App` — Flutter mobile app (students)
