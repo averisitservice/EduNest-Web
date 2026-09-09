@@ -39,6 +39,7 @@ export function AttendanceMark({ selectedClass }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const methods = useForm({
     defaultValues: {
@@ -49,6 +50,11 @@ export function AttendanceMark({ selectedClass }) {
   const { watch } = methods;
   const date = watch('date');
 
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const loadRoster = useCallback(async () => {
     if (!selectedClass || !date) {
       setRoster([]);
@@ -58,12 +64,13 @@ export function AttendanceMark({ selectedClass }) {
     const res = await ApiService.getAttendanceRosterAsync(
       selectedClass.classId,
       selectedClass.sectionId,
-      date
+      date,
+      debouncedSearch
     );
     const records = res && res.data && res.data.records ? res.data.records : [];
     setRoster(records.map((r) => ({ ...r, status: r.status || 'P' })));
     setLoading(false);
-  }, [selectedClass, date]);
+  }, [selectedClass, date, debouncedSearch]);
 
   useEffect(() => {
     loadRoster();

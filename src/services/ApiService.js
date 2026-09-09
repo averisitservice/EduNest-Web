@@ -336,9 +336,10 @@ async function updateLeaveStatusAsync(leaveId, status) {
 }
 
 //Attendance
-async function getAttendanceRosterAsync(classId, sectionId, date) {
+async function getAttendanceRosterAsync(classId, sectionId, date, search) {
   const params = new URLSearchParams({ date });
-  if (sectionId != null) params.append('sectionId', sectionId);
+  if (sectionId !== null && sectionId !== undefined) params.append('sectionId', sectionId);
+  if (search) params.append('search', search.trim());
   const config = {
     method: 'get',
     url: `/attendance/roster/${classId}?${params.toString()}`,
