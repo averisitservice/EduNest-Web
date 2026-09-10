@@ -74,5 +74,8 @@ export const paths = {
     leave: {
       root: `${ROOTS.DASHBOARD}/leave`,
     },
+    holiday: {
+      root: `${ROOTS.DASHBOARD}/holiday`,
+    },
   },
 };

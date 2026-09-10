@@ -28,6 +28,7 @@ const AnnouncementListPage = lazy(() => import('src/pages/announcement/list'));
 const HomeworkListPage = lazy(() => import('src/pages/homework/list'));
 const NoteListPage = lazy(() => import('src/pages/note/list'));
 const LeaveListPage = lazy(() => import('src/pages/leave/list'));
+const HolidayListPage = lazy(() => import('src/pages/holiday/list'));
 const AnalyticsPage = lazy(() => import('src/pages/analytics'));
 
 const dashboardLayout = () => (
@@ -125,6 +126,10 @@ export const dashboardRoutes = [
       {
         path: 'leave',
         children: [{ index: true, element: <LeaveListPage /> }],
+      },
+      {
+        path: 'holiday',
+        children: [{ index: true, element: <HolidayListPage /> }],
       },
     ],
   },

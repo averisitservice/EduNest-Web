@@ -495,6 +495,32 @@ async function deleteAnnouncementAsync(announcementId) {
   return await axios(config);
 }
 
+//Holiday
+async function getHolidayListAsync() {
+  const config = {
+    method: 'get',
+    url: '/holiday/list',
+  };
+  return await axios(config);
+}
+
+async function saveHolidayAsync(payload) {
+  const config = {
+    method: 'post',
+    url: '/holiday',
+    data: payload,
+  };
+  return await axios(config);
+}
+
+async function deleteHolidayAsync(holidayId) {
+  const config = {
+    method: 'delete',
+    url: `/holiday/${holidayId}`,
+  };
+  return await axios(config);
+}
+
 export default {
   loginAsync,
   renewSessionAsync,
@@ -575,4 +601,9 @@ export default {
   getAnnouncementListAsync,
   saveAnnouncementAsync,
   deleteAnnouncementAsync,
+
+  //Holiday
+  getHolidayListAsync,
+  saveHolidayAsync,
+  deleteHolidayAsync,
 };

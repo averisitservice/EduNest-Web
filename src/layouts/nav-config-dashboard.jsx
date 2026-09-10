@@ -106,6 +106,11 @@ export const navData = [
         path: paths.dashboard.leave.root,
         icon: ICONS.leave,
       },
+      {
+        title: 'Holidays',
+        path: paths.dashboard.holiday.root,
+        icon: ICONS.stage,
+      },
     ],
   },
 ];
