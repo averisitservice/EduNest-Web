@@ -50,7 +50,7 @@ const HolidaySchema = zod
 
 const defaultValues = {
   holidayName: '',
-  startDate: null,
+  startDate: dayjs().format('YYYY-MM-DD'),
   endDate: null,
   holidayType: 'NATIONAL',
   description: '',
@@ -72,9 +72,10 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
 
   useEffect(() => {
     if (!open) return;
+    const today = dayjs().format('YYYY-MM-DD');
     reset({
       holidayName: holiday && holiday.holidayName ? holiday.holidayName : '',
-      startDate: holiday && holiday.startDate ? holiday.startDate : null,
+      startDate: holiday && holiday.startDate ? holiday.startDate : today,
       endDate: holiday && holiday.endDate ? holiday.endDate : null,
       holidayType: holiday && holiday.holidayType ? holiday.holidayType : 'NATIONAL',
       description: holiday && holiday.description ? holiday.description : '',
@@ -123,8 +124,8 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
             <Field.Text name="holidayName" label="Holiday Name" fullWidth />
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <Field.DatePicker name="startDate" label="Start Date" fullWidth />
-              <Field.DatePicker name="endDate" label="End Date (optional)" fullWidth />
+              <Field.DatePicker name="startDate" label="Start Date" allowFutureDates fullWidth />
+              <Field.DatePicker name="endDate" label="End Date (optional)" allowFutureDates fullWidth />
             </Stack>
 
             <Field.Select name="holidayType" label="Holiday Type" fullWidth>

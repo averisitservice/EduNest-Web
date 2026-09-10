@@ -1,11 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
+  Box,
   Card,
   Table,
+  Stack,
   Button,
+  Select,
+  MenuItem,
+  TableRow,
   TableBody,
+  TableCell,
   TableContainer,
   LinearProgress,
+  FormControl,
 } from '@mui/material';
 import { useSetState } from 'minimal-shared/hooks';
 import { paths } from 'src/routes/paths';
@@ -19,7 +26,6 @@ import { TableToolbar } from 'src/sections/table-toolbar';
 import {
   emptyRows,
   getComparator,
-  rowInPage,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
@@ -32,11 +38,25 @@ import { HolidayTableRow } from '../holiday-table-row';
 
 // ----------------------------------------------------------------------
 
+const FILTEREDTABLEHEAD = [
+  { id: 'holidayName', label: 'Holiday Name', width: '25%' },
+  { id: 'startDate', label: 'Date / Period', width: '20%' },
+  { id: 'holidayType', label: 'Type', width: '15%' },
+  { id: 'description', label: 'Description', width: '30%', sortBy: false },
+];
+
 const TABLEHEAD = [
-  { id: 'holidayName', label: 'Holiday Name', width: '35%' },
-  { id: 'startDate', label: 'Date / Period', width: '30%' },
-  { id: 'holidayType', label: 'Type', width: '20%' },
-  { id: '', label: 'Action', width: '15%', sortBy: false, sx: { textAlign: 'center' } },
+  ...FILTEREDTABLEHEAD,
+  { id: '', label: 'Action', width: '10%', sortBy: false, sx: { textAlign: 'center' } },
+];
+
+const TYPE_OPTIONS = [
+  { value: '', label: 'All Types' },
+  { value: 'NATIONAL', label: 'National Holiday' },
+  { value: 'FESTIVAL', label: 'Festival' },
+  { value: 'SCHOOL_EVENT', label: 'School Event' },
+  { value: 'VACATION', label: 'Vacation / Break' },
+  { value: 'OTHER', label: 'Other' },
 ];
 
 export function HolidaysView() {
@@ -48,10 +68,8 @@ export function HolidaysView() {
   const [formHoliday, setFormHoliday] = useState(null);
   const [deleteHoliday, setDeleteHoliday] = useState(null);
 
-  const filters = useSetState({ search: '' });
+  const filters = useSetState({ search: '', holidayType: '' });
   const { state: currentFilters, setState: updateFilters } = filters;
-
-  const dataInPage = rowInPage(holidays, table.page, table.rowsPerPage);
 
   const loadHolidays = useCallback(async () => {
     setIsLoading(true);
@@ -79,8 +97,8 @@ export function HolidaysView() {
     const res = await ApiService.deleteHolidayAsync(holiday.holidayId);
     if (res && res.data) {
       setHolidays((prev) => prev.filter((row) => row.holidayId !== holiday.holidayId));
-      toast.success('Holiday deleted.');
-      table.onUpdatePageDeleteRow(dataInPage.length);
+      toast.success('Holiday deleted successfully.');
+      table.onUpdatePageDeleteRow(holidays.length);
     } else if (res && res.errors && res.errors.length) {
       toast.error(res.errors[0].msg);
     }
@@ -88,29 +106,36 @@ export function HolidaysView() {
   };
 
   const dataFiltered = useMemo(() => {
-    let result = holidays;
-    const searchTrim = currentFilters.search ? currentFilters.search.trim().toLowerCase() : '';
+    const search = currentFilters.search ? currentFilters.search.trim().toLowerCase() : '';
+    const holidayType = currentFilters.holidayType || '';
 
-    if (searchTrim) {
-      result = result.filter(
-        (row) =>
-          (row.holidayName && row.holidayName.toLowerCase().includes(searchTrim)) ||
-          (row.holidayType && row.holidayType.toLowerCase().includes(searchTrim)) ||
-          (row.description && row.description.toLowerCase().includes(searchTrim))
-      );
+    const stabilizedThis = holidays.map((el, idx) => [el, idx]);
+    stabilizedThis.sort((a, b) => {
+      const order = getComparator(table.order, table.orderBy)(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+
+    let result = stabilizedThis.map((el) => el[0]);
+
+    if (search) {
+      result = result.filter((row) => {
+        const nameMatch = row && row.holidayName && row.holidayName.toLowerCase().includes(search);
+        const descMatch = row && row.description && row.description.toLowerCase().includes(search);
+        const typeMatch = row && row.holidayType && row.holidayType.toLowerCase().includes(search);
+        return nameMatch || descMatch || typeMatch;
+      });
     }
 
-    result = [...result].sort(getComparator(table.order, table.orderBy));
+    if (holidayType) {
+      result = result.filter((row) => row && row.holidayType === holidayType);
+    }
+
     return result;
-  }, [holidays, currentFilters.search, table.order, table.orderBy]);
+  }, [holidays, currentFilters, table.order, table.orderBy]);
 
-  const canReset = !!currentFilters.search;
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-
-  const handleFilterChange = (value, field) => {
-    if (field === 'search') {
-      updateFilters({ search: value });
-    }
+  const handleFilterChange = (newValue, key = 'search') => {
+    updateFilters({ [key]: newValue });
   };
 
   return (
@@ -118,8 +143,8 @@ export function HolidaysView() {
       <CustomBreadcrumbs
         heading="Holidays"
         links={[
-          { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Holidays' },
+          { name: 'Dashboard', href: '' },
+          { name: 'Holidays', href: paths.dashboard.holiday.root },
         ]}
         action={
           <Button
@@ -131,50 +156,90 @@ export function HolidaysView() {
             New Holiday
           </Button>
         }
-        sx={{ mb: { xs: 3, md: 5 } }}
+        sx={{ mb: { xs: 2, md: 2 } }}
       />
 
       <Card>
         <TableToolbar
-          placeholder="Search holiday..."
           filters={filters}
           onFilterChange={handleFilterChange}
-        />
+          placeholder="Search Holiday..."
+        >
+          <FormControl sx={{ minWidth: 160 }}>
+            <Select
+              name="holidayType"
+              size="small"
+              value={currentFilters.holidayType || ''}
+              onChange={(e) => handleFilterChange(e.target.value, 'holidayType')}
+              displayEmpty
+            >
+              {TYPE_OPTIONS.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </TableToolbar>
 
-        {isLoading && <LinearProgress />}
-
-        <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-          <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 700 }}>
-            <TableHeadCustom
-              order={table.order}
-              orderBy={table.orderBy}
-              headLabel={TABLEHEAD}
-              onSort={table.onSort}
-            />
-
-            <TableBody>
-              {dataFiltered
-                .slice(
-                  table.page * table.rowsPerPage,
-                  table.page * table.rowsPerPage + table.rowsPerPage
-                )
-                .map((row) => (
-                  <HolidayTableRow
-                    key={row.holidayId}
-                    row={row}
-                    onEditRow={() => openEdit(row)}
-                    onDeleteRow={() => setDeleteHoliday(row)}
-                  />
-                ))}
-
-              <TableEmptyRows
-                height={table.dense ? 56 : 76}
-                emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+        <TableContainer sx={{ height: 'calc(100vh - 40vh)' }}>
+          <Box sx={{ position: 'relative' }}>
+            <Table stickyHeader aria-label="sticky table" size={table.dense ? 'small' : 'medium'}>
+              <TableHeadCustom
+                order={table.order}
+                orderBy={table.orderBy}
+                headCells={TABLEHEAD}
+                rowCount={dataFiltered.length}
+                numSelected={table.selected.length}
+                onSort={table.onSort}
               />
 
-              <TableNoData notFound={notFound} />
-            </TableBody>
-          </Table>
+              {isLoading ? (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={TABLEHEAD.length}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: '100%',
+                          width: '100%',
+                        }}
+                      >
+                        <Stack alignItems="center" justifyContent="center" sx={{ width: '100%', py: 5 }}>
+                          <LinearProgress sx={{ width: '50%', maxWidth: 360 }} />
+                        </Stack>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <TableNoData label="No holiday found." notFound={dataFiltered.length <= 0} />
+                  {dataFiltered
+                    .slice(
+                      table.page * table.rowsPerPage,
+                      table.page * table.rowsPerPage + table.rowsPerPage
+                    )
+                    .map((row) => (
+                      <HolidayTableRow
+                        key={row.holidayId}
+                        row={row}
+                        selected={table.selected.includes(row.holidayId)}
+                        onEditRow={() => openEdit(row)}
+                        onDeleteRow={() => setDeleteHoliday(row)}
+                      />
+                    ))}
+
+                  <TableEmptyRows
+                    height={table.dense ? 56 : 76}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
+                  />
+                </TableBody>
+              )}
+            </Table>
+          </Box>
         </TableContainer>
 
         <TablePaginationCustom
@@ -196,20 +261,26 @@ export function HolidaysView() {
       />
 
       <ConfirmDialog
-        open={!!deleteHoliday}
+        open={Boolean(deleteHoliday)}
         onClose={() => setDeleteHoliday(null)}
         title="Delete Holiday"
         content={
-          deleteHoliday ? (
+          deleteHoliday && deleteHoliday.holidayName ? (
             <>
               Are you sure you want to delete <strong>{deleteHoliday.holidayName}</strong>?
             </>
           ) : (
-            ''
+            'Are you sure you want to delete this holiday?'
           )
         }
         action={
-          <Button variant="contained" color="error" onClick={() => handleDelete(deleteHoliday)}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              handleDelete(deleteHoliday);
+            }}
+          >
             Delete
           </Button>
         }

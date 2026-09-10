@@ -1,14 +1,13 @@
-import dayjs from 'dayjs';
 import {
-  Stack,
+  Box,
   Chip,
   TableRow,
   TableCell,
   IconButton,
-  Typography,
   Tooltip,
 } from '@mui/material';
 import { Iconify } from 'src/components/iconify';
+import dateHelper from 'src/utils/dateHelper';
 
 // ----------------------------------------------------------------------
 
@@ -20,9 +19,17 @@ const TYPE_COLOR_MAP = {
   OTHER: 'default',
 };
 
-export function HolidayTableRow({ row, onEditRow, onDeleteRow }) {
-  const startDateFormatted = row && row.startDate ? dayjs(row.startDate).format('DD MMM YYYY') : '-';
-  const endDateFormatted = row && row.endDate ? dayjs(row.endDate).format('DD MMM YYYY') : '-';
+const TYPE_LABEL_MAP = {
+  NATIONAL: 'National Holiday',
+  FESTIVAL: 'Festival',
+  SCHOOL_EVENT: 'School Event',
+  VACATION: 'Vacation / Break',
+  OTHER: 'Other',
+};
+
+export function HolidayTableRow({ row, selected, onEditRow, onDeleteRow }) {
+  const startDateFormatted = row && row.startDate ? dateHelper.formatDate(row.startDate) : '-';
+  const endDateFormatted = row && row.endDate ? dateHelper.formatDate(row.endDate) : '-';
 
   const dateDisplay =
     row && row.startDate && row.endDate && row.startDate !== row.endDate
@@ -31,44 +38,57 @@ export function HolidayTableRow({ row, onEditRow, onDeleteRow }) {
 
   const holidayType = row && row.holidayType ? row.holidayType : 'OTHER';
   const chipColor = TYPE_COLOR_MAP[holidayType] || 'default';
+  const chipLabel = TYPE_LABEL_MAP[holidayType] || holidayType.replace('_', ' ');
 
   return (
-    <TableRow hover>
-      <TableCell>
-        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-          {row && row.holidayName ? row.holidayName : '-'}
-        </Typography>
-        {row && row.description ? (
-          <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
-            {row.description}
-          </Typography>
-        ) : null}
+    <TableRow hover selected={selected} aria-checked={selected} tabIndex={-1}>
+      <TableCell sx={{ fontWeight: 'medium' }}>
+        {row && row.holidayName ? row.holidayName : '-'}
       </TableCell>
 
-      <TableCell>{dateDisplay}</TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+        {dateDisplay}
+      </TableCell>
 
       <TableCell>
         <Chip
-          label={holidayType.replace('_', ' ')}
+          label={chipLabel}
           size="small"
           color={chipColor}
           variant="soft"
         />
       </TableCell>
 
+      <TableCell>
+        <Box
+          sx={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            color: 'text.secondary',
+            typography: 'body2',
+            maxWidth: 320,
+          }}
+        >
+          {row && row.description ? row.description : '-'}
+        </Box>
+      </TableCell>
+
       <TableCell align="center">
-        <Stack direction="row" spacing={0.5} justifyContent="center">
-          <Tooltip title="Edit">
-            <IconButton size="small" onClick={onEditRow}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+          <Tooltip title="Edit" placement="top" arrow>
+            <IconButton color="primary" onClick={onEditRow}>
               <Iconify icon="solar:pen-bold" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton size="small" color="error" onClick={onDeleteRow}>
+          <Tooltip title="Delete" placement="top" arrow>
+            <IconButton color="error" onClick={onDeleteRow}>
               <Iconify icon="solar:trash-bin-trash-bold" />
             </IconButton>
           </Tooltip>
-        </Stack>
+        </Box>
       </TableCell>
     </TableRow>
   );
