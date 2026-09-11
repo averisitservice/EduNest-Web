@@ -26,10 +26,6 @@ export function fNumber(inputValue, options) {
 
 // ----------------------------------------------------------------------
 
-export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(amount);
-};
-
 export function fCurrency(inputValue, options) {
   const locale = formatNumberLocale() || DEFAULT_LOCALE;
 
@@ -45,41 +41,6 @@ export function fCurrency(inputValue, options) {
   }).format(number);
 
   return fm;
-}
-
-// ----------------------------------------------------------------------
-
-export function fPercent(inputValue, options) {
-  const locale = formatNumberLocale() || DEFAULT_LOCALE;
-
-  const number = processInput(inputValue);
-  if (number === null) return '';
-
-  const fm = new Intl.NumberFormat(locale.code, {
-    style: 'percent',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 1,
-    ...options,
-  }).format(number / 100);
-
-  return fm;
-}
-
-// ----------------------------------------------------------------------
-
-export function fShortenNumber(inputValue, options) {
-  const locale = formatNumberLocale() || DEFAULT_LOCALE;
-
-  const number = processInput(inputValue);
-  if (number === null) return '';
-
-  const fm = new Intl.NumberFormat(locale.code, {
-    notation: 'compact',
-    maximumFractionDigits: 2,
-    ...options,
-  }).format(number);
-
-  return fm.replace(/[A-Z]/g, (match) => match.toLowerCase());
 }
 
 // ----------------------------------------------------------------------

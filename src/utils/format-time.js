@@ -1,47 +1,21 @@
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-// ----------------------------------------------------------------------
-
-/**
- * @Docs
- * https://day.js.org/docs/en/display/format
- */
-
-/**
- * Default timezones
- * https://day.js.org/docs/en/timezone/set-default-timezone#docsNav
- *
- */
-
-/**
- * UTC
- * https://day.js.org/docs/en/plugin/utc
- * @install
- * import utc from 'dayjs/plugin/utc';
- * dayjs.extend(utc);
- * @usage
- * dayjs().utc().format()
- *
- */
-
-dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 // ----------------------------------------------------------------------
 
 export const formatPatterns = {
-  dateTime: 'DD MMM YYYY h:mm a', // 17 Apr 2022 12:00 am
-  date: 'DD MMM YYYY', // 17 Apr 2022
-  time: 'h:mm a', // 12:00 am
+  dateTime: 'DD MMM YYYY h:mm a',
+  date: 'DD MMM YYYY',
+  time: 'h:mm a',
   split: {
-    dateTime: 'DD/MM/YYYY h:mm a', // 17/04/2022 12:00 am
-    date: 'DD/MM/YYYY', // 17/04/2022
+    dateTime: 'DD/MM/YYYY h:mm a',
+    date: 'DD/MM/YYYY',
   },
   paramCase: {
-    dateTime: 'DD-MM-YYYY h:mm a', // 17-04-2022 12:00 am
-    date: 'DD-MM-YYYY', // 17-04-2022
+    dateTime: 'DD-MM-YYYY h:mm a',
+    date: 'DD-MM-YYYY',
   },
 };
 
@@ -54,12 +28,6 @@ export function today(template) {
 }
 
 export const formatDate = (value) => dayjs(value).format('YYYY/MM/DD');
-export const formatDateUS = (value) => dayjs(value).format('MM/DD/YYYY');
-// ----------------------------------------------------------------------
-
-/**
- * @output 17 Apr 2022 12:00 am
- */
 
 // ----------------------------------------------------------------------
 
@@ -68,14 +36,8 @@ export function fDateTime(date, template) {
     return 'Invalid date';
   }
 
-  return dayjs(date).format(template ?? formatPatterns.dateTime);
+  return dayjs(date).format(template ? template : formatPatterns.dateTime);
 }
-
-// ----------------------------------------------------------------------
-
-/**
- * @output 17 Apr 2022
- */
 
 // ----------------------------------------------------------------------
 
@@ -84,14 +46,8 @@ export function fDate(date, template) {
     return 'Invalid date';
   }
 
-  return dayjs(date).format(template ?? formatPatterns.date);
+  return dayjs(date).format(template ? template : formatPatterns.date);
 }
-
-// ----------------------------------------------------------------------
-
-/**
- * @output 12:00 am
- */
 
 // ----------------------------------------------------------------------
 
@@ -100,14 +56,8 @@ export function fTime(date, template) {
     return 'Invalid date';
   }
 
-  return dayjs(date).format(template ?? formatPatterns.time);
+  return dayjs(date).format(template ? template : formatPatterns.time);
 }
-
-// ----------------------------------------------------------------------
-
-/**
- * @output 1713250100
- */
 
 // ----------------------------------------------------------------------
 
@@ -121,12 +71,6 @@ export function fTimestamp(date) {
 
 // ----------------------------------------------------------------------
 
-/**
- * @output a few seconds, 2 years
- */
-
-// ----------------------------------------------------------------------
-
 export function fToNow(date) {
   if (!isValidDate(date)) {
     return 'Invalid date';
@@ -134,12 +78,6 @@ export function fToNow(date) {
 
   return dayjs(date).toNow(true);
 }
-
-// ----------------------------------------------------------------------
-
-/**
- * @output boolean
- */
 
 // ----------------------------------------------------------------------
 
@@ -165,12 +103,6 @@ export function fIsBetween(inputDate, startDate, endDate) {
 
 // ----------------------------------------------------------------------
 
-/**
- * @output boolean
- */
-
-// ----------------------------------------------------------------------
-
 export function fIsAfter(startDate, endDate) {
   if (!isValidDate(startDate) || !isValidDate(endDate)) {
     return false;
@@ -181,27 +113,13 @@ export function fIsAfter(startDate, endDate) {
 
 // ----------------------------------------------------------------------
 
-/**
- * @output boolean
- */
-
-// ----------------------------------------------------------------------
-
 export function fIsSame(startDate, endDate, unitToCompare) {
   if (!isValidDate(startDate) || !isValidDate(endDate)) {
     return false;
   }
 
-  return dayjs(startDate).isSame(endDate, unitToCompare ?? 'year');
+  return dayjs(startDate).isSame(endDate, unitToCompare ? unitToCompare : 'year');
 }
-
-/**
- * @output
- * Same day: 26 Apr 2024
- * Same month: 25 - 26 Apr 2024
- * Same month: 25 - 26 Apr 2024
- * Same year: 25 Apr - 26 May 2024
- */
 
 // ----------------------------------------------------------------------
 
@@ -229,64 +147,4 @@ export function fDateRangeShortLabel(startDate, endDate, initial) {
   }
 
   return label;
-}
-
-// ----------------------------------------------------------------------
-
-export function fAdd({
-  years = 0,
-  months = 0,
-  days = 0,
-  hours = 0,
-  minutes = 0,
-  seconds = 0,
-  milliseconds = 0,
-}) {
-  const result = dayjs()
-    .add(
-      dayjs.duration({
-        years,
-        months,
-        days,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-      })
-    )
-    .format();
-
-  return result;
-}
-
-/**
- * @output 2024-05-28T05:55:31+00:00
- */
-
-// ----------------------------------------------------------------------
-
-export function fSub({
-  years = 0,
-  months = 0,
-  days = 0,
-  hours = 0,
-  minutes = 0,
-  seconds = 0,
-  milliseconds = 0,
-}) {
-  const result = dayjs()
-    .subtract(
-      dayjs.duration({
-        years,
-        months,
-        days,
-        hours,
-        minutes,
-        seconds,
-        milliseconds,
-      })
-    )
-    .format();
-
-  return result;
 }

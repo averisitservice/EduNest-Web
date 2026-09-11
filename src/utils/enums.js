@@ -8,16 +8,6 @@ const enums = {
     },
   },
 
-  roleType: {
-    Administrator: 1,
-    Accounts: 2,
-    Coordinator: 3,
-    Manager: 4,
-    Staff: 5,
-    Dentist: 6,
-    SuperAdmin: 99,
-  },
-
   displayRole: {
     1: 'Super Admin',
     2: 'School Admin',
