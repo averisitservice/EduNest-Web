@@ -24,13 +24,7 @@ import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
-
-const STATUS_OPTIONS = [
-  { value: 'P', color: 'success', label: 'Present' },
-  { value: 'A', color: 'error', label: 'Absent' },
-  { value: 'L', color: 'warning', label: 'Leave' },
-  { value: 'H', color: 'info', label: 'Half Day' },
-];
+import constants from 'src/utils/constants';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -247,7 +241,7 @@ export function AttendanceMark({ selectedClass }) {
                         value={r.status}
                         onChange={(e, v) => setStatus(r.studentId, v)}
                       >
-                        {STATUS_OPTIONS.map((opt) => (
+                        {constants.ATTENDANCE_STATUS_OPTIONS.map((opt) => (
                           <Tooltip key={opt.value} title={opt.label} arrow>
                             <ToggleButton
                               value={opt.value}

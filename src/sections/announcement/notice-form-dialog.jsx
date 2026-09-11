@@ -16,14 +16,9 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+import constants from 'src/utils/constants';
 
 // ----------------------------------------------------------------------
-
-const AUDIENCE_OPTIONS = ['ALL', 'TEACHERS', 'PARENTS', 'STUDENTS'];
-const PUBLISH_MODE_OPTIONS = [
-  { value: 'NOW', label: 'Now' },
-  { value: 'SCHEDULED', label: 'Publish Date' },
-];
 
 const NoticeSchema = zod
   .object({
@@ -122,7 +117,7 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Field.Select name="audience" label="Audience" fullWidth>
-                {AUDIENCE_OPTIONS.map((a) => (
+                {constants.ANNOUNCEMENT_AUDIENCE_OPTIONS.map((a) => (
                   <MenuItem key={a} value={a}>
                     {a}
                   </MenuItem>
@@ -148,7 +143,7 @@ export function NoticeFormDialog({ open, onClose, notice, classes, onSuccess }) 
               name="publishMode"
               label="Publish"
               row
-              options={PUBLISH_MODE_OPTIONS}
+              options={constants.ANNOUNCEMENT_PUBLISH_MODE_OPTIONS}
             />
 
             {publishMode === 'SCHEDULED' && (

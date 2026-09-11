@@ -16,9 +16,9 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+import constants from 'src/utils/constants';
 import { fNumber } from 'src/utils/format-number';
 
-const PAYMENT_MODES = ['CASH', 'ONLINE', 'CHEQUE', 'CARD'];
 const today = () => new Date().toISOString().slice(0, 10);
 
 const FeeCollectSchema = zod.object({
@@ -101,7 +101,7 @@ export function FeeCollectDialog({ open, onClose, student, onSuccess }) {
             <Field.Text name="amount" type="number" label="Amount" fullWidth />
 
             <Field.Select name="paymentMode" label="Payment Mode" fullWidth>
-              {PAYMENT_MODES.map((mode) => (
+              {constants.PAYMENT_MODES.map((mode) => (
                 <MenuItem key={mode} value={mode}>
                   {mode}
                 </MenuItem>

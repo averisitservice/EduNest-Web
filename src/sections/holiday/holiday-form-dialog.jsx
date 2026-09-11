@@ -16,16 +16,9 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import ApiService from 'src/services/ApiService';
 import { toast } from 'src/components/snackbar';
 import { Form, Field } from 'src/components/hook-form';
+import constants from 'src/utils/constants';
 
 // ----------------------------------------------------------------------
-
-const HOLIDAY_TYPE_OPTIONS = [
-  { value: 'NATIONAL', label: 'National Holiday' },
-  { value: 'FESTIVAL', label: 'Festival' },
-  { value: 'SCHOOL_EVENT', label: 'School Event' },
-  { value: 'VACATION', label: 'Vacation / Break' },
-  { value: 'OTHER', label: 'Other' },
-];
 
 const HolidaySchema = zod
   .object({
@@ -129,7 +122,7 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
             </Stack>
 
             <Field.Select name="holidayType" label="Holiday Type" fullWidth>
-              {HOLIDAY_TYPE_OPTIONS.map((option) => (
+              {constants.HOLIDAY_TYPE_OPTIONS.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>

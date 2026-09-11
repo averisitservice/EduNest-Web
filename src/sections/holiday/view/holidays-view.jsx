@@ -38,6 +38,8 @@ import { HolidayTableRow } from '../holiday-table-row';
 
 // ----------------------------------------------------------------------
 
+import constants from 'src/utils/constants';
+
 const FILTEREDTABLEHEAD = [
   { id: 'holidayName', label: 'Holiday Name', width: '25%' },
   { id: 'startDate', label: 'Date / Period', width: '20%' },
@@ -50,14 +52,7 @@ const TABLEHEAD = [
   { id: '', label: 'Action', width: '10%', sortBy: false, sx: { textAlign: 'center' } },
 ];
 
-const TYPE_OPTIONS = [
-  { value: '', label: 'All Types' },
-  { value: 'NATIONAL', label: 'National Holiday' },
-  { value: 'FESTIVAL', label: 'Festival' },
-  { value: 'SCHOOL_EVENT', label: 'School Event' },
-  { value: 'VACATION', label: 'Vacation / Break' },
-  { value: 'OTHER', label: 'Other' },
-];
+const TYPE_OPTIONS = [{ value: '', label: 'All Types' }, ...constants.HOLIDAY_TYPE_OPTIONS];
 
 export function HolidaysView() {
   const table = useTable({ defaultOrderBy: 'startDate', defaultOrder: 'asc' });

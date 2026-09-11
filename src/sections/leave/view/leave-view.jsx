@@ -16,12 +16,7 @@ import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import LoadingButton from '@mui/lab/LoadingButton';
-
-const STATUS_COLOR = {
-  PENDING: 'warning',
-  APPROVED: 'success',
-  REJECTED: 'error',
-};
+import constants from 'src/utils/constants';
 
 function getClassLabel(option) {
   if (!option) return '';
@@ -143,7 +138,7 @@ export function LeaveView() {
                       {item.rollNo && <Chip size="small" label={`Roll No: ${item.rollNo}`} />}
                       <Chip
                         size="small"
-                        color={STATUS_COLOR[item.status] || 'default'}
+                        color={constants.LEAVE_STATUS_COLOR[item.status] || 'default'}
                         label={item.status}
                       />
                       {item.leaveDate && (
