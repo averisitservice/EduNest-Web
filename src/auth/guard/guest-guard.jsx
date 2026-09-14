@@ -4,7 +4,6 @@ import { CONFIG } from 'src/global-config';
 import { paths } from 'src/routes/paths';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useSelector } from 'react-redux';
-import enums from 'src/utils/enums';
 
 // ----------------------------------------------------------------------
 

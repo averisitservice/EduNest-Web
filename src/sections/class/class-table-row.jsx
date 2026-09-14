@@ -2,10 +2,8 @@ import { LoadingButton } from '@mui/lab';
 import { Box, Chip, IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { Iconify } from 'src/components/iconify';
-import dateHelper from 'src/utils/dateHelper';
 import utils from 'src/utils/utils';
 import { fNumber } from 'src/utils/format-number';
 
@@ -15,12 +13,6 @@ export function ClassTableRow({ row, selected, onDeleteRow, onSuccess }) {
   const confirmDialog = useBoolean();
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const methods = useForm({
-    defaultValues: {
-      authChoice: 'backup',
-    },
-  });
 
   const renderConfirmDialog = () => (
     <ConfirmDialog

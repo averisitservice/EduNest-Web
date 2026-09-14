@@ -2,7 +2,6 @@ import { LoadingButton } from '@mui/lab';
 import { Avatar, Box, IconButton, Stack, TableCell, TableRow, Tooltip } from '@mui/material';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { Iconify } from 'src/components/iconify';
 import { RouterLink } from 'src/routes/components';
@@ -14,12 +13,6 @@ import utils from 'src/utils/utils';
 export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
   const confirmDialog = useBoolean();
   const [loading, setLoading] = useState(false);
-
-  const methods = useForm({
-    defaultValues: {
-      authChoice: 'backup',
-    },
-  });
 
   const renderConfirmDialog = () => (
     <ConfirmDialog

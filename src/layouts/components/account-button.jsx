@@ -6,7 +6,7 @@ import { AnimateBorder, transitionTap, varHover, varTap } from 'src/components/a
 
 // ----------------------------------------------------------------------
 
-export function AccountButton({ displayName, sx, ...other }) {
+export function AccountButton({ sx, ...other }) {
   const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
   return (
     <IconButton

@@ -18,7 +18,6 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Field, Form, schemaHelper } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';

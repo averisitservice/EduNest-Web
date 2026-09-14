@@ -53,7 +53,7 @@ export const NavItem = forwardRef((props, ref) => {
     variant: navItem.rootItem ? 'rootItem' : 'subItem',
   };
 
-  const handleClick = (e) => {
+  const handleClick = () => {
     // always navigate to clean path (no querystring)
     navigate(path, { replace: false });
   };

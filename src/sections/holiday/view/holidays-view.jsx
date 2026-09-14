@@ -32,13 +32,12 @@ import {
   TablePaginationCustom,
   useTable,
 } from 'src/components/table';
+import constants from 'src/utils/constants';
 
 import { HolidayFormDialog } from '../holiday-form-dialog';
 import { HolidayTableRow } from '../holiday-table-row';
 
 // ----------------------------------------------------------------------
-
-import constants from 'src/utils/constants';
 
 const FILTEREDTABLEHEAD = [
   { id: 'holidayName', label: 'Holiday Name', width: '25%' },
@@ -202,7 +201,11 @@ export function HolidaysView() {
                           width: '100%',
                         }}
                       >
-                        <Stack alignItems="center" justifyContent="center" sx={{ width: '100%', py: 5 }}>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          sx={{ width: '100%', py: 5 }}
+                        >
                           <LinearProgress sx={{ width: '50%', maxWidth: 360 }} />
                         </Stack>
                       </Box>

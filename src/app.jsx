@@ -12,16 +12,13 @@ import { LocalizationProvider } from 'src/locales';
 import { I18nProvider } from 'src/locales/i18n-provider';
 import { themeConfig, ThemeProvider } from 'src/theme';
 import utils from 'src/utils/utils';
-import { useNavigate } from 'react-router';
 
-import apiService from './services/ApiService';
 import './services/AxiosService';
 import { login, logout, setTenantDetail } from './store/reducers/authReducer';
 
 export default function App({ children }) {
   const dispatch = useDispatch();
   const tenantDetail = utils.getItemFromStorage('tenant');
-  const navigate = useNavigate();
   defaultSettings.primaryColor = tenantDetail && tenantDetail.primaryColor;
   useEffect(() => {
     bindInitData();

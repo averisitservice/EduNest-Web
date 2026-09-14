@@ -5,7 +5,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 // ----------------------------------------------------------------------
 
 export function RHFAutocomplete({ name, label, slotProps, helperText, placeholder, ...other }) {
-  const { control, setValue, watch } = useFormContext();
+  const { control, watch } = useFormContext();
   const value = watch(name);
   const { textfield, ...otherSlotProps } = slotProps ?? {};
 

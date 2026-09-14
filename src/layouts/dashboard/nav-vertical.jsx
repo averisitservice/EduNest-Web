@@ -27,7 +27,7 @@ export function NavVertical({
       {slots?.topArea ?? (
         <Box
           sx={[
-            (theme) => ({
+            () => ({
               pl: 3.5,
               pt: 0.7,
               pb: 0.5,

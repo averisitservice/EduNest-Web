@@ -1,11 +1,4 @@
-import {
-  Box,
-  Chip,
-  TableRow,
-  TableCell,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
+import { Box, Chip, TableRow, TableCell, IconButton, Tooltip } from '@mui/material';
 import { Iconify } from 'src/components/iconify';
 import dateHelper from 'src/utils/dateHelper';
 
@@ -46,17 +39,10 @@ export function HolidayTableRow({ row, selected, onEditRow, onDeleteRow }) {
         {row && row.holidayName ? row.holidayName : '-'}
       </TableCell>
 
-      <TableCell sx={{ whiteSpace: 'nowrap' }}>
-        {dateDisplay}
-      </TableCell>
+      <TableCell sx={{ whiteSpace: 'nowrap' }}>{dateDisplay}</TableCell>
 
       <TableCell>
-        <Chip
-          label={chipLabel}
-          size="small"
-          color={chipColor}
-          variant="soft"
-        />
+        <Chip label={chipLabel} size="small" color={chipColor} variant="soft" />
       </TableCell>
 
       <TableCell>

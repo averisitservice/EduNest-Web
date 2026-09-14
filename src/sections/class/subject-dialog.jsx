@@ -9,7 +9,7 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import { Field } from 'src/components/hook-form';
@@ -28,7 +28,6 @@ const defaultValues = {
 
 export function SubjectDialog({ id, open, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const methods = useForm({
     resolver: zodResolver(SubjectSchema),

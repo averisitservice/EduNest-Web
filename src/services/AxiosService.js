@@ -53,9 +53,6 @@ axios.interceptors.response.use(
       errors.status === enums.ApiResult.NotFound
     ) {
       const validationErrors = errors.response.data.errors;
-      const errorMsg = Array.isArray(validationErrors)
-        ? validationErrors[0]?.msg
-        : validationErrors?.msg || errors.response?.data?.message;
 
       return {
         data: errors.response.data.data ? errors.response.data.data : null,

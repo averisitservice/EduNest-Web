@@ -8,7 +8,7 @@ import { RouterLink } from 'src/routes/components';
 
 // ----------------------------------------------------------------------
 
-export function RoleBasedGuard({ sx, children, hasContent }) {
+export function RoleBasedGuard({ sx, hasContent }) {
   return hasContent ? (
     <Container
       component={MotionContainer}

@@ -22,11 +22,9 @@ import {
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
-  TablePaginationCustom,
   useTable,
 } from 'src/components/table';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
 import { TableToolbar } from 'src/sections/table-toolbar';
 import ApiService from 'src/services/ApiService';
@@ -92,8 +90,6 @@ export function ClassListView() {
   const OpenSubjectDialog = () => {
     setOpenSubjectDialog(true);
   };
-
-  const toggleOpenDialog = () => setOpenDialog(!openDialog);
 
   const handleRefresh = () => {
     getClassList();

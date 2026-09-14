@@ -23,7 +23,10 @@ import constants from 'src/utils/constants';
 const HolidaySchema = zod
   .object({
     holidayName: zod.string().trim().min(1, { message: 'Holiday name is required.' }),
-    startDate: zod.string().nullable().refine((val) => !!val, { message: 'Start date is required.' }),
+    startDate: zod
+      .string()
+      .nullable()
+      .refine((val) => !!val, { message: 'Start date is required.' }),
     endDate: zod.string().nullable().optional(),
     holidayType: zod.string().min(1, { message: 'Holiday type is required.' }),
     description: zod.string().optional(),
@@ -78,8 +81,12 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
   const handleSave = handleSubmit(async (values) => {
     setSaving(true);
     try {
-      const startDateFormatted = values.startDate ? dayjs(values.startDate).format('YYYY-MM-DD') : null;
-      const endDateFormatted = values.endDate ? dayjs(values.endDate).format('YYYY-MM-DD') : startDateFormatted;
+      const startDateFormatted = values.startDate
+        ? dayjs(values.startDate).format('YYYY-MM-DD')
+        : null;
+      const endDateFormatted = values.endDate
+        ? dayjs(values.endDate).format('YYYY-MM-DD')
+        : startDateFormatted;
 
       const payload = {
         holidayId: holiday && holiday.holidayId ? holiday.holidayId : null,
@@ -118,7 +125,12 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Field.DatePicker name="startDate" label="Start Date" allowFutureDates fullWidth />
-              <Field.DatePicker name="endDate" label="End Date (optional)" allowFutureDates fullWidth />
+              <Field.DatePicker
+                name="endDate"
+                label="End Date (optional)"
+                allowFutureDates
+                fullWidth
+              />
             </Stack>
 
             <Field.Select name="holidayType" label="Holiday Type" fullWidth>
@@ -129,7 +141,13 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
               ))}
             </Field.Select>
 
-            <Field.Text name="description" label="Description / Details (optional)" multiline minRows={2} fullWidth />
+            <Field.Text
+              name="description"
+              label="Description / Details (optional)"
+              multiline
+              minRows={2}
+              fullWidth
+            />
           </Stack>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'flex-start' }}>

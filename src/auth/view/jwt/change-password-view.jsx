@@ -3,14 +3,13 @@ import { useBoolean } from 'minimal-shared/hooks';
 import { useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, IconButton, InputAdornment, Link } from '@mui/material';
+import { Box, IconButton, InputAdornment } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { PasswordIcon } from 'src/assets/icons';
 import { toast } from 'src/components/snackbar';
 import { FormHead } from 'src/auth/components/form-head';
 import { Field, Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
-import { RouterLink } from 'src/routes/components';
 import apiService from 'src/services/ApiService';
 import { paths } from 'src/routes/paths';
 

@@ -97,11 +97,9 @@ export function ExamSaveForm() {
       }
 
       if (initialExam) {
-        initialClass =
-          classList.find((c) => c.classId === initialExam.classId) || null;
+        initialClass = classList.find((c) => c.classId === initialExam.classId) || null;
       } else if (location.state && location.state.classId) {
-        initialClass =
-          classList.find((c) => c.classId === location.state.classId) || null;
+        initialClass = classList.find((c) => c.classId === location.state.classId) || null;
       } else if (classList.length > 0) {
         initialClass = classList[0];
       }
@@ -109,8 +107,10 @@ export function ExamSaveForm() {
       const baseValues = {
         studentClass: initialClass,
         examName: initialExam && initialExam.examName ? initialExam.examName : '',
-        maxMarks: initialExam && initialExam.maxMarks != null ? String(initialExam.maxMarks) : '100',
-        passMarks: initialExam && initialExam.passMarks != null ? String(initialExam.passMarks) : '35',
+        maxMarks:
+          initialExam && initialExam.maxMarks != null ? String(initialExam.maxMarks) : '100',
+        passMarks:
+          initialExam && initialExam.passMarks != null ? String(initialExam.passMarks) : '35',
         subjects: [],
       };
 
@@ -182,8 +182,12 @@ export function ExamSaveForm() {
     try {
       const selectedClass = values.studentClass;
       const firstSubject = values.subjects && values.subjects[0];
-      const examMaxMarks = firstSubject ? Number(firstSubject.maxMarks) : (Number(values.maxMarks) || 100);
-      const examPassMarks = firstSubject ? Number(firstSubject.passMarks) : (Number(values.passMarks) || 35);
+      const examMaxMarks = firstSubject
+        ? Number(firstSubject.maxMarks)
+        : Number(values.maxMarks) || 100;
+      const examPassMarks = firstSubject
+        ? Number(firstSubject.passMarks)
+        : Number(values.passMarks) || 35;
 
       const payload = {
         examId: id ? Number(id) : null,
@@ -258,9 +262,7 @@ export function ExamSaveForm() {
                           label="Class & Section"
                           placeholder="Select Class & Section"
                           error={Boolean(errors.studentClass)}
-                          helperText={
-                            errors.studentClass ? errors.studentClass.message : undefined
-                          }
+                          helperText={errors.studentClass ? errors.studentClass.message : undefined}
                         />
                       )}
                     />
@@ -283,7 +285,10 @@ export function ExamSaveForm() {
                 </Typography>
               </Divider>
 
-              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', display: 'block', mb: 2 }}
+              >
                 Set the exam date and schedule for each subject in this class.
               </Typography>
 

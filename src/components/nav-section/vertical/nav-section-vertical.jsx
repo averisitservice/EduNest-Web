@@ -3,7 +3,6 @@ import { mergeClasses } from 'minimal-shared/utils';
 import Collapse from '@mui/material/Collapse';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import enums from 'src/utils/enums';
 
 import { Nav, NavUl, NavLi, NavSubheader } from '../components';
 import { navSectionClasses, navSectionCssVars } from '../styles';
@@ -60,7 +59,6 @@ function Group({
   slotProps,
   currentRole,
   enabledRootRedirect,
-  loggedInTeacher,
 }) {
   const groupOpen = useBoolean(true);
 

@@ -1,12 +1,9 @@
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { paths } from 'src/routes/paths';
-import { useSelector } from 'react-redux';
-
 import { TeacherSaveForm } from '../teacher-save-form';
 
 export function ProfileEditView() {
-  const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
   return (
     <DashboardContent>
       <CustomBreadcrumbs

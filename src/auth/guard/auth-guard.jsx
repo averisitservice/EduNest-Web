@@ -14,7 +14,7 @@ export function AuthGuard({ children }) {
 
   const { loggedInTeacher } = useSelector((state) => state.AuthReducer);
   const [isChecking, setIsChecking] = useState(true);
-  const [isCheckPermission, setIsCheckPermission] = useState(true);
+  const [isCheckPermission] = useState(true);
 
   const createRedirectPath = (currentPath) => {
     const queryString = new URLSearchParams({ returnTo: pathname }).toString();
