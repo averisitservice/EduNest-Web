@@ -46,7 +46,7 @@ const HolidaySchema = zod
 
 const defaultValues = {
   holidayName: '',
-  startDate: dayjs().format('YYYY-MM-DD'),
+  startDate: '',
   endDate: null,
   holidayType: 'NATIONAL',
   description: '',
@@ -68,10 +68,9 @@ export function HolidayFormDialog({ open, onClose, holiday, onSuccess }) {
 
   useEffect(() => {
     if (!open) return;
-    const today = dayjs().format('YYYY-MM-DD');
     reset({
       holidayName: holiday && holiday.holidayName ? holiday.holidayName : '',
-      startDate: holiday && holiday.startDate ? holiday.startDate : today,
+      startDate: holiday && holiday.startDate ? holiday.startDate : '',
       endDate: holiday && holiday.endDate ? holiday.endDate : null,
       holidayType: holiday && holiday.holidayType ? holiday.holidayType : 'NATIONAL',
       description: holiday && holiday.description ? holiday.description : '',

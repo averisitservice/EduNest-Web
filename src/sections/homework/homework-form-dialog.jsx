@@ -20,8 +20,6 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 const HomeworkSchema = zod.object({
   subjectId: zod.string().optional(),
   title: zod.string().trim().min(1, { message: 'Title is required.' }),
@@ -33,7 +31,7 @@ const defaultValues = {
   subjectId: '',
   title: '',
   description: '',
-  dueDate: today(),
+  dueDate: '',
 };
 
 export function HomeworkFormDialog({ open, onClose, item, selectedClass, subjects, onSuccess }) {

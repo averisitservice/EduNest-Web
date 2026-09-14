@@ -16,7 +16,6 @@ import {
 import ApiService from 'src/services/ApiService';
 import { Form, Field } from 'src/components/hook-form';
 
-const today = () => new Date().toISOString().slice(0, 10);
 const firstOfMonth = () => `${new Date().toISOString().slice(0, 7)}-01`;
 
 export function AttendanceReport({ selectedClass }) {
@@ -27,7 +26,7 @@ export function AttendanceReport({ selectedClass }) {
   const methods = useForm({
     defaultValues: {
       fromDate: firstOfMonth(),
-      toDate: today(),
+      toDate: '',
     },
   });
 

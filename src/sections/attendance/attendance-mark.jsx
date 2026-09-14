@@ -26,8 +26,6 @@ import { Iconify } from 'src/components/iconify';
 import { Form, Field } from 'src/components/hook-form';
 import constants from 'src/utils/constants';
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 export function AttendanceMark({ selectedClass }) {
   const [roster, setRoster] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,7 +35,7 @@ export function AttendanceMark({ selectedClass }) {
 
   const methods = useForm({
     defaultValues: {
-      date: today(),
+      date: '',
     },
   });
 

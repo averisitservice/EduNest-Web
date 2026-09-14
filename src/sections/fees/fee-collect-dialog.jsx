@@ -19,8 +19,6 @@ import { Form, Field } from 'src/components/hook-form';
 import constants from 'src/utils/constants';
 import { fNumber } from 'src/utils/format-number';
 
-const today = () => new Date().toISOString().slice(0, 10);
-
 const FeeCollectSchema = zod.object({
   amount: zod.coerce.number().min(0.01, { message: 'Enter a valid amount.' }),
   paymentMode: zod.string().min(1, { message: 'Payment mode is required.' }),
@@ -31,7 +29,7 @@ const FeeCollectSchema = zod.object({
 const defaultValues = {
   amount: '',
   paymentMode: 'CASH',
-  paymentDate: today(),
+  paymentDate: '',
   remarks: '',
 };
 
