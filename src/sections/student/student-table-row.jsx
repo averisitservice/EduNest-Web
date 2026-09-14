@@ -13,7 +13,7 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
   const confirmDialog = useBoolean();
   const [loading, setLoading] = useState(false);
 
-  const studentName = row.studentName || `${row.firstName} ${row.lastName}`;
+  const studentName = utils.getFullName(row);
 
   const renderConfirmDialog = () => (
     <ConfirmDialog
@@ -50,7 +50,7 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
               src={row.imagePath}
               sx={{ bgcolor: 'primary.main', color: 'white' }}
             >
-              {studentName.charAt(0).toUpperCase()}
+              {utils.getInitials(studentName)}
             </Avatar>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>
@@ -87,11 +87,7 @@ export function StudentTableRow({ row, selected, onDeleteRow }) {
           <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
             <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit' }}>
-                {row.className
-                  ? row.sectionName
-                    ? `${row.className} - ${row.sectionName}`
-                    : row.className
-                  : '-'}
+                {utils.formatClassSection(row, '-')}
               </Box>
             </Stack>
           </Box>

@@ -23,6 +23,7 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { formatClassSection } from 'src/utils/utils';
 
 import { TimetableEditDialog } from '../timetable-edit-dialog';
 
@@ -50,12 +51,6 @@ function getRowTimeLabel(row) {
   return range || row.slotName || '';
 }
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
 
 export function TimetableView() {
   const [classSections, setClassSections] = useState([]);
@@ -222,9 +217,7 @@ export function TimetableView() {
               key={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
               value={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
             >
-              {option.sectionName
-                ? `${option.className} - ${option.sectionName}`
-                : option.className}
+              {formatClassSection(option)}
             </MenuItem>
           ))}
         </Select>

@@ -49,7 +49,7 @@ export function TeacherTableRow({ row, selected, onDeleteRow, isProfile }) {
               src={row.imagePath}
               sx={{ bgcolor: 'primary.main', color: 'white' }}
             >
-              {row.teacherName.charAt(0).toUpperCase()}
+              {utils.getInitials(row.teacherName)}
             </Avatar>
             <Stack sx={{ flex: '1 1 auto', alignItems: 'flex-start' }}>
               <Box component="span" sx={{ color: 'inherit', typography: 'body2' }}>

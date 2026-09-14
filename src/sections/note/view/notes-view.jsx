@@ -22,15 +22,10 @@ import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { formatClassSection } from 'src/utils/utils';
 
 import { NoteFormDialog } from '../note-form-dialog';
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
 
 function classKey(option) {
   if (!option) return '';
@@ -144,7 +139,7 @@ export function NotesView() {
           </MenuItem>
           {classSections.map((option) => (
             <MenuItem key={classKey(option)} value={classKey(option)}>
-              {getClassLabel(option)}
+              {formatClassSection(option)}
             </MenuItem>
           ))}
         </Select>

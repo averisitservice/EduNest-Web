@@ -23,6 +23,7 @@ import { Field, Form, schemaHelper } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { toast } from 'src/components/snackbar';
+import { formatClassSection } from 'src/utils/utils';
 import { useParams } from 'src/routes/hooks';
 import apiService from 'src/services/ApiService';
 import constants from 'src/utils/constants';
@@ -368,11 +369,7 @@ export function TeacherSaveForm() {
                             options={classMasters}
                             value={field.value || []}
                             onChange={(event, newValue) => field.onChange(newValue)}
-                            getOptionLabel={(option) =>
-                              option.sectionName
-                                ? `${option.className} - ${option.sectionName}`
-                                : option.className
-                            }
+                            getOptionLabel={(option) => formatClassSection(option)}
                             isOptionEqualToValue={(option, value) =>
                               option.classId === value.classId &&
                               option.sectionId === value.sectionId
@@ -383,7 +380,7 @@ export function TeacherSaveForm() {
                                 label="Classes"
                                 placeholder="Classes"
                                 error={!!errors.teacherClasses}
-                                helperText={errors.teacherClasses?.message}
+                                helperText={errors.teacherClasses ? errors.teacherClasses.message : undefined}
                               />
                             )}
                             renderOption={(props, option) => {
@@ -396,12 +393,10 @@ export function TeacherSaveForm() {
                               return (
                                 <li
                                   {...props}
-                                  key={`${option.classId}-${option.sectionId ?? 'null'}`}
+                                  key={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
                                 >
                                   <Checkbox size="small" disableRipple checked={isSelected} />
-                                  {option.sectionName
-                                    ? `${option.className} - ${option.sectionName}`
-                                    : option.className}
+                                  {formatClassSection(option)}
                                 </li>
                               );
                             }}
@@ -409,12 +404,8 @@ export function TeacherSaveForm() {
                               (selected || []).map((option, index) => (
                                 <Chip
                                   {...getTagProps({ index })}
-                                  key={`${option.classId}-${option.sectionId ?? 'null'}`}
-                                  label={
-                                    option.sectionName
-                                      ? `${option.className} - ${option.sectionName}`
-                                      : option.className
-                                  }
+                                  key={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
+                                  label={formatClassSection(option)}
                                   size="small"
                                   variant="soft"
                                 />

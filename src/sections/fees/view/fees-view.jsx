@@ -23,22 +23,15 @@ import { paths } from 'src/routes/paths';
 import ApiService from 'src/services/ApiService';
 import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { fNumber } from 'src/utils/format-number';
+import { formatClassSection } from 'src/utils/utils';
 
 import { FeeCollectDialog } from '../fee-collect-dialog';
 import { FeeHistoryDialog } from '../fee-history-dialog';
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
-
 function classKey(option) {
   if (!option) return '';
-  return `${option.classId}-${option.sectionId ?? 'null'}`;
+  return `${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`;
 }
 
 export function FeesView() {
@@ -122,7 +115,7 @@ export function FeesView() {
               </MenuItem>
               {classSections.map((option) => (
                 <MenuItem key={classKey(option)} value={classKey(option)}>
-                  {getClassLabel(option)}
+                  {formatClassSection(option)}
                 </MenuItem>
               ))}
             </Select>

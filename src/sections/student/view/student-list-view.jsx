@@ -23,6 +23,7 @@ import {
   TablePaginationCustom,
   useTable,
 } from 'src/components/table';
+import { formatClassSection } from 'src/utils/utils';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
@@ -169,12 +170,10 @@ export function StudentListView() {
             </MenuItem>
             {classMasters.map((option) => (
               <MenuItem
-                key={`${option.classId}-${option.sectionId ?? 'null'}`}
-                value={`${option.classId}-${option.sectionId ?? 'null'}`}
+                key={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
+                value={`${option.classId}-${option.sectionId !== null && option.sectionId !== undefined ? option.sectionId : 'null'}`}
               >
-                {option.sectionName
-                  ? `${option.className} - ${option.sectionName}`
-                  : option.className}
+                {formatClassSection(option)}
               </MenuItem>
             ))}
           </Select>

@@ -24,6 +24,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 import { Form, Field } from 'src/components/hook-form';
 import { useParams } from 'src/routes/hooks';
 import { paths } from 'src/routes/paths';
+import { formatClassSection, formatTimeSlice } from 'src/utils/utils';
 
 const ExamSchema = zod.object({
   studentClass: zod
@@ -132,8 +133,8 @@ export function ExamSaveForm() {
             subjectId: String(s.subjectId),
             subjectName: s.subjectName,
             examDate: prev && prev.examDate ? prev.examDate : '',
-            startTime: prev && prev.startTime ? String(prev.startTime).slice(0, 5) : '',
-            endTime: prev && prev.endTime ? String(prev.endTime).slice(0, 5) : '',
+            startTime: prev && prev.startTime ? formatTimeSlice(prev.startTime) : '',
+            endTime: prev && prev.endTime ? formatTimeSlice(prev.endTime) : '',
             maxMarks: prev && prev.maxMarks != null ? String(prev.maxMarks) : baseValues.maxMarks,
             passMarks:
               prev && prev.passMarks != null ? String(prev.passMarks) : baseValues.passMarks,
@@ -244,12 +245,7 @@ export function ExamSaveForm() {
                       options={classMasters}
                       value={field.value || null}
                       onChange={(event, newValue) => handleClassChange(newValue)}
-                      getOptionLabel={(option) => {
-                        if (!option) return '';
-                        return option.sectionName
-                          ? `${option.className} - ${option.sectionName}`
-                          : option.className || '';
-                      }}
+                      getOptionLabel={(option) => formatClassSection(option)}
                       isOptionEqualToValue={(option, value) => {
                         if (!option || !value) return false;
                         return (

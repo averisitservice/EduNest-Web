@@ -4,16 +4,11 @@ import { paths } from 'src/routes/paths';
 import ApiService from 'src/services/ApiService';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { formatClassSection } from 'src/utils/utils';
 
 import { AttendanceMark } from '../attendance-mark';
 import { AttendanceReport } from '../attendance-report';
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
 
 function classKey(option) {
   if (!option) return '';
@@ -63,7 +58,7 @@ export function AttendanceView() {
             </MenuItem>
             {classSections.map((option) => (
               <MenuItem key={classKey(option)} value={classKey(option)}>
-                {getClassLabel(option)}
+                {formatClassSection(option)}
               </MenuItem>
             ))}
           </Select>

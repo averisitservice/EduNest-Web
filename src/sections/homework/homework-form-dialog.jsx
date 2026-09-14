@@ -60,7 +60,7 @@ export function HomeworkFormDialog({ open, onClose, item, selectedClass, subject
       subjectId: item && item.subjectId != null ? String(item.subjectId) : '',
       title: item && item.title ? item.title : '',
       description: item && item.description ? item.description : '',
-      dueDate: item && item.dueDate ? item.dueDate : today(),
+      dueDate: item && item.dueDate ? item.dueDate : null,
     });
   }, [open, item, reset]);
 

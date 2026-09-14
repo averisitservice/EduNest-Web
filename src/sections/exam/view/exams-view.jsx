@@ -24,15 +24,9 @@ import dateHelper from 'src/utils/dateHelper';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
+import { formatClassSection } from 'src/utils/utils';
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
 
 function isExamEnded(exam) {
   const lastDate = exam.endDate || exam.examDate;
@@ -129,7 +123,7 @@ export function ExamsView() {
           </MenuItem>
           {classSections.map((option) => (
             <MenuItem key={classKey(option)} value={classKey(option)}>
-              {getClassLabel(option)}
+              {formatClassSection(option)}
             </MenuItem>
           ))}
         </Select>

@@ -17,13 +17,8 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import LoadingButton from '@mui/lab/LoadingButton';
 import constants from 'src/utils/constants';
+import { formatClassSection } from 'src/utils/utils';
 
-function getClassLabel(option) {
-  if (!option) return '';
-  return option.sectionName
-    ? `${option.className} - ${option.sectionName}`
-    : option.className || '';
-}
 
 function classKey(option) {
   if (!option) return '';
@@ -102,7 +97,7 @@ export function LeaveView() {
           </MenuItem>
           {classSections.map((option) => (
             <MenuItem key={classKey(option)} value={classKey(option)}>
-              {getClassLabel(option)}
+              {formatClassSection(option)}
             </MenuItem>
           ))}
         </Select>

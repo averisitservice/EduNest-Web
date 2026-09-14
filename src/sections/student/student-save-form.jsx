@@ -13,6 +13,7 @@ import { toast } from 'src/components/snackbar';
 import { useParams } from 'src/routes/hooks';
 import apiService from 'src/services/ApiService';
 import constants from 'src/utils/constants';
+import { formatClassSection } from 'src/utils/utils';
 import { z as zod } from 'zod';
 
 const StudentSchema = zod.object({
@@ -214,12 +215,7 @@ export function StudentSaveForm() {
                         options={classMasters}
                         value={field.value || null}
                         onChange={(event, newValue) => field.onChange(newValue)}
-                        getOptionLabel={(option) => {
-                          if (!option) return '';
-                          return option.sectionName
-                            ? `${option.className} - ${option.sectionName}`
-                            : option.className || '';
-                        }}
+                        getOptionLabel={(option) => formatClassSection(option)}
                         isOptionEqualToValue={(option, value) => {
                           if (!option || !value) return false;
                           return (
