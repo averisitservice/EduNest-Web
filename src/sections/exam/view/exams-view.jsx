@@ -143,7 +143,7 @@ export function ExamsView() {
         ) : exams.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No exams yet. Click “New Exam” to create one.
+              No data found
             </Typography>
           </Box>
         ) : (

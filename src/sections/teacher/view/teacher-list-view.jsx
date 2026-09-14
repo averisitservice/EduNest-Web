@@ -173,7 +173,7 @@ export function TeacherListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No teacher found." notFound={dataFiltered.length <= 0} />
+                  <TableNoData label="No data found" notFound={dataFiltered.length <= 0} />
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,

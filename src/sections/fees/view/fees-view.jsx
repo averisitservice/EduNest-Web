@@ -162,13 +162,13 @@ export function FeesView() {
         ) : rows.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No students found for this class.
+              No data found
             </Typography>
           </Box>
         ) : dataFiltered.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No students found matching your search.
+              No data found
             </Typography>
           </Box>
         ) : (

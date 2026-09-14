@@ -180,7 +180,7 @@ export function ClassListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData notFound={dataFiltered.length === 0} label="No Class Found." />
+                  <TableNoData notFound={dataFiltered.length === 0} label="No data found" />
                   {dataFiltered.map((row) => (
                     <ClassTableRow
                       key={row.classId}

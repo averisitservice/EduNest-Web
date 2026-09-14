@@ -49,7 +49,7 @@ export function FeeHistoryDialog({ open, onClose, student }) {
         ) : history.length === 0 ? (
           <Box sx={{ py: 6, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No payments recorded yet.
+              No data found
             </Typography>
           </Box>
         ) : (

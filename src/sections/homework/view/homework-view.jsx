@@ -161,7 +161,7 @@ export function HomeworkView() {
         ) : items.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No homework posted yet.
+              No data found
             </Typography>
           </Box>
         ) : (

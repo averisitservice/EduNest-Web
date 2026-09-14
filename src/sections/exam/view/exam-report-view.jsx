@@ -66,7 +66,7 @@ export function ExamReportView() {
       ) : reports.length === 0 ? (
         <Card sx={{ py: 8, textAlign: 'center' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            No report data available.
+            No data found
           </Typography>
         </Card>
       ) : (

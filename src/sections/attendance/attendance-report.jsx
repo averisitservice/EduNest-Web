@@ -84,7 +84,7 @@ export function AttendanceReport({ selectedClass }) {
         <Box sx={{ py: 8, textAlign: 'center' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {loaded
-              ? 'No attendance records for the selected range.'
+              ? 'No data found'
               : 'Select a date range, then click “Load Report”.'}
           </Typography>
         </Box>

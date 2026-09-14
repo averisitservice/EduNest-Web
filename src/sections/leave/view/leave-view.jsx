@@ -116,7 +116,7 @@ export function LeaveView() {
         ) : items.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No leave requests found.
+              No data found
             </Typography>
           </Box>
         ) : (

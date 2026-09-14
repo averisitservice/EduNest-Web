@@ -205,7 +205,7 @@ export function AttendanceMark({ selectedClass }) {
       ) : roster.length === 0 ? (
         <Box sx={{ py: 8, textAlign: 'center' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            No students found for this class.
+            No data found
           </Typography>
         </Box>
       ) : (

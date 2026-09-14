@@ -158,7 +158,7 @@ export function NotesView() {
         ) : items.length === 0 ? (
           <Box sx={{ py: 8, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No notes posted yet.
+              No data found
             </Typography>
           </Box>
         ) : (

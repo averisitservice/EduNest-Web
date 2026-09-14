@@ -189,7 +189,7 @@ export function AnnouncementsView() {
               ) : (
                 <TableBody>
                   <TableNoData
-                    label="No announcements found."
+                    label="No data found"
                     notFound={dataFiltered.length <= 0}
                   />
                   {dataFiltered.map((row) => (

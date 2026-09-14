@@ -256,7 +256,7 @@ export function TimetableView() {
         ) : rows.length === 0 ? (
           <Box sx={{ py: 10, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              No timetable found for this class.
+              No data found
             </Typography>
           </Box>
         ) : (

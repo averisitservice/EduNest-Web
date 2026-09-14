@@ -214,7 +214,7 @@ export function HolidaysView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No holiday found." notFound={dataFiltered.length <= 0} />
+                  <TableNoData label="No data found" notFound={dataFiltered.length <= 0} />
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,

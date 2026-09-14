@@ -212,7 +212,7 @@ export function StudentListView() {
                 </TableBody>
               ) : (
                 <TableBody>
-                  <TableNoData label="No student found." notFound={notFound} />
+                  <TableNoData label="No data found" notFound={notFound} />
                   {tableData.map((row) => (
                     <StudentTableRow
                       key={row.studentId}

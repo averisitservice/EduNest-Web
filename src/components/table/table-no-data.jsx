@@ -5,7 +5,7 @@ import { EmptyContent } from '../empty-content';
 
 // ----------------------------------------------------------------------
 
-export function TableNoData({ notFound, label, sx }) {
+export function TableNoData({ notFound, label = 'No data found', sx }) {
   return (
     <TableRow>
       {notFound ? (
