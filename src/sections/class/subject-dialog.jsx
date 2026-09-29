@@ -1,14 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
@@ -28,7 +20,6 @@ const defaultValues = {
 
 export function SubjectDialog({ id, open, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const methods = useForm({
     resolver: zodResolver(SubjectSchema),
@@ -77,41 +68,29 @@ export function SubjectDialog({ id, open, onClose, onSuccess }) {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>{id ? 'Edit Subject' : 'Add Subject'}</DialogTitle>
 
-      {isLoadingData ? (
-        <DialogContent
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            py: 5,
-          }}
-        >
-          <CircularProgress />
+      <FormProvider {...methods}>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <Field.Text name="subjectName" label="Subject Name" fullWidth />
+
+            <Field.Text name="subjectCode" label="Subject Code" fullWidth />
+          </Stack>
         </DialogContent>
-      ) : (
-        <FormProvider {...methods}>
-          <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1 }}>
-              <Field.Text name="subjectName" label="Subject Name" fullWidth />
 
-              <Field.Text name="subjectCode" label="Subject Code" fullWidth />
-            </Stack>
-          </DialogContent>
-
-          <DialogActions sx={{ justifyContent: 'flex-start' }}>
-            <LoadingButton
-              variant="contained"
-              color="primary"
-              loading={isSubmitting || isLoading}
-              onClick={onSubmit}
-            >
-              Save
-            </LoadingButton>
-            <Button variant="outlined" color="error" onClick={onClose}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </FormProvider>
-      )}
+        <DialogActions sx={{ justifyContent: 'flex-start' }}>
+          <LoadingButton
+            variant="contained"
+            color="primary"
+            loading={isSubmitting || isLoading}
+            onClick={onSubmit}
+          >
+            Save
+          </LoadingButton>
+          <Button variant="outlined" color="error" onClick={onClose}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </FormProvider>
     </Dialog>
   );
 }

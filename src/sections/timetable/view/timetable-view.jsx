@@ -51,7 +51,6 @@ function getRowTimeLabel(row) {
   return range || row.slotName || '';
 }
 
-
 export function TimetableView() {
   const [classSections, setClassSections] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
@@ -154,7 +153,7 @@ export function TimetableView() {
 
     const csvContent = 'data:text/csv;charset=utf-8,' + csvRows.join('\n');
     const encodedUri = encodeURI(csvContent);
-    const label = selectedClass ? getClassLabel(selectedClass) : 'Timetable';
+    const label = selectedClass ? formatClassSection(selectedClass) : 'Timetable';
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
     link.setAttribute('download', `${label.replace(/\s+/g, '_')}_Timetable.csv`);
@@ -164,7 +163,9 @@ export function TimetableView() {
     toast.success('Timetable exported successfully!');
   };
 
-  const headerTitle = selectedClass ? `${getClassLabel(selectedClass)} Timetable` : 'Timetable';
+  const headerTitle = selectedClass
+    ? `${formatClassSection(selectedClass)} Timetable`
+    : 'Timetable';
 
   return (
     <DashboardContent>
@@ -201,7 +202,7 @@ export function TimetableView() {
                 (c) =>
                   c.classId == classId &&
                   (c.sectionId !== null && c.sectionId !== undefined ? c.sectionId : 'null') ==
-                    sectionId
+                  sectionId
               );
               setSelectedClass(selectedOption || null);
             }
