@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z as zod } from 'zod';
+import dayjs from 'dayjs';
 import {
   Stack,
   Button,
@@ -53,7 +54,7 @@ export function FeeCollectDialog({ open, onClose, student, onSuccess }) {
       reset({
         amount: due > 0 ? due : '',
         paymentMode: 'CASH',
-        paymentDate: today(),
+        paymentDate: dayjs().format('YYYY-MM-DD'),
         remarks: '',
       });
     }

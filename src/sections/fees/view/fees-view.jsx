@@ -23,6 +23,7 @@ import { paths } from 'src/routes/paths';
 import ApiService from 'src/services/ApiService';
 import { Iconify } from 'src/components/iconify';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { fNumber } from 'src/utils/format-number';
 import { formatClassSection } from 'src/utils/utils';
 

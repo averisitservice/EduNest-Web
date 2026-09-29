@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import dayjs from 'dayjs';
 import {
   Box,
   Chip,
+  Alert,
   Table,
   Stack,
   Button,
@@ -12,6 +14,7 @@ import {
   TableCell,
   TableHead,
   TextField,
+  AlertTitle,
   Typography,
   CircularProgress,
   TableContainer,
@@ -32,6 +35,8 @@ export function AttendanceMark({ selectedClass }) {
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [holidayList, setHolidayList] = useState([]);
+  const [backendHoliday, setBackendHoliday] = useState({ isHoliday: false, holidayName: '' });
 
   const methods = useForm({
     defaultValues: {
@@ -43,6 +48,40 @@ export function AttendanceMark({ selectedClass }) {
   const date = watch('date');
 
   useEffect(() => {
+    async function loadHolidayList() {
+      const res = await ApiService.getHolidayListAsync();
+      const list = res && res.data ? res.data : [];
+      setHolidayList(list);
+    }
+    loadHolidayList();
+  }, []);
+
+  const holidayFromList = useMemo(() => {
+    if (!date || !holidayList || holidayList.length === 0) return null;
+    return (
+      holidayList.find((h) => {
+        if (!h || h.isActive === false) return false;
+        const start = h.startDate || '';
+        const end = h.endDate || start;
+        return date >= start && date <= end;
+      }) || null
+    );
+  }, [date, holidayList]);
+
+  const isHoliday = Boolean(holidayFromList || (backendHoliday && backendHoliday.isHoliday));
+  const holidayName =
+    holidayFromList && holidayFromList.holidayName
+      ? holidayFromList.holidayName
+      : backendHoliday && backendHoliday.holidayName
+        ? backendHoliday.holidayName
+        : '';
+
+  const isToday = useMemo(() => {
+    if (!date) return true;
+    return dayjs(date).isSame(dayjs(), 'day');
+  }, [date]);
+
+  useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 400);
     return () => clearTimeout(timer);
   }, [searchQuery]);
@@ -50,6 +89,7 @@ export function AttendanceMark({ selectedClass }) {
   const loadRoster = useCallback(async () => {
     if (!selectedClass || !date) {
       setRoster([]);
+      setBackendHoliday({ isHoliday: false, holidayName: '' });
       return;
     }
     setLoading(true);
@@ -60,6 +100,9 @@ export function AttendanceMark({ selectedClass }) {
       debouncedSearch
     );
     const records = res && res.data && res.data.records ? res.data.records : [];
+    const isRosterHoliday = Boolean(res && res.data && (res.data.isHoliday || res.data.holiday));
+    const rosterHolidayName = res && res.data && res.data.holidayName ? res.data.holidayName : '';
+    setBackendHoliday({ isHoliday: isRosterHoliday, holidayName: rosterHolidayName });
     setRoster(records.map((r) => ({ ...r, status: r.status || 'P' })));
     setLoading(false);
   }, [selectedClass, date, debouncedSearch]);
@@ -69,20 +112,22 @@ export function AttendanceMark({ selectedClass }) {
   }, [loadRoster]);
 
   const setStatus = (studentId, status) => {
-    if (!status) return;
+    if (!status || isHoliday) return;
     setRoster((prev) => prev.map((r) => (r.studentId === studentId ? { ...r, status } : r)));
   };
 
   const setRemarks = (studentId, remarks) => {
+    if (isHoliday) return;
     setRoster((prev) => prev.map((r) => (r.studentId === studentId ? { ...r, remarks } : r)));
   };
 
   const markAllPresent = () => {
+    if (isHoliday) return;
     setRoster((prev) => prev.map((r) => ({ ...r, status: 'P' })));
   };
 
   const handleSave = async () => {
-    if (!selectedClass || roster.length === 0) return;
+    if (!selectedClass || roster.length === 0 || isHoliday) return;
     setSaving(true);
     try {
       const payload = {
@@ -111,6 +156,9 @@ export function AttendanceMark({ selectedClass }) {
   };
 
   const { presentCount, absentCount } = useMemo(() => {
+    if (isHoliday) {
+      return { presentCount: 0, absentCount: 0 };
+    }
     let p = 0;
     let a = 0;
     roster.forEach((r) => {
@@ -121,7 +169,7 @@ export function AttendanceMark({ selectedClass }) {
       }
     });
     return { presentCount: p, absentCount: a };
-  }, [roster]);
+  }, [roster, isHoliday]);
 
   const filteredRoster = useMemo(() => {
     if (!searchQuery) return roster;
@@ -183,18 +231,52 @@ export function AttendanceMark({ selectedClass }) {
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Total: {roster.length}
           </Typography>
-          <Button
-            size="small"
-            variant="outlined"
-            color="primary"
-            startIcon={<Iconify icon="solar:check-circle-bold" />}
-            onClick={markAllPresent}
-            disabled={roster.length === 0}
+          <Tooltip
+            title={
+              isHoliday
+                ? `Cannot mark attendance on a holiday${holidayName ? ` (${holidayName})` : ''}`
+                : ''
+            }
+            arrow
           >
-            Mark all present
-          </Button>
+            <span>
+              <Button
+                size="small"
+                variant="outlined"
+                color="primary"
+                startIcon={<Iconify icon="solar:check-circle-bold" />}
+                onClick={markAllPresent}
+                disabled={isHoliday || roster.length === 0}
+              >
+                Mark all present
+              </Button>
+            </span>
+          </Tooltip>
         </Stack>
       </Stack>
+
+      {isHoliday && (
+        <Alert
+          severity="warning"
+          variant="outlined"
+          icon={<Iconify icon="solar:calendar-date-bold" width={24} />}
+          sx={{ mx: 2, mb: 2 }}
+        >
+          <AlertTitle sx={{ fontWeight: 700 }}>
+            {isToday ? 'Today is a Holiday' : 'Holiday'}
+          </AlertTitle>
+          <Typography variant="body2">
+            {holidayName ? (
+              <>
+                <strong>{holidayName}</strong> &mdash; Attendance cannot be marked or saved for this
+                date.
+              </>
+            ) : (
+              'Attendance cannot be marked or saved on holidays.'
+            )}
+          </Typography>
+        </Alert>
+      )}
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
@@ -233,31 +315,42 @@ export function AttendanceMark({ selectedClass }) {
                       </Stack>
                     </TableCell>
                     <TableCell align="center">
-                      <ToggleButtonGroup
-                        exclusive
-                        size="small"
-                        value={r.status}
-                        onChange={(e, v) => setStatus(r.studentId, v)}
-                      >
-                        {constants.ATTENDANCE_STATUS_OPTIONS.map((opt) => (
-                          <Tooltip key={opt.value} title={opt.label} arrow>
-                            <ToggleButton
-                              value={opt.value}
-                              color={opt.color}
-                              sx={{ px: 1.5, fontWeight: 700 }}
-                            >
-                              {opt.value}
-                            </ToggleButton>
-                          </Tooltip>
-                        ))}
-                      </ToggleButtonGroup>
+                      {isHoliday ? (
+                        <Chip
+                          size="small"
+                          color="warning"
+                          variant="soft"
+                          label={r.status === 'HOLIDAY' || !r.status ? 'Holiday' : r.status}
+                          sx={{ fontWeight: 600 }}
+                        />
+                      ) : (
+                        <ToggleButtonGroup
+                          exclusive
+                          size="small"
+                          value={r.status}
+                          onChange={(e, v) => setStatus(r.studentId, v)}
+                        >
+                          {constants.ATTENDANCE_STATUS_OPTIONS.map((opt) => (
+                            <Tooltip key={opt.value} title={opt.label} arrow>
+                              <ToggleButton
+                                value={opt.value}
+                                color={opt.color}
+                                sx={{ px: 1.5, fontWeight: 700 }}
+                              >
+                                {opt.value}
+                              </ToggleButton>
+                            </Tooltip>
+                          ))}
+                        </ToggleButtonGroup>
+                      )}
                     </TableCell>
                     <TableCell>
                       <TextField
                         size="small"
                         fullWidth
-                        placeholder="Optional"
+                        placeholder={isHoliday ? 'Holiday' : 'Optional'}
                         value={r.remarks || ''}
+                        disabled={isHoliday}
                         onChange={(e) => setRemarks(r.studentId, e.target.value)}
                       />
                     </TableCell>
@@ -276,14 +369,26 @@ export function AttendanceMark({ selectedClass }) {
               borderColor: 'divider',
             }}
           >
-            <LoadingButton
-              variant="contained"
-              color="primary"
-              loading={saving}
-              onClick={handleSave}
+            <Tooltip
+              title={
+                isHoliday
+                  ? `Cannot save attendance on a holiday${holidayName ? ` (${holidayName})` : ''}`
+                  : ''
+              }
+              arrow
             >
-              Save Attendance
-            </LoadingButton>
+              <span>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={saving}
+                  disabled={isHoliday || roster.length === 0}
+                  onClick={handleSave}
+                >
+                  Save Attendance
+                </LoadingButton>
+              </span>
+            </Tooltip>
           </Box>
         </>
       )}
