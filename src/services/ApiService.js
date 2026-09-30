@@ -325,12 +325,11 @@ async function getLeaveListAsync(classId, sectionId) {
   };
   return await axios(config);
 }
-
 async function updateLeaveStatusAsync(leaveId, status) {
   const config = {
     method: 'patch',
     url: `/leave/${leaveId}/status`,
-    data: { status },
+    params: { status },
   };
   return await axios(config);
 }
