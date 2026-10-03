@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
   Box,
+  Link,
   Table,
   Button,
   Dialog,
+  Tooltip,
   TableRow,
   TableBody,
   TableCell,
@@ -16,6 +18,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import ApiService from 'src/services/ApiService';
+import { Iconify } from 'src/components/iconify';
 import { fNumber } from 'src/utils/format-number';
 
 export function FeeHistoryDialog({ open, onClose, student }) {
@@ -67,11 +70,33 @@ export function FeeHistoryDialog({ open, onClose, student }) {
               <TableBody>
                 {history.map((p) => (
                   <TableRow key={p.feePaymentId} hover>
-                    <TableCell>{p.receiptNo}</TableCell>
-                    <TableCell>{p.paymentDate}</TableCell>
-                    <TableCell>{p.paymentMode}</TableCell>
-                    <TableCell align="right">{fNumber(p.amount)}</TableCell>
-                    <TableCell>{p.collectedBy || '-'}</TableCell>
+                    <TableCell>
+                      {p && p.receiptUrl ? (
+                        <Tooltip title="Click to open receipt PDF" arrow>
+                          <Link
+                            href={p.receiptUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            underline="hover"
+                            sx={{
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                              fontWeight: 600,
+                            }}
+                          >
+                            {p.receiptNo ? p.receiptNo : 'Receipt'}
+                          </Link>
+                        </Tooltip>
+                      ) : (
+                        (p && p.receiptNo) ? p.receiptNo : '-'
+                      )}
+                    </TableCell>
+                    <TableCell>{p && p.paymentDate ? p.paymentDate : '-'}</TableCell>
+                    <TableCell>{p && p.paymentMode ? p.paymentMode : '-'}</TableCell>
+                    <TableCell align="right">{p && p.amount ? fNumber(p.amount) : '0'}</TableCell>
+                    <TableCell>{p && p.collectedBy ? p.collectedBy : '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
